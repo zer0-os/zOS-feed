@@ -2,10 +2,11 @@
   "name": "zos-feed",
   "version": "0.0.1",
   "description": "feed app for zos",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "build": "tsc --build"
   },
   "author": "",
   "license": "ISC",
