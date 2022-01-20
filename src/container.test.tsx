@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Container, Properties } from './container';
 import { Feed } from './feed';
+import { Model as FeedItemModel } from './feed-item';
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
@@ -53,7 +54,7 @@ describe('FeedContainer', () => {
       id: 'the-second-id',
       title: 'The Second Item',
       description: 'This is the description of the Second item.',
-    }];
+    }] as FeedItemModel[];
 
     const wrapper = subject({ items });
 
