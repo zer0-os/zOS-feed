@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import { SagaActionTypes, receive } from './store';
+import { SagaActionTypes, receive } from './feed';
 
 import { client } from '@zer0-os/zos-zns';
 

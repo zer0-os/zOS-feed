@@ -3,8 +3,8 @@ import {
   receive,
   FeedState,
   AsyncActionStatus,
-} from './store';
-import { Model as FeedItem } from './feed-item';
+} from './feed';
+import { Model as FeedItem } from '../feed-item';
 
 describe('feed reducer', () => {
   const initialExistingState: FeedState = {

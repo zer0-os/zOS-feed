@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import { Container, Properties } from './container';
 import { Feed } from './feed';
 import { Model as FeedItemModel } from './feed-item';
+import { RootState } from './store';
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
@@ -62,18 +63,9 @@ describe('FeedContainer', () => {
   });
 
   describe('mapState', () => {
-    const subject = (state: any) => Container.mapState({
+    const subject = (state: RootState) => Container.mapState({
       feed: { value: [], ...(state.feed || {}) },
-      zns: { value: { route: '' }, ...(state.zns || {}) },
-    } as any);
-
-    test('route', () => {
-      const route = 'deep.fried.zucchini';
-
-      const state = subject({ zns: { value: { route } } } as any);
-
-      expect(state).toMatchObject({ route });
-    });
+    } as RootState);
 
     test('items', () => {
       const items = [{
@@ -86,7 +78,7 @@ describe('FeedContainer', () => {
         description: 'This is the description of the Second item.',
       }];
 
-      const state = subject({ feed: { value: items } } as any);
+      const state = subject({ feed: { value: items } } as RootState);
 
       expect(state).toMatchObject({ items });
     });

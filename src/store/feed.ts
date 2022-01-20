@@ -3,7 +3,7 @@ import {
   createAction,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { Model as FeedItem } from './feed-item';
+import { Model as FeedItem } from '../feed-item';
 
 export enum SagaActionTypes {
   Load = 'feed/saga/load',

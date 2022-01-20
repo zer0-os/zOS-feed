@@ -3,21 +3,22 @@ import { connectContainer } from './util/redux-container';
 
 import { Feed } from './feed';
 import { Model as FeedItem } from './feed-item';
-import { load, ZnsRouteRequest } from './store';
+import { load, ZnsRouteRequest } from './store/feed';
+import { RootState } from './store';
 
 export interface Properties {
+  // public
   provider: any;
-
   route: string;
+
   items: FeedItem[];
   load: (request: ZnsRouteRequest) => void;
 }
 
 export class Container extends React.Component<Properties> {
-  static mapState(state: any): Partial<Properties> {
+  static mapState(state: RootState): Partial<Properties> {
     return {
       items: state.feed.value,
-      route: state.zns.value.route,
     };
   }
 

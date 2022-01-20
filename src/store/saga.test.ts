@@ -4,7 +4,7 @@ import * as matchers from 'redux-saga-test-plan/matchers';
 import { client } from '@zer0-os/zos-zns';
 
 import { load } from './saga';
-import { AsyncActionStatus, reducer } from './store';
+import { AsyncActionStatus, reducer } from './feed';
 
 describe('feed saga', () => {
   const getZnsClient = (overrides = {}) => {
