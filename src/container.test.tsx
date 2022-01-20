@@ -1,8 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { Container, Properties } from './container';
-import { Feed } from '.';
-import { RootState } from '../../app-sandbox/store';
+import { Feed } from './feed';
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
@@ -62,7 +61,7 @@ describe('FeedContainer', () => {
   });
 
   describe('mapState', () => {
-    const subject = (state: RootState) => Container.mapState({
+    const subject = (state: any) => Container.mapState({
       feed: { value: [], ...(state.feed || {}) },
       zns: { value: { route: '' }, ...(state.zns || {}) },
     } as any);
@@ -70,7 +69,7 @@ describe('FeedContainer', () => {
     test('route', () => {
       const route = 'deep.fried.zucchini';
 
-      const state = subject({ zns: { value: { route } } } as RootState);
+      const state = subject({ zns: { value: { route } } } as any);
 
       expect(state).toMatchObject({ route });
     });
@@ -86,7 +85,7 @@ describe('FeedContainer', () => {
         description: 'This is the description of the Second item.',
       }];
 
-      const state = subject({ feed: { value: items } } as RootState);
+      const state = subject({ feed: { value: items } } as any);
 
       expect(state).toMatchObject({ items });
     });

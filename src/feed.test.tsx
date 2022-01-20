@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { FeedItem } from './feed-item';
-import { Feed, Properties } from '.';
+import { FeedItem, Model as FeedItemModel } from './feed-item';
+import { Feed, Properties } from './feed';
 
 describe('Feed', () => {
   const subject = (props: Partial<Properties>) => {
@@ -22,7 +22,7 @@ describe('Feed', () => {
       id: 'the-second-id',
       title: 'The Second Item',
       description: 'This is the description of the Second item.',
-    }];
+    }] as FeedItemModel[];
 
     const wrapper = subject({ items });
 
@@ -38,7 +38,7 @@ describe('Feed', () => {
       id: 'the-second-id',
       title: 'The Second Item',
       description: 'This is the description of the Second item.',
-    }];
+    }] as FeedItemModel[];
 
     const wrapper = subject({ items });
 

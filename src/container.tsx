@@ -1,7 +1,7 @@
 import React from 'react';
 import { connectContainer } from './util/redux-container';
 
-import { Feed } from '.';
+import { Feed } from './feed';
 import { Model as FeedItem } from './feed-item';
 import { load, ZnsRouteRequest } from './store';
 
