@@ -6,11 +6,12 @@ import { Model as FeedItem } from './feed-item';
 import { load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
-export interface Properties {
-  // public
+export interface PublicProperties {
   provider: any;
   route: string;
+}
 
+export interface Properties extends PublicProperties {
   items: FeedItem[];
   load: (request: ZnsRouteRequest) => void;
 }
@@ -48,4 +49,4 @@ export class Container extends React.Component<Properties> {
   }
 }
 
-export const FeedContainer = connectContainer<{}>(Container);
+export const FeedContainer = connectContainer<PublicProperties>(Container);
