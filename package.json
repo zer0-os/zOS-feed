@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "tsc --build"
+    "build": "tsc --build && cp src/*.css dist/"
   },
   "author": "",
   "license": "ISC",
