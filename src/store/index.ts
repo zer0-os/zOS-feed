@@ -15,7 +15,12 @@ export const store = configureStore({
   reducer: {
     feed,
   },
-  middleware: (defaults) => defaults({ thunk: false }).concat(sagaMiddleware),
+  middleware: (defaults) => defaults({
+    thunk: false,
+    serializableCheck: {
+      ignoredActions: ['feed/saga/load'],
+    },
+  }).concat(sagaMiddleware),
 });
 
 sagaMiddleware.run(saga);
