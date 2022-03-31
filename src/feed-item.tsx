@@ -12,19 +12,20 @@ export interface Model {
 }
 
 export interface Properties extends Model {
+  app: string;
 }
 
 export class FeedItem extends React.Component<Properties> {
   render() {
-    const { title, description, imageUrl } = this.props;
+    const { title, description, imageUrl, znsRoute, app } = this.props;
 
     return (
       <div className="feed-item">
         {imageUrl && (
-          <img className="feed-item__image" alt={title} src={this.props.imageUrl} />
+          <img className="feed-item__image" alt={title} src={imageUrl} />
         )}
         <div className='feed-item__text-content'>
-          <Link to={this.props.znsRoute}>
+          <Link to={`/${[znsRoute, app].join('/')}`}>
             <h3 className="feed-item__title">{title}</h3>
           </Link>
           <span className="feed-item__description">{description}</span>

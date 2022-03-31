@@ -5,11 +5,13 @@ import './styles.css';
 
 export interface Properties {
   items: FeedItemModel[];
+  app: string;
 }
 
 export class Feed extends React.Component<Properties> {
   renderItems() {
-    return this.props.items.map(item => <FeedItem key={item.id} {...item} />);
+    const { items, app } = this.props;
+    return items.map(item => <FeedItem key={item.id} {...item} app={app} />);
   }
 
   render() {

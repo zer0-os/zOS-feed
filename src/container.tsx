@@ -8,7 +8,10 @@ import { RootState } from './store';
 
 export interface PublicProperties {
   provider: any;
-  route: string;
+  route: {
+    znsRoute: string;
+    app: string;
+  }
 }
 
 export interface Properties extends PublicProperties {
@@ -28,7 +31,7 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidMount() {
-    const { route, provider } = this.props;
+    const { route: { znsRoute: route }, provider } = this.props;
     // at this point the assumption is that we're never navigating to the
     // "root", so we only for routes that are a non-empty string.
     if (route) {
@@ -37,15 +40,17 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { route, provider } = this.props;
+    const { route: { znsRoute }, provider } = this.props;
 
-    if (route && ( route !== prevProps.route)) {
-      this.props.load({ route, provider });
+    if (znsRoute && (znsRoute !== prevProps.route.znsRoute)) {
+      this.props.load({ route: znsRoute, provider });
     }
   }
 
   render() {
-    return <Feed items={this.props.items} />;
+    const { items, route: { app }} = this.props;
+
+    return <Feed items={items} app={app} />;
   }
 }
 
