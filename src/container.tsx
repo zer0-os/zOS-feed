@@ -6,12 +6,14 @@ import { Model as FeedItem } from './feed-item';
 import { load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
+interface Route {
+  znsRoute: string;
+  app: string;
+}
+
 export interface PublicProperties {
   provider: any;
-  route: {
-    znsRoute: string;
-    app: string;
-  }
+  route: Route;
 }
 
 export interface Properties extends PublicProperties {
