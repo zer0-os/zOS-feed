@@ -12,6 +12,7 @@ describe('FeedItem', () => {
       description: '',
       imageUrl: '',
       znsRoute: '',
+      app: '',
       ...props,
     };
 
@@ -71,10 +72,11 @@ describe('FeedItem', () => {
     const wrapper = subject({
       id: 'the-first-id',
       znsRoute: 'the.route.yo',
+      app: 'app.id',
     });
 
     const link = wrapper.find('.feed-item__title').closest(Link);
 
-    expect(link.prop('to')).toStrictEqual('the.route.yo');
+    expect(link.prop('to')).toStrictEqual('/the.route.yo/app.id');
   });
 });

@@ -8,7 +8,7 @@ import { RootState } from './store';
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
-      route: '',
+      route: { znsRoute: '', app: '' },
       items: [],
       load: () => undefined,
       provider: null,
@@ -22,7 +22,7 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    subject({ load, provider, route: 'pickles' });
+    subject({ load, provider, route: { znsRoute: 'pickles', app: 'feed' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
@@ -30,7 +30,7 @@ describe('FeedContainer', () => {
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
-    subject({ load, provider: { what: 'yeah' }, route: '' });
+    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '', app: '' } });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -39,9 +39,9 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    const container = subject({ load, provider, route: '' });
+    const container = subject({ load, provider, route: { znsRoute: '', app: '' } });
 
-    container.setProps({ route: 'bob' });
+    container.setProps({ route: { znsRoute: 'bob', app: 'feed' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
   });

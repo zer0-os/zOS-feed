@@ -7,6 +7,7 @@ describe('Feed', () => {
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       items: [],
+      app: '',
       ...props,
     };
 
