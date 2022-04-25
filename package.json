@@ -1,12 +1,13 @@
 {
   "name": "@zer0-os/zos-feed",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "feed app for zos",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "tsc --build && cp src/*.css dist/"
+    "build": "tsc --build && cp src/*.css dist/",
+    "start:watch": "tsc --watch && cp src/*.css dist/"
   },
   "author": "",
   "license": "ISC",
