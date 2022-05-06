@@ -1,6 +1,6 @@
-import React, { ImgHTMLAttributes } from "react";
+import React, { ImgHTMLAttributes } from 'react';
 
-import { getSource } from "../../util/image/util";
+import { getSource } from '../../util/image/util';
 
 export interface Properties extends ImgHTMLAttributes<HTMLImageElement> {
   className: string;

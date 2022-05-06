@@ -1,8 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Image from "./components/image";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Image from './components/image';
 
-import "./styles.css";
+import './styles.css';
 
 export interface Model {
   id: string;
