@@ -1,0 +1,5 @@
+
+export const config = {
+  CLOUDINARY_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_MAX_FILE_SIZE: process.env.CLOUDINARY_MAX_FILE_SIZE,
+};

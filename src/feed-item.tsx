@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BackgroundImage from './components/background-image'
 
 import './styles.css';
 
@@ -27,9 +28,11 @@ export class FeedItem extends React.Component<Properties> {
           </Link>
           <span className="feed-item__description">{description}</span>
         </div>
+
         {imageUrl && (
-          <img className="feed-item__image" alt={title} src={imageUrl} />
+          <BackgroundImage sourceUrl={imageUrl} classImage="feed-item__image" title={title} />
         )}
+        
       </div>
     );
   }
