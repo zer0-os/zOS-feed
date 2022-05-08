@@ -1,15 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Image from '.';
+import { Properties } from './index';
 
-export interface Properties {
-  src: string;
-  className: string;
-  alt: string;
-}
-
-describe('Cloudinary images', () => {
-  const subject = (props: Partial<Properties>) => {
+describe('Images', () => {
+  const subject = (props: Properties) => {
     const allProps: Properties = {
       src: '',
       className: '',
