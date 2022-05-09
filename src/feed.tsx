@@ -9,14 +9,18 @@ export interface Properties {
   app: string;
 }
 
-interface State {
+export interface State {
   feed: FeedItemModel[];
-  hasMore: boolean;
-  pageNumber: number;
-  pageSize: number;
+  hasMore?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 export class Feed extends React.Component<Properties, State> {
+  componentDidMount() {
+    this.setState({ feed: this.props.items.slice(0, 2) });
+  }
+
   componentDidUpdate(prevProps: Properties) {
     const { items } = this.props;
     if (items && items !== prevProps.items) {
@@ -41,7 +45,7 @@ export class Feed extends React.Component<Properties, State> {
         ),
         pageNumber: pageNumber + 1,
       });
-    }, 500);
+    }, 300);
   };
 
   renderItems() {
