@@ -23,7 +23,7 @@ export class Feed extends React.Component<Properties, State> {
 
   componentDidUpdate(prevProps: Properties) {
     const { items } = this.props;
-    if (items && items !== prevProps.items) {
+    if (items !== prevProps.items) {
       this.setState({ feed: items.slice(0, 2) });
       this.setState({ pageNumber: 2, pageSize: 2, hasMore: true });
     }
@@ -35,17 +35,15 @@ export class Feed extends React.Component<Properties, State> {
       this.setState({ hasMore: false });
       return;
     }
-    setTimeout(() => {
-      this.setState({
-        feed: feed.concat(
-          this.props.items.slice(
-            (pageNumber - 1) * pageSize,
-            pageNumber * pageSize
-          )
-        ),
-        pageNumber: pageNumber + 1,
-      });
-    }, 300);
+    this.setState({
+      feed: feed.concat(
+        this.props.items.slice(
+          (pageNumber - 1) * pageSize,
+          pageNumber * pageSize
+        )
+      ),
+      pageNumber: pageNumber + 1,
+    });
   };
 
   renderItems() {
@@ -56,7 +54,7 @@ export class Feed extends React.Component<Properties, State> {
         dataLength={this.state.feed.length}
         next={this.fetchMoreData}
         hasMore={this.state.hasMore}
-        loader={<p></p>}
+        loader={<></>}
       >
         {this.state.feed.map((item) => (
           <FeedItem key={item.id} {...item} app={app} />
