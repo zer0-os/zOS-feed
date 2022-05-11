@@ -1,22 +1,17 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { FeedItem, Model as FeedItemModel } from './feed-item';
-import { Feed, Properties, State } from './feed';
+import { Feed, Properties } from './feed';
 
 describe('Feed', () => {
-  const subject = (props: Partial<Properties>, state: Partial<State>) => {
+  const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       items: [],
       app: '',
       ...props,
     };
 
-    const allState: State = {
-      feed: [],
-      ...state,
-    };
-
-    return shallow(<Feed {...allProps} {...allState} />);
+    return shallow(<Feed {...allProps} />);
   };
 
   test('renders a feed item for item', () => {
@@ -33,9 +28,7 @@ describe('Feed', () => {
       },
     ] as FeedItemModel[];
 
-    const feed = items;
-
-    const wrapper = subject({ items }, { feed });
+    const wrapper = subject({ items });
 
     expect(wrapper.find(FeedItem)).toHaveLength(2);
   });
@@ -54,9 +47,7 @@ describe('Feed', () => {
       },
     ] as FeedItemModel[];
 
-    const feed = items;
-
-    const wrapper = subject({ items }, { feed });
+    const wrapper = subject({ items });
 
     expect(wrapper.find(FeedItem).at(1).props()).toEqual(
       expect.objectContaining({

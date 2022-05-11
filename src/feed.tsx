@@ -1,6 +1,7 @@
 import React from 'react';
 import { FeedItem, Model as FeedItemModel } from './feed-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { isEqual } from 'lodash';
 
 import './styles.css';
 
@@ -11,30 +12,44 @@ export interface Properties {
 
 export interface State {
   feed: FeedItemModel[];
-  hasMore?: boolean;
-  pageNumber?: number;
-  pageSize?: number;
+  hasMore: boolean;
+  pageNumber: number;
 }
 
+const pageSize: number = 2;
+
 export class Feed extends React.Component<Properties, State> {
-  componentDidMount() {
-    this.setState({ feed: this.props.items.slice(0, 2) });
+  constructor(props) {
+    super(props);
+    this.state = {
+      feed: this.props.items.slice(0, pageSize) || [],
+      hasMore: false,
+      pageNumber: 0,
+    };
   }
 
   componentDidUpdate(prevProps: Properties) {
     const { items } = this.props;
-    if (items !== prevProps.items) {
-      this.setState({ feed: items.slice(0, 2) });
-      this.setState({ pageNumber: 2, pageSize: 2, hasMore: true });
+    if (
+      items.length != prevProps.items.length ||
+      (items.length == prevProps.items.length &&
+        !isEqual(items, prevProps.items))
+    ) {
+      this.setState({
+        feed: items.slice(0, pageSize),
+        hasMore: true,
+        pageNumber: 2,
+      });
     }
   }
 
   fetchMoreData = () => {
-    const { pageNumber, pageSize, feed } = this.state;
+    const { pageNumber, feed } = this.state;
     if (feed.length >= this.props.items.length) {
       this.setState({ hasMore: false });
       return;
     }
+
     this.setState({
       feed: feed.concat(
         this.props.items.slice(
@@ -48,12 +63,13 @@ export class Feed extends React.Component<Properties, State> {
 
   renderItems() {
     const { app } = this.props;
-
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
         next={this.fetchMoreData}
         hasMore={this.state.hasMore}
+        initialScrollY={0}
+        scrollThreshold='0px'
         loader={<></>}
       >
         {this.state.feed.map((item) => (
@@ -66,7 +82,7 @@ export class Feed extends React.Component<Properties, State> {
   render() {
     return (
       <div className="feed">
-        <div className="feed__items">{this.state && this.renderItems()}</div>
+        <div className="feed__items">{this.renderItems()}</div>
       </div>
     );
   }
