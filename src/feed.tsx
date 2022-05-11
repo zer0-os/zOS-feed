@@ -16,7 +16,7 @@ export interface State {
   pageNumber: number;
 }
 
-const pageSize: number = 2;
+const pageSize: number = 5;
 
 export class Feed extends React.Component<Properties, State> {
   constructor(props) {
