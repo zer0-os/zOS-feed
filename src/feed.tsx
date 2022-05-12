@@ -16,15 +16,15 @@ export interface State {
   pageNumber: number;
 }
 
-const pageSize: number = 5;
-
 export class Feed extends React.Component<Properties, State> {
+  static pageSize: number = 5;
+
   constructor(props) {
     super(props);
     this.state = {
-      feed: this.props.items.slice(0, pageSize) || [],
+      feed: this.props.items.slice(0, Feed.pageSize) || [],
       hasMore: false,
-      pageNumber: 0,
+      pageNumber: 2,
     };
   }
 
@@ -36,7 +36,7 @@ export class Feed extends React.Component<Properties, State> {
         !isEqual(items, prevProps.items))
     ) {
       this.setState({
-        feed: items.slice(0, pageSize),
+        feed: items.slice(0, Feed.pageSize),
         hasMore: true,
         pageNumber: 2,
       });
@@ -53,8 +53,8 @@ export class Feed extends React.Component<Properties, State> {
     this.setState({
       feed: feed.concat(
         this.props.items.slice(
-          (pageNumber - 1) * pageSize,
-          pageNumber * pageSize
+          (pageNumber - 1) * Feed.pageSize,
+          pageNumber * Feed.pageSize
         )
       ),
       pageNumber: pageNumber + 1,
