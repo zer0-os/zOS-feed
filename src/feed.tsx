@@ -24,7 +24,7 @@ export class Feed extends React.Component<Properties, State> {
     this.state = {
       feed: this.props.items.slice(0, Feed.pageSize) || [],
       hasMore: false,
-      pageNumber: 2,
+      pageNumber: 1,
     };
   }
 
@@ -38,7 +38,7 @@ export class Feed extends React.Component<Properties, State> {
       this.setState({
         feed: items.slice(0, Feed.pageSize),
         hasMore: true,
-        pageNumber: 2,
+        pageNumber: 1,
       });
     }
   }
@@ -53,8 +53,8 @@ export class Feed extends React.Component<Properties, State> {
     this.setState({
       feed: feed.concat(
         this.props.items.slice(
-          (pageNumber - 1) * Feed.pageSize,
-          pageNumber * Feed.pageSize
+          pageNumber * Feed.pageSize,
+          (pageNumber + 1) * Feed.pageSize
         )
       ),
       pageNumber: pageNumber + 1,
