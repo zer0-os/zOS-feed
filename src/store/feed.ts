@@ -25,11 +25,13 @@ export enum AsyncActionStatus {
 // change this to root asyncData<T> state or something.
 export interface FeedState {
   value: FeedItem[];
+  selectedItem: FeedItem;
   status: AsyncActionStatus;
 }
 
 const initialState: FeedState = {
   value: [],
+  selectedItem: null,
   status: AsyncActionStatus.Idle,
 };
 
@@ -40,10 +42,13 @@ const slice = createSlice({
     receive: (state, action: PayloadAction<FeedItem[]>) => {
       state.value = action.payload;
     },
+    setSelectedItem: (state, action: PayloadAction<FeedItem>) => {
+      state.selectedItem = action.payload;
+    },
   },
 });
 
-export const { receive } = slice.actions;
+export const { receive, setSelectedItem } = slice.actions;
 export const { reducer } =  slice;
 
 export { load };

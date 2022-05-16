@@ -1,5 +1,5 @@
 import { takeLatest, put, call } from 'redux-saga/effects';
-import { SagaActionTypes, receive } from './feed';
+import { SagaActionTypes, receive, setSelectedItem } from './feed';
 
 import { client } from '@zer0-os/zos-zns';
 
@@ -12,7 +12,12 @@ export function* load(action) {
 
   const items = yield call([znsClient, znsClient.getFeed], routeId);
 
-  yield put(receive(items));
+  if (items && items.length) {
+    yield put(receive(items));
+  } else {
+    const item = yield call([znsClient, znsClient.getFeedItem], routeId);
+    yield put(setSelectedItem(item));
+  }
 }
 
 export function* saga() {

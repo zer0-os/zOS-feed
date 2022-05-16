@@ -10,6 +10,7 @@ describe('FeedContainer', () => {
     const allProps: Properties = {
       route: { znsRoute: '', app: '' },
       items: [],
+      selectedItem: null,
       load: () => undefined,
       provider: null,
       ...props,

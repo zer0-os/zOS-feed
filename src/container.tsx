@@ -2,7 +2,7 @@ import React from 'react';
 import { connectContainer } from './util/redux-container';
 
 import { Feed } from './feed';
-import { Model as FeedItem } from './feed-item';
+import { Model as FeedItemModel, FeedItem } from './feed-item';
 import { load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
@@ -17,7 +17,8 @@ export interface PublicProperties {
 }
 
 export interface Properties extends PublicProperties {
-  items: FeedItem[];
+  items: FeedItemModel[];
+  selectedItem: FeedItemModel;
   load: (request: ZnsRouteRequest) => void;
 }
 
@@ -25,6 +26,7 @@ export class Container extends React.Component<Properties> {
   static mapState(state: RootState): Partial<Properties> {
     return {
       items: state.feed.value,
+      selectedItem: state.feed.selectedItem,
     };
   }
 
@@ -50,9 +52,18 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
-    const { items, route: { app }} = this.props;
-
-    return <Feed items={items} app={app} />;
+    const { items, selectedItem, route: { app }} = this.props;
+    
+    return(
+      <>
+        {!selectedItem && items &&
+          <Feed items={items} app={app} />
+        }
+        {selectedItem &&
+          <FeedItem {...selectedItem} app={app} />
+        }
+      </>
+  );
   }
 }
 

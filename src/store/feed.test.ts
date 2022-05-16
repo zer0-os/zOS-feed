@@ -9,11 +9,13 @@ import { Model as FeedItem } from '../feed-item';
 describe('feed reducer', () => {
   const initialExistingState: FeedState = {
     value: [{ id: 'what', title: 'the existing item' }] as FeedItem[],
+    selectedItem: { id: 'what.child.is.this', title: "What's child of course" } as FeedItem,
     status: AsyncActionStatus.Idle
   };
 
   const initialEmptyState: FeedState = {
     value: null,
+    selectedItem: null,
     status: AsyncActionStatus.Idle,
   };
 
