@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Image from './components/image';
 
 import './styles.css';
 
@@ -21,15 +22,20 @@ export class FeedItem extends React.Component<Properties> {
 
     return (
       <div className="feed-item">
-        {imageUrl && (
-          <img className="feed-item__image" alt={title} src={imageUrl} />
-        )}
-        <div className='feed-item__text-content'>
-          <Link to={`/${[znsRoute, app].join('/')}`}>
+        <div className="feed-item__text-content">
+          <Link to={`/${[znsRoute, app].join("/")}`}>
             <h3 className="feed-item__title">{title}</h3>
           </Link>
           <span className="feed-item__description">{description}</span>
         </div>
+
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            className="feed-item__image"
+            alt={title}
+          />
+        )}
       </div>
     );
   }

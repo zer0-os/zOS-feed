@@ -1,7 +1,8 @@
 .feed {
   position: relative;
   height: 100%;
-  width: 100%;
+  width: 480px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   overflow: auto;
@@ -16,20 +17,24 @@
 .feed-item {
   display: flex;
   flex-direction: column;
-  padding: 15px 0 25px 0;
-  margin-bottom: 20px;
-  border-radius: 20px;
-  border: 1px solid #cccccc;
+  padding: 0 0 25px 0;
+  border-bottom: 1px solid #cccccc;
 }
 
 .feed-item__text-content {
-  padding: 5px 20px;
+  padding: 5px 0;
+  margin-bottom: 5px;
 }
 
 .feed-item__title {
-  font-size: 24px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .feed-item__description {
   font-size: 16px;
+}
+
+.feed-item__image {
+  border-radius: 8px;
 }
