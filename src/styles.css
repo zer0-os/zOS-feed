@@ -10,7 +10,6 @@
 
 .feed__items {
   position: relative;
-  max-width: 600px;
   padding: 100px 20px 0;
 }
 
@@ -36,5 +35,6 @@
 }
 
 .feed-item__image {
+  width: 480px;
   border-radius: 8px;
 }

@@ -4,7 +4,14 @@ import { Link } from 'react-router-dom';
 
 import { FeedItem, Properties } from './feed-item';
 
+let metadataServiceLoad;
+
 describe('FeedItem', () => {
+  beforeEach(() => {
+    metadataServiceLoad = jest.fn();
+  });
+
+
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       id: '',
@@ -13,6 +20,11 @@ describe('FeedItem', () => {
       imageUrl: '',
       znsRoute: '',
       app: '',
+      metadataService: {
+        load: metadataServiceLoad,
+        normalizeUrl: jest.fn(),
+        extractIpfsContentId: jest.fn(),
+      },
       ...props,
     };
 
@@ -34,14 +46,6 @@ describe('FeedItem', () => {
     });
 
     expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual('what');
-  });
-
-  it('does not render image if not provided', () => {
-    const wrapper = subject({
-      imageUrl: null,
-    });
-
-    expect(wrapper.find('.feed-item__image').exists()).toBe(false);
   });
 
   test('renders title', () => {
@@ -78,5 +82,16 @@ describe('FeedItem', () => {
     const link = wrapper.find('.feed-item__title').closest(Link);
 
     expect(link.prop('to')).toStrictEqual('/the.route.yo/app.id');
+  });
+
+  test('looks up metadata', async () => {
+    const wrapper = subject({
+      id: 'the-first-id',
+      znsRoute: 'the.route.yo',
+      app: 'the.app.id',
+      metadataUrl: 'slow-ipfs-url',
+    });
+
+    expect(metadataServiceLoad).toHaveBeenCalledWith('slow-ipfs-url');
   });
 });
