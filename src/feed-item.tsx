@@ -31,6 +31,7 @@ export class FeedItem extends React.Component<Properties> {
 
         {imageUrl && (
           <Image
+            useCloudinary
             src={imageUrl}
             className="feed-item__image"
             alt={title}
