@@ -1,7 +1,7 @@
 import React, { ImgHTMLAttributes } from 'react';
 import { AdvancedImage } from '@cloudinary/react';
-import { getCloudinaryImage, getHashFromIpfsUrl } from '../../util/image/util';
 import { CloudinaryImage } from '@cloudinary/url-gen';
+import { getCloudinaryImage, getHashFromIpfsUrl } from '../../util/image/util';
 
 export interface Properties extends ImgHTMLAttributes<HTMLImageElement> {
   className: string;
