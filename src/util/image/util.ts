@@ -4,7 +4,7 @@ import cloudinary from './cloudinary';
 
 export function getCloudinaryImage(
   publicId: string,
-  prefix: string = config.CLOUDINARY_PREFIX || ''
+  prefix: string = config.CLOUDINARY_PREFIX || '',
 ): CloudinaryImage {
   return cloudinary.image(`${prefix}${publicId}`);
 }
