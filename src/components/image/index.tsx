@@ -28,12 +28,12 @@ export default class Image extends React.Component<Properties> {
   };
 
   render() {
-    const { useCloudinary, src, ...rest } = this.props;
+    const { useCloudinary, ...rest } = this.props;
 
     if (useCloudinary) {
       return this.renderCloudinaryImage();
     }
 
-    return <img src={src as string} {...rest} />;
+    return <img {...rest} />;
   }
 }
