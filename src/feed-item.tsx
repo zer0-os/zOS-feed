@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Image from './components/image';
 import { metadataService, ZnsMetadataService } from '@zer0-os/zos-zns';
+import CloudImage from './components/cloud-image';
 
 import './styles.css';
 
@@ -28,13 +28,13 @@ export class FeedItem extends React.Component<Properties, State> {
     const { app, metadataService, ...model } = props;
 
     this.state = {
-      ...model
+      ...model,
     };
   }
 
   static defaultProps = {
     metadataService: metadataService,
-  }
+  };
 
   componentDidMount = async () => {
     const { metadataUrl, metadataService } = this.props;
@@ -42,25 +42,26 @@ export class FeedItem extends React.Component<Properties, State> {
     if (metadataUrl) {
       const metadata = await metadataService.load(metadataUrl);
 
-      this.setState(previousState => ({ ...previousState, ...metadata }));
+      this.setState((previousState) => ({ ...previousState, ...metadata }));
     }
-  }
+  };
 
   render() {
     const { title, description, imageUrl, znsRoute } = this.state;
     const { app } = this.props;
 
     return (
-      <div className="feed-item">
-        <Link to={`/${[znsRoute, app].join("/")}`}>
-          <div className="feed-item__text-content">
-            <h3 className="feed-item__title">{title}</h3>
-            <span className="feed-item__description">{description}</span>
+      <div className='feed-item'>
+        <Link to={`/${[znsRoute, app].join('/')}`}>
+          <div className='feed-item__text-content'>
+            <h3 className='feed-item__title'>{title}</h3>
+            <span className='feed-item__description'>{description}</span>
           </div>
-          <Image
-            className="feed-item__image"
+          <CloudImage
+            className='feed-item__image'
             src={imageUrl}
             alt={title}
+            width={480}
           />
         </Link>
       </div>
