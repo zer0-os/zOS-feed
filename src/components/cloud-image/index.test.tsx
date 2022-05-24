@@ -35,17 +35,6 @@ describe('Images', () => {
     expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual('what');
   });
 
-  test('renders image contain cloudinary url', () => {
-    const src =
-      'https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg';
-    const wrapper = subject({
-      className: 'feed-item__image',
-      src,
-    });
-
-    expect(wrapper.find('.feed-item__image').prop('src')).toContain(src);
-  });
-
   it('adds title as alt text to image', () => {
     const wrapper = subject({
       alt: 'whatImg',
@@ -65,12 +54,10 @@ describe('Images', () => {
       const wrapper = subject({
         className: CLASS_NAME_TEST,
         src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-        useCloudinary: true,
+        // useCloudinary: true,
       });
 
-      expect(wrapper.find(AdvancedImage).prop('className')).toEqual(
-        CLASS_NAME_TEST
-      );
+      expect(wrapper.find(AdvancedImage).hasClass(CLASS_NAME_TEST)).toBe(true);
       expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
         expect.objectContaining({
           publicID: PUBLIC_ID_TEST,
@@ -85,7 +72,7 @@ describe('Images', () => {
       const wrapper = subject({
         className: CLASS_NAME_TEST,
         src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-        useCloudinary: true,
+        // useCloudinary: true,
         cloudinaryTransformable: (cloudinaryImage: CloudinaryImage) =>
           cloudinaryImage.resize(scale().width(480)),
       });

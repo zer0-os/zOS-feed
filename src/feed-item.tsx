@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { metadataService, ZnsMetadataService } from '@zer0-os/zos-zns';
-import { scale } from '@cloudinary/url-gen/actions/resize';
-import { CloudinaryImage } from '@cloudinary/url-gen';
-import Image from './components/image';
+import CloudImage from './components/cloud-image';
 
 import './styles.css';
 
@@ -59,14 +57,11 @@ export class FeedItem extends React.Component<Properties, State> {
             <h3 className='feed-item__title'>{title}</h3>
             <span className='feed-item__description'>{description}</span>
           </div>
-          <Image
-            useCloudinary
-            cloudinaryTransformable={(cloudinaryImage: CloudinaryImage) =>
-              cloudinaryImage.resize(scale().width(480))
-            }
+          <CloudImage
             className='feed-item__image'
             src={imageUrl}
             alt={title}
+            width={480}
           />
         </Link>
       </div>

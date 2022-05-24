@@ -3,7 +3,7 @@ import { config } from '../../config';
 
 const cloudinary = new Cloudinary({
   cloud: {
-    cloudName: config.CLOUDINARY_NAME || 'fact0ry',
+    cloudName: config.CLOUDINARY_NAME,
   },
 });
 
