@@ -4,12 +4,14 @@ import { Container, Properties } from './container';
 import { Feed } from './feed';
 import { Model as FeedItemModel } from './feed-item';
 import { RootState } from './store';
+import { AsyncActionStatus } from './store/feed';
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
       route: { znsRoute: '', app: '' },
       items: [],
+      status: AsyncActionStatus.Idle,
       load: () => undefined,
       provider: null,
       ...props,
@@ -60,6 +62,12 @@ describe('FeedContainer', () => {
     const wrapper = subject({ items });
 
     expect(wrapper.find(Feed).prop('items')).toEqual(items);
+  });
+
+  test('passes loading to feed', () => {
+    const wrapper = subject({ status: AsyncActionStatus.Loading });
+
+    expect(wrapper.find(Feed).prop('isLoading')).toEqual(true);
   });
 
   describe('mapState', () => {

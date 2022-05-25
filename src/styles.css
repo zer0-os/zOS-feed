@@ -38,3 +38,14 @@
   width: 480px;
   border-radius: 8px;
 }
+
+.feed-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.feed-spinner__text {
+  padding-left: 10px;
+}

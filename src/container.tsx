@@ -3,7 +3,7 @@ import { connectContainer } from './util/redux-container';
 
 import { Feed } from './feed';
 import { Model as FeedItem } from './feed-item';
-import { load, ZnsRouteRequest } from './store/feed';
+import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
 interface Route {
@@ -18,6 +18,7 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   items: FeedItem[];
+  status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
 }
 
@@ -25,6 +26,7 @@ export class Container extends React.Component<Properties> {
   static mapState(state: RootState): Partial<Properties> {
     return {
       items: state.feed.value,
+      status: state.feed.status,
     };
   }
 
@@ -50,9 +52,9 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
-    const { items, route: { app }} = this.props;
+    const { items, route: { app }, status } = this.props;
 
-    return <Feed items={items} app={app} />;
+    return <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading}/>;
   }
 }
 

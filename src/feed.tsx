@@ -1,13 +1,15 @@
 import React from 'react';
-import { FeedItem, Model as FeedItemModel } from './feed-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Spinner } from '@zer0-os/zos-component-library';
 import { isEqual } from 'lodash';
+import { FeedItem, Model as FeedItemModel } from './feed-item';
 
 import './styles.css';
 
 export interface Properties {
   items: FeedItemModel[];
   app: string;
+  isLoading: boolean;
 }
 
 export interface State {
@@ -80,6 +82,15 @@ export class Feed extends React.Component<Properties, State> {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return (
+        <div className='feed-spinner'>
+          <Spinner />
+          <span className='feed-spinner__text'>Loading Feed</span>
+        </div>
+      );
+    }
+
     return (
       <div className="feed">
         <div className="feed__items">{this.renderItems()}</div>
