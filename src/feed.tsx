@@ -1,13 +1,18 @@
 import React from 'react';
-import { FeedItem, Model as FeedItemModel } from './feed-item';
+import { FeedItem } from './feed-item';
+import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { isEqual } from 'lodash';
+import { ZnsMetadataService } from '@zer0-os/zos-zns';
 
 import './styles.css';
 
 export interface Properties {
   items: FeedItemModel[];
   app: string;
+  metadataService?: ZnsMetadataService;
+  metadataAbortController?: any;
+  setSelectedItem?: any;
 }
 
 export interface State {
@@ -62,7 +67,7 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app } = this.props;
+    const { app, setSelectedItem, metadataService, metadataAbortController } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -73,7 +78,7 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItem key={item.id} {...item} app={app} />
+          <FeedItem key={item.id} item={item} app={app} setSelectedItem={setSelectedItem} metadataService={metadataService} metadataAbortController={metadataAbortController} />
         ))}
       </InfiniteScroll>
     );

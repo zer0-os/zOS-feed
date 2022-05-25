@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Image from './components/image';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { fetchMetadata } from './util/feed';
@@ -9,17 +8,15 @@ import './styles.css';
 
 export interface Properties {
   item: Model;
-  app: string;
   metadataService?: ZnsMetadataService;
   metadataAbortController?: any;
-  setSelectedItem?: any;
 }
 
 interface State {
   item: Model;
 }
 
-export class FeedItem extends React.Component<Properties, State> {
+export class FeedLeaf extends React.Component<Properties, State> {
   state = { item: this.props.item };
 
   componentDidMount = async () => {
@@ -34,29 +31,23 @@ export class FeedItem extends React.Component<Properties, State> {
     this.setState({ item: { ...item, ...metadata } });
   }
 
-  onClick = () => {
-    const { item } = this.state;
-
-    this.props.setSelectedItem(item);
-  }
-
   render() {
-    const { item: { title, description, imageUrl, znsRoute } } = this.state;
-    const { app } = this.props;
+    console.log('render props', this.props, 'state', this.state)
+    const { item: { title, description, imageUrl } } = this.state || { item: { title: '', description: '', imageUrl: undefined } };
 
     return (
-      <div className="feed-item">
-        <Link to={`/${[znsRoute, app].join("/")}`} onClick={this.onClick}>
-          <div className="feed-item__text-content">
-            <h3 className="feed-item__title">{title}</h3>
-            <span className="feed-item__description">{description}</span>
-          </div>
-          <Image
-            className="feed-item__image"
-            src={imageUrl}
-            alt={title}
-          />
-        </Link>
+      <div className="feed-leaf">
+
+        <h1>Feed Leaf</h1><h1>Feed Leaf</h1><h1>Feed Leaf</h1>
+        <div className="feed-item__text-content">
+          <h3 className="feed-item__title">{title}</h3>
+          <span className="feed-item__description">{description}</span>
+        </div>
+        <Image
+          className="feed-item__image"
+          src={imageUrl}
+          alt={title}
+        />
       </div>
     );
   }
