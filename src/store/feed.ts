@@ -40,10 +40,13 @@ const slice = createSlice({
     receive: (state, action: PayloadAction<FeedItem[]>) => {
       state.value = action.payload;
     },
+    setStatus: (state, action: PayloadAction<AsyncActionStatus>) => {
+      state.status = action.payload;
+    },
   },
 });
 
-export const { receive } = slice.actions;
+export const { receive, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
 export { load };
