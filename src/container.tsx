@@ -4,6 +4,7 @@ import { connectContainer } from './util/redux-container';
 import { Feed } from './feed';
 import { FeedLeaf } from './feed-leaf';
 import { Model as FeedItem } from './feed-model';
+import { isLeafNode } from './util/feed';
 import { load, ZnsRouteRequest, setSelectedItem } from './store/feed';
 import { client } from '@zer0-os/zos-zns';
 import { RootState } from './store';
@@ -43,8 +44,8 @@ export class Container extends React.Component<Properties> {
   componentDidMount = async () => {
     const { items, route: { znsRoute }, provider } = this.props;
 
-    console.log('componentDidMount, isLeaf', this.isLeafNode(znsRoute, items));
-    if (this.isLeafNode(znsRoute, items)) {
+    console.log('componentDidMount, isLeaf', isLeafNode(znsRoute, items));
+    if (isLeafNode(znsRoute, items)) {
       const znsClient = await client.get(this.props.provider);
       const result = await znsClient.getFeedItemByName(znsRoute);
       this.props.setSelectedItem(result);
@@ -69,24 +70,18 @@ export class Container extends React.Component<Properties> {
     this.props.load({ route: znsRoute, provider });
   }
 
-  isLeafNode(znsRoute, items) {
-    return znsRoute.includes('.') && items && items.length === 0
-  }
-
   render() {
     const { items, route: { app, znsRoute }, setSelectedItem, selectedItem } = this.props;
     console.log('props', this.props);
 
     const metadataProps = { metadataService: metadataService, metadataAbortController: metadataAbortController };
 
-    const isLeafNode = this.isLeafNode(znsRoute, items);
-
     return (
       <>
-        {false && isLeafNode &&
+        {isLeafNode(znsRoute, items) &&
           <FeedLeaf item={selectedItem} {...metadataProps} />
         }
-        {!isLeafNode &&
+        {!isLeafNode(znsRoute, items) &&
           <Feed items={items} app={app} setSelectedItem={setSelectedItem} {...metadataProps} />
         }
       </>

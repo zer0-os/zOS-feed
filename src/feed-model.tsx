@@ -5,4 +5,9 @@ export interface Model {
   imageUrl: string;
   znsRoute: string;
   metadataUrl: string;
+  owner: string;
+  minter: string;
+  attributes
+  animationUrl: string;
+  ipfsContentId: string;
 }
