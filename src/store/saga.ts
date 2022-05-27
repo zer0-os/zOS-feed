@@ -15,6 +15,18 @@ export function* load(action) {
   yield put(receive(items));
 }
 
+export function* setSelectedItemByRoute(action) {
+  const { route, provider } = action.payload;
+
+  const znsClient = yield call(client.get, provider);
+
+  const routeId = yield call([znsClient, znsClient.resolveIdFromName], route);
+
+  const item = yield call([znsClient, znsClient.getFeedItem], routeId);
+
+  yield put(select(item));
+}
+
 export function* setSelectedItem(action) {
   const item = action.payload;
 
@@ -24,4 +36,5 @@ export function* setSelectedItem(action) {
 export function* saga() {
   yield takeLatest(SagaActionTypes.Load, load);
   yield takeLatest(SagaActionTypes.SetItem, setSelectedItem);
+  yield takeLatest(SagaActionTypes.SetItemByRoute, setSelectedItemByRoute);
 }

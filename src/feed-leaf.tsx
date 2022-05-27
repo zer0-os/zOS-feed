@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from './components/image';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
-import { fetchMetadata, shorty } from './util/feed';
+import { augmentWithMetadata, shorty } from './util/feed';
 import { Model } from './feed-model';
 
 import './styles.css';
@@ -19,27 +19,18 @@ interface State {
 export class FeedLeaf extends React.Component<Properties, State> {
   state = { item: this.props.item };
 
-  componentDidMount = async () => {
+  componentDidUpdate = async (prevProps: Properties) => {
     const { item, metadataService, metadataAbortController } = this.props;
 
-    if (item) {
-      const { metadataUrl } = item;
-
-      this.updateItem(await fetchMetadata(metadataUrl, metadataService, metadataAbortController));
+    if (item && (item !== prevProps.item)) {
+      this.setState({ item: await augmentWithMetadata(item, metadataService, metadataAbortController) });
     }
   }
 
-  updateItem(metadata) {
-    const { item } = this.state;
-
-    this.setState({ item: { ...item, ...metadata } });
-  }
-
   render() {
-    console.log('render props', this.props, 'state', this.state)
     const { item } = this.state;
 
-    if (!item) return(<>error</>);
+    if (!item) return null;
 
     const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl } = item;
 
@@ -52,26 +43,34 @@ export class FeedLeaf extends React.Component<Properties, State> {
         />
         <div className="feed-leaf__text-content">
           <h1 className="feed-leaf__title">{title}</h1>
-          <div className="feed-leaf__roles">
-            <div className="feed-leaf__role" title={minter}><span>Creator</span><span>{shorty(minter)}</span></div>
-            <div className="feed-leaf__role" title={owner}><span>Owner</span><span>{shorty(owner)}</span></div>
-          </div>
+
+          {minter && owner &&
+            <div className="feed-leaf__roles">
+              <div className="feed-leaf__role" title={minter}><span>Creator</span><span>{shorty(minter)}</span></div>
+              <div className="feed-leaf__role" title={owner}><span>Owner</span><span>{shorty(owner)}</span></div>
+            </div>
+          }
+
           <div className="feed-leaf__description">{description}</div>
         </div>
 
-        <h4 className="feed-leaf__attributes-title">Attributes</h4>
-        <div className="feed-leaf__attributes">
-          {
-            attributes.map((attribute) => {
-              return (
-                <div className="feed-leaf__attribute">
-                  <span className="feed-leaf__attribute-name">{attribute.trait_type}</span>
-                  <span className="feed-leaf__attribute-value">{attribute.value}</span>
-                </div>
-              );
-            })
-          }
-        </div>
+        {attributes &&
+          <>
+            <h4 className="feed-leaf__attributes-title">Attributes</h4>
+            <div className="feed-leaf__attributes">
+              {
+                attributes.map((attribute, index) => {
+                  return (
+                    <div className="feed-leaf__attribute" key={index}>
+                      <span className="feed-leaf__attribute-name">{attribute.trait_type}</span>
+                      <span className="feed-leaf__attribute-value">{attribute.value}</span>
+                    </div>
+                  );
+                })
+              }
+            </div>
+          </>
+        }
 
         <div className="feed-leaf__external-resources">
           <div className="feed-leaf__external-resource" title={id}>

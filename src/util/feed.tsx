@@ -11,6 +11,14 @@ export const fetchMetadata = async (metadataUrl, metadataService, abortControlle
   }
 }
 
+export const augmentWithMetadata = async (item, metadataService, abortController) => {
+  const { metadataUrl } = item;
+
+  const metadata = await fetchMetadata(metadataUrl, metadataService, abortController);
+
+  return { ...item, ...metadata };
+}
+
 export const isLeafNode = (route, items) => {
   return route.includes('.') && items && items.length === 0
 }

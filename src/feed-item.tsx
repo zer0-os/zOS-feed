@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Image from './components/image';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
-import { fetchMetadata } from './util/feed';
+import { augmentWithMetadata } from './util/feed';
 import { Model } from './feed-model';
 
 import './styles.css';
@@ -23,15 +23,9 @@ export class FeedItem extends React.Component<Properties, State> {
   state = { item: this.props.item };
 
   componentDidMount = async () => {
-    const { item: { metadataUrl }, metadataService, metadataAbortController } = this.props;
+    const { item, metadataService, metadataAbortController } = this.props;
 
-    this.updateItem(await fetchMetadata(metadataUrl, metadataService, metadataAbortController));
-  }
-
-  updateItem(metadata) {
-    const { item } = this.state;
-
-    this.setState({ item: { ...item, ...metadata } });
+    this.setState({ item: await augmentWithMetadata(item, metadataService, metadataAbortController) });
   }
 
   onClick = () => {
