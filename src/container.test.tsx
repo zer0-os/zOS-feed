@@ -2,8 +2,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Container, Properties } from './container';
 import { Feed } from './feed';
-import { Model as FeedItemModel } from './feed-item';
+import { FeedLeaf } from './feed-leaf';
+import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
+
+let setSelectedItem = jest.fn();
+let setSelectedItemByRoute = jest.fn();
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
@@ -11,6 +15,8 @@ describe('FeedContainer', () => {
       route: { znsRoute: '', app: '' },
       items: [],
       load: () => undefined,
+      setSelectedItem,
+      setSelectedItemByRoute,
       provider: null,
       ...props,
     };
@@ -30,7 +36,7 @@ describe('FeedContainer', () => {
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
-    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '', app: '' } });
+    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: 'not.a.root.domain', app: '' } });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -44,6 +50,22 @@ describe('FeedContainer', () => {
     container.setProps({ route: { znsRoute: 'bob', app: 'feed' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
+  });
+
+  test('it sets selected item when route updates and is leaf node', () => {
+    const route = 'this.is.not.a.root.node';
+    const provider = { what: 'yeah' };
+
+    subject({ setSelectedItemByRoute, provider, route: { znsRoute: route, app: 'feed' } });
+
+    expect(setSelectedItemByRoute).toHaveBeenCalledWith({ route, provider });
+  });
+
+  test('it renders feed leaf', () => {
+    const wrapper = subject({ items: [], route: { znsRoute: 'this.is.not.a.root' } });
+
+    expect(wrapper.find(FeedLeaf).exists()).toBe(true)
+    expect(wrapper.find(Feed).exists()).toBe(false)
   });
 
   test('passes items to child', () => {
@@ -81,6 +103,18 @@ describe('FeedContainer', () => {
       const state = subject({ feed: { value: items } } as RootState);
 
       expect(state).toMatchObject({ items });
+    });
+
+    test('selected item for leaf node', () => {
+      const selectedItem = {
+        id: 'the-first-id',
+        title: 'The First Item',
+        description: 'This is the description of the first item.',
+      };
+
+      const state = subject({ feed: { value: [], selectedItem } } as RootState);
+
+      expect(state).toMatchObject({ selectedItem });
     });
   });
 });

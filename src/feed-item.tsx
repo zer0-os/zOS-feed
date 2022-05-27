@@ -10,9 +10,9 @@ import './styles.css';
 export interface Properties {
   item: Model;
   app: string;
-  metadataService?: ZnsMetadataService;
-  metadataAbortController?: any;
-  setSelectedItem?: any;
+  metadataService: ZnsMetadataService;
+  metadataAbortController: AbortController;
+  setSelectedItem: (item: FeedItem) => void;
 }
 
 interface State {

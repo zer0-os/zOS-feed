@@ -3,28 +3,36 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router-dom';
 
 import { FeedItem, Properties } from './feed-item';
+import * as utils from './util/feed';
 
-let metadataServiceLoad;
+let metadataService;
+let metadataAbortController;
+let setSelectedItem;
 
 describe('FeedItem', () => {
   beforeEach(() => {
-    metadataServiceLoad = jest.fn();
-  });
+    metadataService = {
+      normalize: jest.fn()
+    };
 
+    metadataAbortController = jest.fn();
+
+    setSelectedItem = jest.fn();
+  });
 
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
-      id: '',
-      title: '',
-      description: '',
-      imageUrl: '',
+      item: {
+        id: '',
+        title: '',
+        description: '',
+        imageUrl: '',
+      },
       znsRoute: '',
       app: '',
-      metadataService: {
-        load: metadataServiceLoad,
-        normalizeUrl: jest.fn(),
-        extractIpfsContentId: jest.fn(),
-      },
+      metadataService,
+      metadataAbortController,
+      setSelectedItem,
       ...props,
     };
 
@@ -33,7 +41,9 @@ describe('FeedItem', () => {
 
   test('renders image', () => {
     const wrapper = subject({
-      imageUrl: 'http://example.com/theimage.jpg',
+      item: {
+        imageUrl: 'http://example.com/theimage.jpg',
+      },
     });
 
     expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
@@ -41,8 +51,10 @@ describe('FeedItem', () => {
 
   it('adds title as alt text to image', () => {
     const wrapper = subject({
-      title: 'what',
-      imageUrl: 'http://example.com/theimage.jpg',
+      item: {
+        title: 'what',
+        imageUrl: 'http://example.com/theimage.jpg',
+      },
     });
 
     expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual('what');
@@ -52,9 +64,11 @@ describe('FeedItem', () => {
     const title = 'The First Item';
 
     const wrapper = subject({
-      id: 'the-first-id',
-      title,
-      description: 'This is the description of the first item.',
+      item: {
+        id: 'the-first-id',
+        title,
+        description: 'This is the description of the first item.',
+      },
     });
 
     expect(wrapper.find('.feed-item__title').text().trim()).toStrictEqual(title);
@@ -64,9 +78,11 @@ describe('FeedItem', () => {
     const description = 'This is the description of the first item.';
 
     const wrapper = subject({
-      id: 'the-first-id',
-      title: 'The First Item',
-      description,
+      item: {
+        id: 'the-first-id',
+        title: 'The First Item',
+        description,
+      },
     });
 
     expect(wrapper.find('.feed-item__description').text().trim()).toStrictEqual(description);
@@ -74,8 +90,10 @@ describe('FeedItem', () => {
 
   test('renders title as link to route', () => {
     const wrapper = subject({
-      id: 'the-first-id',
-      znsRoute: 'the.route.yo',
+      item: {
+        id: 'the-first-id',
+        znsRoute: 'the.route.yo',
+      },
       app: 'app.id',
     });
 
@@ -84,14 +102,49 @@ describe('FeedItem', () => {
     expect(link.prop('to')).toStrictEqual('/the.route.yo/app.id');
   });
 
-  test('looks up metadata', async () => {
-    const wrapper = subject({
+  test('metadata updates item', async () => {
+    const item = {
       id: 'the-first-id',
       znsRoute: 'the.route.yo',
-      app: 'the.app.id',
       metadataUrl: 'slow-ipfs-url',
-    });
+    };
 
-    expect(metadataServiceLoad).toHaveBeenCalledWith('slow-ipfs-url');
+    const expectation = {
+      description: 'the-metadata-description',
+    };
+
+    utils.augmentWithMetadata = jest.fn().mockReturnValue({ ...item, ...expectation })
+
+    const wrapper = await subject({ item });
+
+    expect(utils.augmentWithMetadata).toHaveBeenCalledTimes(1);
+    expect(wrapper.text().includes(expectation.description)).toBe(true)
+  });
+
+  test('metadata props are passed', () => {
+    const item = {
+      id: 'the-first-id',
+      znsRoute: 'the.route.yo',
+      metadataUrl: 'slow-ipfs-url',
+    };
+
+    utils.augmentWithMetadata = jest.fn().mockReturnValue({})
+
+    subject({ item });
+
+    expect(utils.augmentWithMetadata).toHaveBeenCalledWith(item, metadataService, metadataAbortController);
+  });
+
+  test('item is selected when route is followed', async () => {
+    const item = {
+      id: 'the-first-id',
+      znsRoute: 'the.route.yo',
+    };
+
+    const wrapper = subject({ item });
+
+    await wrapper.find('Link').simulate('click');
+
+    expect(setSelectedItem).toHaveBeenCalledWith(item);
   });
 });

@@ -4,10 +4,10 @@ export const fetchMetadata = async (metadataUrl, metadataService, abortControlle
   if (!metadataUrl) return;
 
   try {
+    // Consider moving this into MetadataService
     const response = await fetch(metadataUrl, { signal: abortController.signal });
     return metadataService.normalize(await response.json());
-  } catch (e) {
-    console.log('error', e);
+  } catch (_e) {
   }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { FeedItem, Model as FeedItemModel } from './feed-item';
+import { FeedItem } from './feed-item';
+import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Feed, Properties } from './feed';
 
@@ -74,9 +75,11 @@ describe('Feed', () => {
 
     expect(wrapper.find(FeedItem).at(1).props()).toEqual(
       expect.objectContaining({
-        id: 'the-second-id',
-        title: 'The Second Item',
-        description: 'This is the description of the Second item.',
+        item: {
+          id: 'the-second-id',
+          title: 'The Second Item',
+          description: 'This is the description of the Second item.',
+        }
       })
     );
   });
@@ -101,7 +104,7 @@ describe('Feed', () => {
     const newTitle = 'new title';
     const wrapper = subject({ items: feedItemsTest });
 
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(
+    expect(wrapper.find(FeedItem).at(0).prop('item').title).toBe(
       feedItemsTest[0].title
     );
 
@@ -115,7 +118,7 @@ describe('Feed', () => {
       ],
     });
 
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(newTitle);
+    expect(wrapper.find(FeedItem).at(0).prop('item').title).toBe(newTitle);
   });
 
   test('render the correct items on fetch', () => {
@@ -148,9 +151,8 @@ describe('Feed', () => {
     const wrapper = subject({ items: feedItemsTest });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(
-      feedItemsTest[0].title
-    );
+
+    expect(wrapper.find(FeedItem).at(0).prop('item').title).toBe(feedItemsTest[0].title);
 
     const newItem = {
       id: 'this the new id',
@@ -161,9 +163,8 @@ describe('Feed', () => {
     wrapper.setProps({ items: [newItem, ...feedItemsTest] });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(newItem.title);
-    expect(wrapper.find(FeedItem).at(1).prop('title')).toBe(
-      feedItemsTest[0].title
-    );
+
+    expect(wrapper.find(FeedItem).at(0).prop('item').title).toBe(newItem.title);
+    expect(wrapper.find(FeedItem).at(1).prop('item').title).toBe(feedItemsTest[0].title);
   });
 });

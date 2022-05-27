@@ -22,10 +22,10 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   items: FeedItem[];
-  selectedItem?: FeedItem;
+  selectedItem: FeedItem;
   load: (request: ZnsRouteRequest) => void;
-  setSelectedItem?: any;
-  setSelectedItemByRoute?: any;
+  setSelectedItem: (item: FeedItem) => void;
+  setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
 
 let metadataAbortController = new AbortController();
