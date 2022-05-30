@@ -3,6 +3,7 @@ import {
   receive,
   FeedState,
   AsyncActionStatus,
+  setStatus,
 } from './feed';
 import { Model as FeedItem } from '../feed-item';
 
@@ -46,5 +47,11 @@ describe('feed reducer', () => {
     const actual = reducer(initialExistingState, receive(feedItems));
 
     expect(actual.value).toEqual(feedItems);
+  });
+
+  it('should replace status', () => {
+    const actual = reducer(initialExistingState, setStatus(AsyncActionStatus.Loading));
+
+    expect(actual.status).toEqual(AsyncActionStatus.Loading);
   });
 });
