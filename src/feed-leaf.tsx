@@ -1,8 +1,8 @@
 import React from 'react';
-import Image from './components/image';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { augmentWithMetadata, shorty } from './util/feed';
 import { Model } from './feed-model';
+import CloudImage from './components/cloud-image';
 
 import './styles.css';
 
@@ -18,6 +18,7 @@ interface State {
 
 export class FeedLeaf extends React.Component<Properties, State> {
   state = { item: this.props.item };
+
 
   componentDidUpdate = async (prevProps: Properties) => {
     const { item, metadataService, metadataAbortController } = this.props;
@@ -36,10 +37,11 @@ export class FeedLeaf extends React.Component<Properties, State> {
 
     return (
       <div className="feed-leaf">
-        <Image
-          className="feed-leaf__image"
+        <CloudImage
+          className='feed-item__image'
           src={imageUrl}
           alt={title}
+          width={480}
         />
         <div className="feed-leaf__text-content">
           <h1 className="feed-leaf__title">{title}</h1>

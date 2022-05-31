@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Image from './components/image';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { augmentWithMetadata } from './util/feed';
 import { Model } from './feed-model';
+import CloudImage from './components/cloud-image';
 
 import './styles.css';
 
@@ -12,7 +12,7 @@ export interface Properties {
   app: string;
   metadataService: ZnsMetadataService;
   metadataAbortController: AbortController;
-  setSelectedItem: (item: FeedItem) => void;
+  setSelectedItem: (item: Model) => void;
 }
 
 interface State {
@@ -45,10 +45,11 @@ export class FeedItem extends React.Component<Properties, State> {
             <h3 className="feed-item__title">{title}</h3>
             <span className="feed-item__description">{description}</span>
           </div>
-          <Image
-            className="feed-item__image"
+          <CloudImage
+            className='feed-item__image'
             src={imageUrl}
             alt={title}
+            width={480}
           />
         </Link>
       </div>

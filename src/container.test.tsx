@@ -5,6 +5,7 @@ import { Feed } from './feed';
 import { FeedLeaf } from './feed-leaf';
 import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
+import { AsyncActionStatus } from './store/feed';
 
 let setSelectedItem = jest.fn();
 let setSelectedItemByRoute = jest.fn();
@@ -14,6 +15,7 @@ describe('FeedContainer', () => {
     const allProps: Properties = {
       route: { znsRoute: '', app: '' },
       items: [],
+      status: AsyncActionStatus.Idle,
       load: () => undefined,
       setSelectedItem,
       setSelectedItemByRoute,
@@ -82,6 +84,12 @@ describe('FeedContainer', () => {
     const wrapper = subject({ items });
 
     expect(wrapper.find(Feed).prop('items')).toEqual(items);
+  });
+
+  test('passes loading to feed', () => {
+    const wrapper = subject({ status: AsyncActionStatus.Loading });
+
+    expect(wrapper.find(Feed).prop('isLoading')).toEqual(true);
   });
 
   describe('mapState', () => {

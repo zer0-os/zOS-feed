@@ -2,6 +2,7 @@ import React from 'react';
 import { FeedItem } from './feed-item';
 import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Spinner } from '@zer0-os/zos-component-library';
 import { isEqual } from 'lodash';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
 
@@ -10,9 +11,10 @@ import './styles.css';
 export interface Properties {
   items: FeedItemModel[];
   app: string;
+  isLoading: boolean;
   metadataService: ZnsMetadataService;
   metadataAbortController: AbortController;
-  setSelectedItem: (item: FeedItem) => void;
+  setSelectedItem: (item: FeedItemModel) => void;
 }
 
 export interface State {
@@ -85,6 +87,15 @@ export class Feed extends React.Component<Properties, State> {
   }
 
   render() {
+    if (this.props.isLoading) {
+      return (
+        <div className='feed-spinner'>
+          <Spinner />
+          <span className='feed-spinner__text'>Loading Feed</span>
+        </div>
+      );
+    }
+
     return (
       <div className="feed">
         <div className="feed__items">{this.renderItems()}</div>

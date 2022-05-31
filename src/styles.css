@@ -39,6 +39,17 @@
   border-radius: 8px;
 }
 
+.feed-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.feed-spinner__text {
+  padding-left: 10px;
+}
+
 /* cross reference with theme */
 :root {
   --color-accent-1: #52cbff;

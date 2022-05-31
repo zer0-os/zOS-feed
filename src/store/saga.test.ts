@@ -1,5 +1,6 @@
 import { expectSaga } from 'redux-saga-test-plan';
 import * as matchers from 'redux-saga-test-plan/matchers';
+import { throwError } from 'redux-saga-test-plan/providers';
 
 import { client } from '@zer0-os/zos-zns';
 
@@ -19,9 +20,7 @@ describe('feed saga', () => {
     const provider = { networkId: 7 };
 
     await expectSaga(load, { payload: { route: '', provider } })
-      .provide([
-        [matchers.call.fn(client.get), getZnsClient()],
-      ])
+      .provide([[matchers.call.fn(client.get), getZnsClient()]])
       .call(client.get, provider)
       .run();
   });
@@ -32,7 +31,10 @@ describe('feed saga', () => {
     await expectSaga(load, { payload: { route: 'theroute', provider: {} } })
       .provide([
         [matchers.call.fn(client.get), znsClient],
-        [matchers.call([znsClient, znsClient.resolveIdFromName], 'theroute'), 'the-id'],
+        [
+          matchers.call([znsClient, znsClient.resolveIdFromName], 'theroute'),
+          'the-id',
+        ],
         [matchers.call.fn(znsClient.getFeed), []],
       ])
       .call([znsClient, znsClient.getFeed], 'the-id')
@@ -40,23 +42,28 @@ describe('feed saga', () => {
   });
 
   it('should set feed data in store from zns client', async () => {
-    const items = [{
-      id: 'the-first-id',
-      title: 'The First ZNS Feed Item',
-      description: 'This is the description of the first item.',
-    }, {
-      id: 'the-second-id',
-      title: 'The Second ZNS Feed Item',
-      description: 'This is the description of the Second item.',
-    }, {
-      id: 'the-third-id',
-      title: 'The Third ZNS Feed Item',
-      description: 'This is the description of the Third item.',
-    }, {
-      id: 'the-fourth-id',
-      title: 'The Fourth ZNS Feed Item',
-      description: 'This is the description of the Fourth item.',
-    }];
+    const items = [
+      {
+        id: 'the-first-id',
+        title: 'The First ZNS Feed Item',
+        description: 'This is the description of the first item.',
+      },
+      {
+        id: 'the-second-id',
+        title: 'The Second ZNS Feed Item',
+        description: 'This is the description of the Second item.',
+      },
+      {
+        id: 'the-third-id',
+        title: 'The Third ZNS Feed Item',
+        description: 'This is the description of the Third item.',
+      },
+      {
+        id: 'the-fourth-id',
+        title: 'The Fourth ZNS Feed Item',
+        description: 'This is the description of the Fourth item.',
+      },
+    ];
 
     const znsClient = getZnsClient({
       getFeed: async () => items,
@@ -108,6 +115,22 @@ describe('feed saga', () => {
         [matchers.call.fn(client.get), znsClient],
       ])
       .hasFinalState({ value: [], status: AsyncActionStatus.Idle, selectedItem: item, })
+      .run();
+  });
+
+  it('should set status to failed on case of an error', async () => {
+    const error = new Error('error');
+
+    await expectSaga(load, { payload: { route: '', provider: {} } })
+      .provide([[matchers.call.fn(client.get), throwError(error)]])
+      .put({
+        type: 'feed/setStatus',
+        payload: AsyncActionStatus.Loading,
+      })
+      .put({
+        type: 'feed/setStatus',
+        payload: AsyncActionStatus.Failed,
+      })
       .run();
   });
 });

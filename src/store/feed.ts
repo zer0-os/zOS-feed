@@ -49,10 +49,13 @@ const slice = createSlice({
     select: (state, action: PayloadAction<FeedItem>) => {
       state.selectedItem = action.payload;
     },
+    setStatus: (state, action: PayloadAction<AsyncActionStatus>) => {
+      state.status = action.payload;
+    },
   },
 });
 
-export const { receive, select } = slice.actions;
+export const { receive, select, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
 export { load, setSelectedItem, setSelectedItemByRoute };

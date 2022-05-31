@@ -5,7 +5,7 @@ import { Feed } from './feed';
 import { FeedLeaf } from './feed-leaf';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
-import { load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
+import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
 import { client } from '@zer0-os/zos-zns';
 import { RootState } from './store';
 import { metadataService } from '@zer0-os/zos-zns';
@@ -23,6 +23,7 @@ export interface PublicProperties {
 export interface Properties extends PublicProperties {
   items: FeedItem[];
   selectedItem: FeedItem;
+  status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
   setSelectedItem: (item: FeedItem) => void;
   setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
@@ -34,6 +35,7 @@ export class Container extends React.Component<Properties> {
   static mapState(state: RootState): Partial<Properties> {
     return {
       items: state.feed.value,
+      status: state.feed.status,
       selectedItem: state.feed.selectedItem,
     };
   }
@@ -69,7 +71,7 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
-    const { items, route: { app, znsRoute }, setSelectedItem, selectedItem } = this.props;
+    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem } = this.props;
 
     const metadataProps = { metadataService: metadataService, metadataAbortController: metadataAbortController };
 
@@ -79,7 +81,7 @@ export class Container extends React.Component<Properties> {
           <FeedLeaf item={selectedItem} {...metadataProps} />
         }
         {!isLeafNode(znsRoute, items) &&
-          <Feed items={items} app={app} setSelectedItem={setSelectedItem} {...metadataProps} />
+          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} {...metadataProps} />
         }
       </>
     )
