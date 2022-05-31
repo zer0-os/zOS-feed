@@ -29,7 +29,7 @@ export enum AsyncActionStatus {
 // change this to root asyncData<T> state or something.
 export interface FeedState {
   value: FeedItem[];
-  selectedItem?: FeedItem;
+  selectedItem: FeedItem;
   status: AsyncActionStatus;
 }
 

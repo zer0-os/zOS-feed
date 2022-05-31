@@ -4,7 +4,7 @@ export const fetchMetadata = async (metadataUrl, metadataService, abortControlle
   if (!metadataUrl) return;
 
   try {
-    // Consider moving this into MetadataService
+    // Consider moving this into MetadataService. The MetadataService is based on SuperAgent which doesn't support the AbortController
     const response = await fetch(metadataUrl, { signal: abortController.signal });
     return metadataService.normalize(await response.json());
   } catch (_e) {

@@ -7,7 +7,7 @@ export interface Model {
   metadataUrl: string;
   owner: string;
   minter: string;
-  attributes
+  attributes: [any];
   animationUrl: string;
   ipfsContentId: string;
 }
