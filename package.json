@@ -1,6 +1,6 @@
 {
   "name": "@zer0-os/zos-feed",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "feed app for zos",
   "main": "dist/index.js",
   "scripts": {
@@ -50,6 +50,7 @@
     "@cloudinary/url-gen": "^1.7.0",
     "@zer0-os/zos-component-library": "^0.6.0",
     "@zer0-os/zos-zns": "^1.1.2",
+    "classnames": "^2.3.1",
     "react-infinite-scroll-component": "^6.1.0"
   }
 }
