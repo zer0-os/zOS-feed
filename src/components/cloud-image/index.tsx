@@ -27,6 +27,14 @@ export default class CloudImage extends React.Component<Properties, State> {
     }
   };
 
+  onError = () => {
+    if (!this.state.isLoaded) {
+      this.setState({
+        isLoaded: true,
+      });
+    }
+  };
+
   render() {
     const {
       className,
@@ -49,6 +57,7 @@ export default class CloudImage extends React.Component<Properties, State> {
         className={classNames(className, { spinner: !this.state.isLoaded })}
         cldImg={cloudinaryImage}
         onLoad={this.onLoad}
+        onError={this.onError}
         {...rest}
       />
     );
