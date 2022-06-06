@@ -12,9 +12,13 @@ export function* loadItem(action) {
 
   const metadata = yield call(fetchMetadata, item.metadataUrl);
 
-  const newItem = { ...item, ...metadata };
+  yield put(receive(items.map(i => {
+    if (i.id === action.payload) {
+      return { ...item, ...metadata };
+    }
 
-  yield put(receive([ ...items.slice(0, itemIndex), newItem, ...items.slice(itemIndex) ]));
+    return i;
+  })));
 }
 
 export function* load(action) {
