@@ -1,7 +1,21 @@
-import { takeLatest, put, call } from 'redux-saga/effects';
-import { SagaActionTypes, receive, select, setStatus, AsyncActionStatus } from './feed';
+import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus } from './feed';
 
 import { client } from '@zer0-os/zos-zns';
+import { fetchMetadata } from '../util/feed';
+
+export function* loadItem(action) {
+  const items = yield select((state) => state.feed.value);
+
+  const itemIndex = items.findIndex(item => item.id === action.payload );
+  const item = items[itemIndex];
+
+  const metadata = yield call(fetchMetadata, item.metadataUrl);
+
+  const newItem = { ...item, ...metadata };
+
+  yield put(receive([ ...items.slice(0, itemIndex), newItem, ...items.slice(itemIndex) ]));
+}
 
 export function* load(action) {
   try {
@@ -33,17 +47,18 @@ export function* setSelectedItemByRoute(action) {
 
   const item = yield call([znsClient, znsClient.getFeedItem], routeId);
 
-  yield put(select(item));
+  yield put(selectItem(item));
 }
 
 export function* setSelectedItem(action) {
   const item = action.payload;
 
-  yield put(select(item));
+  yield put(selectItem(item));
 }
 
 export function* saga() {
   yield takeLatest(SagaActionTypes.Load, load);
+  yield takeLatest(SagaActionTypes.LoadItem, loadItem);
   yield takeLatest(SagaActionTypes.SetItem, setSelectedItem);
   yield takeLatest(SagaActionTypes.SetItemByRoute, setSelectedItemByRoute);
 }

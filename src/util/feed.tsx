@@ -1,11 +1,11 @@
-import { metadataService } from '@zer0-os/zos-zns';
+import { metadataService as znsMetadataService } from '@zer0-os/zos-zns';
 
-export const fetchMetadata = async (metadataUrl, metadataService, abortController) => {
+export const fetchMetadata = async (metadataUrl, metadataService = znsMetadataService, _abortController?) => {
   if (!metadataUrl) return;
 
   try {
     // Consider moving this into MetadataService. The MetadataService is based on SuperAgent which doesn't support the AbortController
-    const response = await fetch(metadataUrl, { signal: abortController.signal });
+    const response = await fetch(metadataUrl);
     return metadataService.normalize(await response.json());
   } catch (_e) {
   }

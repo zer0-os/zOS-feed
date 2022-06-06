@@ -35,7 +35,7 @@ export class FeedItem extends React.Component<Properties> {
       description,
       imageUrl,
       znsRoute,
-    };
+    } as Model;
   }
 
   render() {

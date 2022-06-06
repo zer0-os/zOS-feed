@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { connectContainer } from './util/redux-container';
-import { Model as FeedItemModel } from './feed-model';
+import { Model as FeedItemModel, Model } from './feed-model';
 import { RootState } from './store';
 import { FeedItem } from './feed-item';
+import { loadItem } from './store/feed';
 
 export interface PublicProperties {
   id: string;
   app: string;
-  setSelectedItem: () => void;
+  setSelectedItem: (item: Model) => void;
 }
 
 export interface Properties extends PublicProperties {
@@ -24,7 +25,7 @@ export class Container extends React.Component<Properties> {
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load: (id: string) => undefined };
+    return { load: loadItem };
   }
 
   componentDidMount() {

@@ -7,11 +7,13 @@ import { Model as FeedItem } from '../feed-model';
 
 export enum SagaActionTypes {
   Load = 'feed/saga/load',
+  LoadItem = 'feed/saga/loadItem',
   SetItem = 'feed/saga/setItem',
   SetItemByRoute = 'feed/saga/setItemByRoute',
 }
 
 const load = createAction<ZnsRouteRequest>(SagaActionTypes.Load);
+const loadItem = createAction<string>(SagaActionTypes.LoadItem);
 const setSelectedItem = createAction<FeedItem>(SagaActionTypes.SetItem);
 const setSelectedItemByRoute = createAction<ZnsRouteRequest>(SagaActionTypes.SetItemByRoute);
 
@@ -58,4 +60,4 @@ const slice = createSlice({
 export const { receive, select, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
-export { load, setSelectedItem, setSelectedItemByRoute };
+export { load, loadItem, setSelectedItem, setSelectedItemByRoute };
