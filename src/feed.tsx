@@ -1,10 +1,9 @@
 import React from 'react';
-import { FeedItem } from './feed-item';
+import { FeedItemContainer } from './feed-item-container';
 import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Spinner } from '@zer0-os/zos-component-library';
 import { isEqual } from 'lodash';
-import { ZnsMetadataService } from '@zer0-os/zos-zns';
 
 import './styles.css';
 
@@ -12,8 +11,6 @@ export interface Properties {
   items: FeedItemModel[];
   app: string;
   isLoading: boolean;
-  metadataService: ZnsMetadataService;
-  metadataAbortController: AbortController;
   setSelectedItem: (item: FeedItemModel) => void;
 }
 
@@ -69,7 +66,7 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app, setSelectedItem, metadataService, metadataAbortController } = this.props;
+    const { app, setSelectedItem } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -80,7 +77,7 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItem key={item.id} item={item} app={app} setSelectedItem={setSelectedItem} metadataService={metadataService} metadataAbortController={metadataAbortController} />
+          <FeedItemContainer key={item.id} id={item.id} app={app} setSelectedItem={setSelectedItem} />
         ))}
       </InfiniteScroll>
     );
