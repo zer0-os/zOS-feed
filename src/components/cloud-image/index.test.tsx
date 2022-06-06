@@ -9,7 +9,7 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 describe('Images', () => {
   const subject = (props: Properties) => {
     const allProps: Properties = {
-      src: '',
+      src: 'image.png',
       className: '',
       alt: '',
       ...props,
@@ -47,6 +47,15 @@ describe('Images', () => {
     );
   });
 
+  it('renders null when src in undefined', () => {
+    const wrapper = subject({
+      className: 'feed-item',
+      src: '',
+    });
+
+    expect(wrapper.find('.item_image').exists()).toBe(false);
+  });
+
   describe('Cloudinary', () => {
     it('should have the correct className and publicId', () => {
       const CLASS_NAME_TEST = 'feed-item__image';
@@ -72,8 +81,6 @@ describe('Images', () => {
       const wrapper = subject({
         className: CLASS_NAME_TEST,
         src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-        cloudinaryTransformable: (cloudinaryImage: CloudinaryImage) =>
-          cloudinaryImage.resize(scale().width(480)),
       });
 
       expect(wrapper.find(AdvancedImage).prop('cldImg')).toHaveProperty(
@@ -95,6 +102,22 @@ describe('Images', () => {
       (wrapper.instance() as CloudImage).onLoad();
 
       expect(wrapper.find(AdvancedImage).hasClass('spinner')).toBe(false);
+    });
+
+    it('should render image from another domain', () => {
+      const CLASS_NAME_TEST = 'feed-item__image';
+      const src = 'https://domain.com/image.jpg';
+
+      const wrapper = subject({
+        className: CLASS_NAME_TEST,
+        src,
+      });
+
+      expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
+        expect.objectContaining({
+          publicID: src,
+        })
+      );
     });
   });
 });
