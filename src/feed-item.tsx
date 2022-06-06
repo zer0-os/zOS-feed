@@ -61,7 +61,8 @@ export class FeedItem extends React.Component<Properties, State> {
             className='feed-item__image'
             src={imageUrl}
             alt={title}
-            width={480}
+            width={424}
+            height={424}
           />
         </Link>
       </div>

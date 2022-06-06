@@ -2,14 +2,14 @@ import React, { ImgHTMLAttributes } from 'react';
 import classNames from 'classnames';
 import { AdvancedImage } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/url-gen';
-import { scale } from '@cloudinary/url-gen/actions/resize';
+import { fillPad, pad, scale } from '@cloudinary/url-gen/actions/resize';
 import { getCloudinaryImage, getHashFromIpfsUrl } from '../../util/image/util';
+import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import { auto } from '@cloudinary/url-gen/qualifiers/background';
+import cloudinary from '../../util/image/cloudinary';
 
 export interface Properties extends ImgHTMLAttributes<HTMLImageElement> {
   className: string;
-  cloudinaryTransformable?: (
-    cloudinaryImage: CloudinaryImage
-  ) => CloudinaryImage;
 }
 
 interface State {
@@ -19,7 +19,7 @@ interface State {
 export default class CloudImage extends React.Component<Properties, State> {
   state = { isLoaded: false };
 
-  onLoad = () => {
+  onLoad = (): void => {
     if (!this.state.isLoaded) {
       this.setState({
         isLoaded: true,
@@ -27,30 +27,41 @@ export default class CloudImage extends React.Component<Properties, State> {
     }
   };
 
-  onError = () => {
+  onError = (): void => {
     if (!this.state.isLoaded) {
       this.setState({
         isLoaded: true,
       });
+    }
+  };
+
+  cloudinaryImage = (): CloudinaryImage => {
+    const { src, width, height } = this.props;
+
+    const hashImage = getHashFromIpfsUrl(src);
+
+    if (hashImage) {
+      const cloudinaryImage = getCloudinaryImage(hashImage);
+
+      return cloudinaryImage.resize(
+        pad().width(width).height(height).background(auto())
+      );
+    } else {
+      return cloudinary
+        .image(src)
+        .resize(pad().width(width).height(height).background(auto()))
+        .setDeliveryType('fetch');
     }
   };
 
   render() {
-    const {
-      className,
-      src,
-      cloudinaryTransformable,
-      width,
-      ...rest
-    } = this.props;
+    const { className, src, ...rest } = this.props;
 
-    const hashImage = getHashFromIpfsUrl(src);
-
-    let cloudinaryImage = getCloudinaryImage(hashImage);
-
-    if (width) {
-      cloudinaryImage = cloudinaryImage.resize(scale().width(width));
+    if (!src) {
+      return null;
     }
+
+    const cloudinaryImage = this.cloudinaryImage();
 
     return (
       <AdvancedImage
