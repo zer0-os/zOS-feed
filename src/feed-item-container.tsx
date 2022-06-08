@@ -4,7 +4,7 @@ import { connectContainer } from './util/redux-container';
 import { Model as FeedItemModel, Model } from './feed-model';
 import { RootState } from './store';
 import { FeedItem } from './feed-item';
-import { loadItem } from './store/feed';
+import { loadItemMetadata } from './store/feed';
 
 export interface PublicProperties {
   id: string;
@@ -14,7 +14,7 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   item: FeedItemModel;
-  load: (id: string) => void;
+  loadItemMetadata: (id: string) => void;
 }
 
 export class Container extends React.Component<Properties> {
@@ -25,11 +25,11 @@ export class Container extends React.Component<Properties> {
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load: loadItem };
+    return { loadItemMetadata };
   }
 
   componentDidMount() {
-    this.props.load(this.props.id);
+    this.props.loadItemMetadata(this.props.id);
   }
 
   render() {
@@ -37,7 +37,7 @@ export class Container extends React.Component<Properties> {
       <FeedItem
         app={this.props.app}
         setSelectedItem={this.props.setSelectedItem}
-        {...this.props.item}
+        item={this.props.item}
       />
     );
   }

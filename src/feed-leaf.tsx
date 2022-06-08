@@ -1,39 +1,17 @@
 import React from 'react';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
-import { augmentWithMetadata, shorty } from './util/feed';
+import { shorty } from './util/feed';
 import { Model } from './feed-model';
 import CloudImage from './components/cloud-image';
 
 import './styles.css';
 
-export interface Properties {
-  item: Model;
-  metadataService: ZnsMetadataService;
-  metadataAbortController: AbortController;
-}
+export interface Properties extends Model {}
 
-interface State {
-  item: Model;
-}
-
-export class FeedLeaf extends React.Component<Properties, State> {
-  state = { item: this.props.item };
-
-  componentDidUpdate = async (prevProps: Properties) => {
-    const { item, metadataService, metadataAbortController } = this.props;
-
-    if (item && (item !== prevProps.item)) {
-      this.setState({ item: await augmentWithMetadata(item, metadataService, metadataAbortController) });
-    }
-  }
-
+export class FeedLeaf extends React.Component<Properties, {}> {
   render() {
-    const { item } = this.state;
-
-    if (!item) return null;
-
-    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl } = item;
-
+    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl } = this.props;
+    
     return (
       <div className='feed-leaf'>
         <CloudImage

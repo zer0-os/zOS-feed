@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { Container, Properties } from './container';
 import { Feed } from './feed';
-import { FeedLeaf } from './feed-leaf';
+import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { AsyncActionStatus } from './store/feed';
@@ -66,7 +66,7 @@ describe('FeedContainer', () => {
   test('it renders feed leaf', () => {
     const wrapper = subject({ items: [], route: { znsRoute: 'this.is.not.a.root' } });
 
-    expect(wrapper.find(FeedLeaf).exists()).toBe(true)
+    expect(wrapper.find(FeedLeafContainer).exists()).toBe(true)
     expect(wrapper.find(Feed).exists()).toBe(false)
   });
 

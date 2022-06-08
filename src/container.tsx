@@ -2,13 +2,12 @@ import React from 'react';
 import { connectContainer } from './util/redux-container';
 
 import { Feed } from './feed';
-import { FeedLeaf } from './feed-leaf';
+import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
 import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
 import { client } from '@zer0-os/zos-zns';
 import { RootState } from './store';
-import { metadataService } from '@zer0-os/zos-zns';
 
 interface Route {
   znsRoute: string;
@@ -28,8 +27,6 @@ export interface Properties extends PublicProperties {
   setSelectedItem: (item: FeedItem) => void;
   setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
-
-let metadataAbortController = new AbortController();
 
 export class Container extends React.Component<Properties> {
   static mapState(state: RootState): Partial<Properties> {
@@ -51,7 +48,7 @@ export class Container extends React.Component<Properties> {
       this.props.setSelectedItemByRoute({ route, provider });
     }
     else {
-      this.abortMetadataThenLoad(route, provider);
+      this.props.load({ route, provider });
     }
   }
 
@@ -59,29 +56,20 @@ export class Container extends React.Component<Properties> {
     const { route: { znsRoute: route }, provider } = this.props;
 
     if (route && (route !== prevProps.route.znsRoute)) {
-      this.abortMetadataThenLoad(route, provider);
+      this.props.load({ route, provider });
     }
   }
-
-  abortMetadataThenLoad(route, provider) {
-    metadataAbortController.abort();
-    metadataAbortController = new AbortController();
-
-    this.props.load({ route, provider });
-  }
-
+  
   render() {
     const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem } = this.props;
-
-    const metadataProps = { metadataService: metadataService, metadataAbortController: metadataAbortController };
-
+    
     return (
       <>
         {isLeafNode(znsRoute, items) &&
-          <FeedLeaf item={selectedItem} {...metadataProps} />
+          <FeedLeafContainer item={selectedItem} />
         }
         {!isLeafNode(znsRoute, items) &&
-          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} {...metadataProps} />
+          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />
         }
       </>
     )

@@ -9,7 +9,7 @@ describe('FeedContainer', () => {
     const allProps: Properties = {
       id: '',
       item: null,
-      load: () => undefined,
+      loadItemMetadata: () => undefined,
       ...props,
     };
 
@@ -17,11 +17,11 @@ describe('FeedContainer', () => {
   };
 
   it('loads feed item on mount', () => {
-    const load = jest.fn();
+    const loadItemMetadata = jest.fn();
 
-    subject({ id: 'the-item-id', load });
+    subject({ id: 'the-item-id', loadItemMetadata });
 
-    expect(load).toHaveBeenCalledWith('the-item-id');
+    expect(loadItemMetadata).toHaveBeenCalledWith('the-item-id');
   });
 
   it('propagates setSelectedItem', () => {
@@ -60,10 +60,12 @@ describe('FeedContainer', () => {
     });
 
     expect(wrapper.find(FeedItem).props()).toMatchObject({
-      title: 'the title',
-      description: 'the full item description',
-      imageUrl: 'example.com/image.jpg',
-      znsRoute: 'where.are.we', 
+      item: {
+        title: 'the title',
+        description: 'the full item description',
+        imageUrl: 'example.com/image.jpg',
+        znsRoute: 'where.are.we',
+      }
     });
   });
 
