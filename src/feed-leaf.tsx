@@ -11,13 +11,15 @@ export interface Properties extends Model {}
 export class FeedLeaf extends React.Component<Properties, {}> {
   render() {
     const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl } = this.props;
-    
+
     return (
       <div className='feed-leaf'>
         <CloudImage
           className='feed-leaf__image'
           src={imageUrl}
           alt={title}
+          width={800}
+          height={800}
         />
         <div className='feed-leaf__text-content'>
           <h1 className='feed-leaf__title'>{title}</h1>
