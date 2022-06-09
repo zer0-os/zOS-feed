@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import { saga } from './saga';
@@ -11,10 +11,10 @@ const sagaMiddleware = createSagaMiddleware({
   },
 });
 
+export const rootReducer = combineReducers({ feed });
+
 export const store = configureStore({
-  reducer: {
-    feed,
-  },
+  reducer: rootReducer,
   middleware: (defaults) => defaults({
     thunk: false,
     serializableCheck: {

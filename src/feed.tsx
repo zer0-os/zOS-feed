@@ -1,8 +1,9 @@
 import React from 'react';
+import { FeedItemContainer } from './feed-item-container';
+import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Spinner } from '@zer0-os/zos-component-library';
 import { isEqual } from 'lodash';
-import { FeedItem, Model as FeedItemModel } from './feed-item';
 
 import './styles.css';
 
@@ -10,6 +11,7 @@ export interface Properties {
   items: FeedItemModel[];
   app: string;
   isLoading: boolean;
+  setSelectedItem: (item: FeedItemModel) => void;
 }
 
 export interface State {
@@ -64,7 +66,7 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app } = this.props;
+    const { app, setSelectedItem } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -75,7 +77,7 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItem key={item.id} {...item} app={app} />
+          <FeedItemContainer key={item.id} id={item.id} app={app} setSelectedItem={setSelectedItem} />
         ))}
       </InfiniteScroll>
     );

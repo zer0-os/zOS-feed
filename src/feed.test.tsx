@@ -1,7 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { FeedItemContainer as FeedItem } from './feed-item-container';
+import { Model as FeedItemModel } from './feed-model';
 import { Spinner } from '@zer0-os/zos-component-library';
-import { FeedItem, Model as FeedItemModel } from './feed-item';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Feed, Properties } from './feed';
 
@@ -71,16 +72,10 @@ describe('Feed', () => {
     expect(wrapper.find(FeedItem)).toHaveLength(2);
   });
 
-  test('passes item props to FeedItem', () => {
+  test('passes id to FeedItem', () => {
     const wrapper = subject({ items: feedItemsTest.slice(0, 2) });
 
-    expect(wrapper.find(FeedItem).at(1).props()).toEqual(
-      expect.objectContaining({
-        id: 'the-second-id',
-        title: 'The Second Item',
-        description: 'This is the description of the Second item.',
-      })
-    );
+    expect(wrapper.find(FeedItem).at(1).prop('id')).toEqual('the-second-id');
   });
 
   test('render the correct items initially', () => {
@@ -97,27 +92,6 @@ describe('Feed', () => {
     wrapper.setProps({ items: feedItemsTest.slice(0, 9) });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-  });
-
-  test('render the correct data if one of the items has a property updated.', () => {
-    const newTitle = 'new title';
-    const wrapper = subject({ items: feedItemsTest });
-
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(
-      feedItemsTest[0].title
-    );
-
-    wrapper.setProps({
-      items: [
-        {
-          ...feedItemsTest[0],
-          title: newTitle,
-        },
-        ...feedItemsTest.slice(1, 9),
-      ],
-    });
-
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(newTitle);
   });
 
   test('render the correct items on fetch', () => {
@@ -150,9 +124,8 @@ describe('Feed', () => {
     const wrapper = subject({ items: feedItemsTest });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(
-      feedItemsTest[0].title
-    );
+
+    expect(wrapper.find(FeedItem).at(0).prop('id')).toBe(feedItemsTest[0].id);
 
     const newItem = {
       id: 'this the new id',
@@ -163,10 +136,9 @@ describe('Feed', () => {
     wrapper.setProps({ items: [newItem, ...feedItemsTest] });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-    expect(wrapper.find(FeedItem).at(0).prop('title')).toBe(newItem.title);
-    expect(wrapper.find(FeedItem).at(1).prop('title')).toBe(
-      feedItemsTest[0].title
-    );
+
+    expect(wrapper.find(FeedItem).at(0).prop('id')).toBe(newItem.id);
+    expect(wrapper.find(FeedItem).at(1).prop('id')).toBe(feedItemsTest[0].id);
   });
 
   test('renders spinner when loading', () => {
@@ -180,5 +152,4 @@ describe('Feed', () => {
 
     expect(wrapper.find(Spinner)).toHaveLength(0);
   });
-
 });
