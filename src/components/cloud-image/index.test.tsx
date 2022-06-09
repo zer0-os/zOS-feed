@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Image from '.';
+import CloudImage from '.';
 import { Properties } from './index';
 import { AdvancedImage } from '@cloudinary/react';
 import { CloudinaryImage } from '@cloudinary/url-gen';
@@ -9,16 +9,16 @@ import { scale } from '@cloudinary/url-gen/actions/resize';
 describe('Images', () => {
   const subject = (props: Properties) => {
     const allProps: Properties = {
-      src: '',
+      src: 'image.png',
       className: '',
       alt: '',
       ...props,
     };
 
-    return shallow(<Image {...allProps} />);
+    return shallow(<CloudImage {...allProps} />);
   };
 
-  test('renders image', () => {
+  it('renders image', () => {
     const wrapper = subject({
       className: 'item_image',
     });
@@ -46,15 +46,24 @@ describe('Images', () => {
       'whatImg'
     );
   });
+
+  it('renders null when src in undefined', () => {
+    const wrapper = subject({
+      className: 'feed-item',
+      src: '',
+    });
+
+    expect(wrapper.find('.item_image').exists()).toBe(false);
+  });
+
   describe('Cloudinary', () => {
-    test('should have the correct className and publicId', () => {
+    it('should have the correct className and publicId', () => {
       const CLASS_NAME_TEST = 'feed-item__image';
       const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
 
       const wrapper = subject({
         className: CLASS_NAME_TEST,
         src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-        // useCloudinary: true,
       });
 
       expect(wrapper.find(AdvancedImage).hasClass(CLASS_NAME_TEST)).toBe(true);
@@ -65,19 +74,50 @@ describe('Images', () => {
       );
     });
 
-    test('should have transformation', () => {
+    it('should have transformation', () => {
       const CLASS_NAME_TEST = 'feed-item__image';
       const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
 
       const wrapper = subject({
         className: CLASS_NAME_TEST,
         src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-        // useCloudinary: true,
-        cloudinaryTransformable: (cloudinaryImage: CloudinaryImage) =>
-          cloudinaryImage.resize(scale().width(480)),
       });
 
-      expect(wrapper.find(AdvancedImage).prop('cldImg')).toHaveProperty('transformation');
+      expect(wrapper.find(AdvancedImage).prop('cldImg')).toHaveProperty(
+        'transformation'
+      );
+    });
+
+    it('should show a spinner', () => {
+      const CLASS_NAME_TEST = 'feed-item__image';
+      const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
+
+      const wrapper = subject({
+        className: CLASS_NAME_TEST,
+        src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
+      });
+
+      expect(wrapper.find(AdvancedImage).hasClass('spinner')).toBe(true);
+
+      (wrapper.instance() as CloudImage).onLoad();
+
+      expect(wrapper.find(AdvancedImage).hasClass('spinner')).toBe(false);
+    });
+
+    it('should render image from another domain', () => {
+      const CLASS_NAME_TEST = 'feed-item__image';
+      const src = 'https://domain.com/image.jpg';
+
+      const wrapper = subject({
+        className: CLASS_NAME_TEST,
+        src,
+      });
+
+      expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
+        expect.objectContaining({
+          publicID: src,
+        })
+      );
     });
   });
 });
