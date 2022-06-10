@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { metadataService, ZnsMetadataService } from '@zer0-os/zos-zns';
-import CloudImage from './components/cloud-image';
+import CloudMedia from './components/cloud-media';
 
 import './styles.css';
 
@@ -57,7 +57,7 @@ export class FeedItem extends React.Component<Properties, State> {
             <h3 className='feed-item__title'>{title}</h3>
             <span className='feed-item__description'>{description}</span>
           </div>
-          <CloudImage
+          <CloudMedia
             className='feed-item__image'
             src={imageUrl}
             alt={title}

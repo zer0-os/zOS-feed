@@ -50,3 +50,7 @@
 .feed-spinner__text {
   padding-left: 10px;
 }
+
+.cloud-media__wrapper--loading > * {
+  display: none;
+}
