@@ -1,58 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { metadataService, ZnsMetadataService } from '@zer0-os/zos-zns';
+import { Model } from './feed-model';
 import CloudMedia from './components/cloud-media';
 
 import './styles.css';
 
-export interface Model {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  znsRoute: string;
-  metadataUrl?: string;
-}
-
-export interface Properties extends Model {
+export interface Properties {
   app: string;
-  metadataService?: ZnsMetadataService;
+  item: Model;
+  setSelectedItem: (item: Model) => void;
 }
 
-interface State extends Model {}
-
-export class FeedItem extends React.Component<Properties, State> {
-  constructor(props) {
-    super(props);
-
-    const { app, metadataService, ...model } = props;
-
-    this.state = {
-      ...model,
-    };
+export class FeedItem extends React.Component<Properties> {
+  onClick = () => {
+    this.props.setSelectedItem(this.props.item);
   }
 
-  static defaultProps = {
-    metadataService: metadataService,
-  };
-
-  componentDidMount = async () => {
-    const { metadataUrl, metadataService } = this.props;
-
-    if (metadataUrl) {
-      const metadata = await metadataService.load(metadataUrl);
-
-      this.setState((previousState) => ({ ...previousState, ...metadata }));
-    }
-  };
-
   render() {
-    const { title, description, imageUrl, znsRoute } = this.state;
-    const { app } = this.props;
+    const { app, item } = this.props;
+    const { znsRoute, title, description, imageUrl } = item;
 
     return (
       <div className='feed-item'>
-        <Link to={`/${[znsRoute, app].join('/')}`}>
+        <Link to={`/${[znsRoute, app].join('/')}`} onClick={this.onClick}>
           <div className='feed-item__text-content'>
             <h3 className='feed-item__title'>{title}</h3>
             <span className='feed-item__description'>{description}</span>

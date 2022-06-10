@@ -5,11 +5,11 @@ import {
   AsyncActionStatus,
   setStatus,
 } from './feed';
-import { Model as FeedItem } from '../feed-item';
+import { Model as FeedModel } from '../feed-model';
 
 describe('feed reducer', () => {
   const initialExistingState: FeedState = {
-    value: [{ id: 'what', title: 'the existing item' }] as FeedItem[],
+    value: [{ id: 'what', title: 'the existing item' }] as FeedModel[],
     status: AsyncActionStatus.Idle
   };
 
@@ -30,7 +30,7 @@ describe('feed reducer', () => {
       id: 'first-id',
       title: 'the item',
       description: 'the desription',
-    }] as FeedItem[];
+    }] as FeedModel[];
 
     const actual = reducer(initialEmptyState, receive(feedItems));
 
@@ -42,7 +42,7 @@ describe('feed reducer', () => {
       id: 'first-id',
       title: 'the item',
       description: 'the desription',
-    }] as FeedItem[];
+    }] as FeedModel[];
 
     const actual = reducer(initialExistingState, receive(feedItems));
 

@@ -2,8 +2,11 @@ import React from 'react';
 import { connectContainer } from './util/redux-container';
 
 import { Feed } from './feed';
-import { Model as FeedItem } from './feed-item';
-import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
+import { FeedLeafContainer } from './feed-leaf-container';
+import { Model as FeedItem } from './feed-model';
+import { isLeafNode } from './util/feed';
+import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
+import { client } from '@zer0-os/zos-zns';
 import { RootState } from './store';
 
 interface Route {
@@ -18,8 +21,11 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   items: FeedItem[];
+  selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
+  setSelectedItem: (item: FeedItem) => void;
+  setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
 
 export class Container extends React.Component<Properties> {
@@ -27,34 +33,51 @@ export class Container extends React.Component<Properties> {
     return {
       items: state.feed.value,
       status: state.feed.status,
+      selectedItem: state.feed.selectedItem,
     };
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load };
+    return { load, setSelectedItem, setSelectedItemByRoute };
   }
 
-  componentDidMount() {
-    const { route: { znsRoute: route }, provider } = this.props;
-    // at this point the assumption is that we're never navigating to the
-    // "root", so we only for routes that are a non-empty string.
-    if (route) {
+  componentDidMount = async () => {
+    const { items, route: { znsRoute: route }, provider } = this.props;
+
+    if (isLeafNode(route, items)) {
+      this.props.setSelectedItemByRoute({ route, provider });
+    }
+    else {
       this.props.load({ route, provider });
     }
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { route: { znsRoute }, provider } = this.props;
+    const { items, route: { znsRoute: route }, provider } = this.props;
 
-    if (znsRoute && (znsRoute !== prevProps.route.znsRoute)) {
-      this.props.load({ route: znsRoute, provider });
+    if (route && (route !== prevProps.route.znsRoute)) {
+      if (isLeafNode(route, items)) {
+        this.props.setSelectedItemByRoute({ route, provider });
+      }
+      else {
+        this.props.load({ route, provider });
+      }
     }
   }
-
+  
   render() {
-    const { items, route: { app }, status } = this.props;
-
-    return <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading}/>;
+    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem } = this.props;
+    
+    return (
+      <>
+        {isLeafNode(znsRoute, items) &&
+          <FeedLeafContainer item={selectedItem} />
+        }
+        {!isLeafNode(znsRoute, items) &&
+          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />
+        }
+      </>
+    )
   }
 }
 

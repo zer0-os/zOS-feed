@@ -4,27 +4,25 @@ import { Link } from 'react-router-dom';
 
 import { FeedItem, Properties } from './feed-item';
 
-let metadataServiceLoad;
+let setSelectedItem;
 
 describe('FeedItem', () => {
   beforeEach(() => {
-    metadataServiceLoad = jest.fn();
+    setSelectedItem = jest.fn();
   });
-
 
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
-      id: '',
-      title: '',
-      description: '',
-      imageUrl: '',
-      znsRoute: '',
-      app: '',
-      metadataService: {
-        load: metadataServiceLoad,
-        normalizeUrl: jest.fn(),
-        extractIpfsContentId: jest.fn(),
+      item: {
+        id: '',
+        title: '',
+        description: '',
+        imageUrl: '',
+        znsRoute: '',
       },
+
+      app: '',
+      setSelectedItem,
       ...props,
     };
 
@@ -32,17 +30,17 @@ describe('FeedItem', () => {
   };
 
   test('renders image', () => {
-    const wrapper = subject({
-      imageUrl: 'http://example.com/theimage.jpg',
-    });
+    const wrapper = subject({ item: { imageUrl: 'http://example.com/theimage.jpg' } });
 
     expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
   });
 
   it('adds title as alt text to image', () => {
     const wrapper = subject({
-      title: 'what',
-      imageUrl: 'http://example.com/theimage.jpg',
+      item: {
+        title: 'what',
+        imageUrl: 'http://example.com/theimage.jpg',
+      },
     });
 
     expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual('what');
@@ -51,11 +49,7 @@ describe('FeedItem', () => {
   test('renders title', () => {
     const title = 'The First Item';
 
-    const wrapper = subject({
-      id: 'the-first-id',
-      title,
-      description: 'This is the description of the first item.',
-    });
+    const wrapper = subject({ item: { title } });
 
     expect(wrapper.find('.feed-item__title').text().trim()).toStrictEqual(title);
   });
@@ -63,19 +57,17 @@ describe('FeedItem', () => {
   test('renders description', () => {
     const description = 'This is the description of the first item.';
 
-    const wrapper = subject({
-      id: 'the-first-id',
-      title: 'The First Item',
-      description,
-    });
+    const wrapper = subject({ item: { description } });
 
     expect(wrapper.find('.feed-item__description').text().trim()).toStrictEqual(description);
   });
 
   test('renders title as link to route', () => {
     const wrapper = subject({
-      id: 'the-first-id',
-      znsRoute: 'the.route.yo',
+      item: {
+        id: 'the-first-id',
+        znsRoute: 'the.route.yo',
+      },
       app: 'app.id',
     });
 
@@ -84,14 +76,19 @@ describe('FeedItem', () => {
     expect(link.prop('to')).toStrictEqual('/the.route.yo/app.id');
   });
 
-  test('looks up metadata', async () => {
-    const wrapper = subject({
-      id: 'the-first-id',
-      znsRoute: 'the.route.yo',
-      app: 'the.app.id',
-      metadataUrl: 'slow-ipfs-url',
-    });
+  test('item is selected when route is followed', async () => {
+    const item = {
+      id: 'the-item-id',
+      title: 'the title',
+      description: 'the full item description',
+      imageUrl: 'example.com/image.jpg',
+      znsRoute: 'where.are.we',
+    };
 
-    expect(metadataServiceLoad).toHaveBeenCalledWith('slow-ipfs-url');
+    const wrapper = subject({ item });
+
+    await wrapper.find('Link').simulate('click');
+
+    expect(setSelectedItem).toHaveBeenCalledWith(item);
   });
 });
