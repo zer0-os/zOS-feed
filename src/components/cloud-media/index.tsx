@@ -7,8 +7,14 @@ import { auto } from '@cloudinary/url-gen/qualifiers/background';
 import { getCloudMedia, getHashFromIpfsUrl } from './utils';
 import { CloudinaryMedia, MediaType } from './types';
 
-export interface Properties extends ImgHTMLAttributes<HTMLImageElement> {
+export interface ComponentProperties
+  extends ImgHTMLAttributes<HTMLImageElement> {
   className: string;
+  getCloudMedia: (
+    publicId: string,
+    prefix?: string
+  ) => Promise<CloudinaryMedia>;
+  getHashFromIpfsUrl: (url: string) => string;
 }
 
 interface State {
@@ -17,51 +23,48 @@ interface State {
   isLoading: boolean;
 }
 
-export default class CloudMedia extends React.Component<Properties, State> {
+export class Component extends React.Component<ComponentProperties, State> {
   state = { isLoaded: false, cloudinaryMedia: null, isLoading: true };
 
-  componentDidMount() {
-    console.log('kkkkkk')
+  async componentDidMount() {
+    // console.log('kkkkkk')
     if (this.props.src) {
-      this.fetchMedia();
+      await this.fetchMedia();
     }
   }
 
-  componentDidUpdate(prevProps: Properties) {
+  async componentDidUpdate(prevProps: ComponentProperties) {
     const { src } = this.props;
     if (src !== prevProps.src) {
-      this.fetchMedia();
+      await this.fetchMedia();
     }
   }
 
-  fetchMedia = (): void => {
-    console.log('lllllllllllll')
+  fetchMedia = async (): Promise<void> => {
     const { src, width, height } = this.props;
-    const publicId = getHashFromIpfsUrl(src) || src;
+    const publicId = this.props.getHashFromIpfsUrl(src) || src;
 
     if (publicId) {
-      getCloudMedia(publicId).then(({ media, type }) => {
-        this.setState({
-          cloudinaryMedia: {
-            media: media?.resize(
-              pad().width(width).height(height).background(auto())
-            ),
-            type,
-          },
-          isLoading: false,
-        });
+      const { media, type } = await this.props.getCloudMedia(publicId);
+      this.setState({
+        cloudinaryMedia: {
+          media: media?.resize(
+            pad().width(width).height(height).background(auto())
+          ),
+          type,
+        },
+        isLoading: false,
       });
     } else {
-      getCloudMedia(src, '').then(({ media, type }) => {
-        this.setState({
-          cloudinaryMedia: {
-            media: media?.resize(
-              pad().width(width).height(height).background(auto())
-            ),
-            type,
-          },
-          isLoading: false,
-        });
+      const { media, type } = await this.props.getCloudMedia(src, '');
+      this.setState({
+        cloudinaryMedia: {
+          media: media?.resize(
+            pad().width(width).height(height).background(auto())
+          ),
+          type,
+        },
+        isLoading: false,
       });
     }
   };
@@ -141,3 +144,15 @@ export default class CloudMedia extends React.Component<Properties, State> {
     );
   }
 }
+
+const CloudImage: React.FC<
+  Omit<ComponentProperties, 'getCloudMedia' | 'getHashFromIpfsUrl'>
+> = ({ ...props }) => (
+  <Component
+    {...props}
+    getCloudMedia={getCloudMedia}
+    getHashFromIpfsUrl={getHashFromIpfsUrl}
+  />
+);
+
+export default CloudImage;

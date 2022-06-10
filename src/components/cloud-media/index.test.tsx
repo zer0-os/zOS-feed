@@ -1,74 +1,69 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import CloudImage from '.';
-import { Properties } from './index';
-import { AdvancedImage } from '@cloudinary/react';
-import * as utils from './utils';
-import { CloudinaryFile } from '@cloudinary/url-gen';
-import {CloudinaryMedia, MediaType} from './types';
-import cloudinary from "./cloudinary";
+import { Component } from '.';
+import { ComponentProperties } from './index';
+import { AdvancedImage, AdvancedVideo } from '@cloudinary/react';
+import { CloudinaryMedia, MediaType } from './types';
 import cloudinaryInstance from './cloudinary';
 
-jest.mock('./utils', () => {
-  return {
-    getCloudMedia: jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        media: {} as unknown as CloudinaryMedia,
-        type: 'image',
-      })
-    ),
-    getHashFromIpfsUrl: jest.fn(),
-  };
-});
+describe('CloudMedia', () => {
+  const hash = 'QmT1XisCk7QMQwSdJFSDJkusWpASuYpQYN5ZS5rM2NbdFM';
+  const IPFS_LINK = `https://ipfs.fleek.co/ipfs/${hash}`;
 
-describe('Images', () => {
-  const subject = (props: Properties) => {
-    const allProps: Properties = {
-      src: 'image.png',
+  const getHashFromIpfsUrlMocked = jest.fn(() => hash);
+  const getCloudMediaMocked = jest.fn(() =>
+    Promise.resolve(({
+      type: MediaType.Image,
+      media: cloudinaryInstance.image(hash),
+    } as unknown) as CloudinaryMedia)
+  );
+
+  const subject = (props?: Partial<ComponentProperties>) => {
+    const allProps: ComponentProperties = {
+      src: IPFS_LINK,
       className: '',
       alt: '',
+      getCloudMedia: getCloudMediaMocked,
+      getHashFromIpfsUrl: getHashFromIpfsUrlMocked,
       ...props,
     };
 
-    return shallow(<CloudImage {...allProps} />);
+    return shallow(<Component {...allProps} />);
   };
 
-  it.only('renders image', () => {
-    // console.log('----', CloudImage)
-    // const mock = jest.spyOn(CloudImage, "fetchMedia");
+  it('should pass src to getHashFromIpfsUrl', () => {
+    const wrapper = subject();
 
+    expect(getHashFromIpfsUrlMocked).toBeCalledWith(IPFS_LINK);
+  });
+
+  it('should pass hash to getCloudMedia', () => {
+    const wrapper = subject();
+
+    expect(getCloudMediaMocked).toBeCalledWith(hash);
+  });
+
+  it('renders image', () => {
     const wrapper = subject({
       className: 'item_image',
     });
-
-    const mock = jest.spyOn(wrapper.instance(), "fetchMedia").mockReturnValue('')
-    console.log('----', wrapper.instance())
-
-    // (wrapper.instance() as any).fetchMedia = jest.fn();
-
-
     expect(wrapper.find('.item_image').exists()).toBe(true);
   });
 
-  it('adds title as alt text to image', () => {
+  it('renders loading', () => {
+    const wrapper = subject();
+    expect(wrapper.find('.spinner').exists()).toBe(true);
+    expect(wrapper.find('.cloud-media__wrapper--loading').exists()).toBe(true);
+  });
+
+  it('adds title as alt text to image', async () => {
     const wrapper = subject({
       alt: 'what',
       className: 'feed-item__image',
     });
+    await wrapper.instance().componentDidMount();
 
-    expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual('what');
-  });
-
-  it('adds title as alt text to image', () => {
-    const wrapper = subject({
-      alt: 'whatImg',
-      className: 'feed-item__image',
-      src: 'http://example.com/theimage.jpg',
-    });
-
-    expect(wrapper.find('.feed-item__image').prop('alt')).toStrictEqual(
-      'whatImg'
-    );
+    expect(wrapper.find(AdvancedImage).prop('alt')).toStrictEqual('what');
   });
 
   it('renders null when src in undefined', () => {
@@ -80,68 +75,81 @@ describe('Images', () => {
     expect(wrapper.find('.item_image').exists()).toBe(false);
   });
 
-  describe.skip('Cloudinary', () => {
-    it('should have the correct className and publicId', () => {
-      const CLASS_NAME_TEST = 'feed-item__image';
-      const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
+  it('should have the correct publicId on AdvancedImage', async () => {
+    const wrapper = subject();
 
-      const wrapper = subject({
-        className: CLASS_NAME_TEST,
-        src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-      });
+    await wrapper.instance().componentDidMount();
 
-      expect(wrapper.find(AdvancedImage).hasClass(CLASS_NAME_TEST)).toBe(true);
-      expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
-        expect.objectContaining({
-          publicID: PUBLIC_ID_TEST,
-        })
-      );
+    expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
+      expect.objectContaining({
+        publicID: hash,
+      })
+    );
+  });
+
+  it('should have transformation', async () => {
+    const wrapper = subject();
+
+    await wrapper.instance().componentDidMount();
+
+    expect(wrapper.find(AdvancedImage).prop('cldImg')).toHaveProperty(
+      'transformation'
+    );
+  });
+
+  it('should show a spinner', () => {
+    const wrapper = subject();
+
+    expect(wrapper.hasClass('spinner')).toBe(true);
+
+    (wrapper.instance() as Component).onLoad();
+
+    expect(wrapper.hasClass('spinner')).toBe(false);
+  });
+
+  it('should render image from another domain', async () => {
+    const src = 'https://domain.com/image.jpg';
+
+    const wrapper = subject({
+      src,
+      getHashFromIpfsUrl: jest.fn(() => src),
+      getCloudMedia: jest.fn(() =>
+        Promise.resolve(({
+          type: MediaType.Image,
+          media: cloudinaryInstance.image(src),
+        } as unknown) as CloudinaryMedia)
+      ),
     });
 
-    it('should have transformation', () => {
-      const CLASS_NAME_TEST = 'feed-item__image';
-      const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
+    await wrapper.instance().componentDidMount();
 
-      const wrapper = subject({
-        className: CLASS_NAME_TEST,
-        src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-      });
+    expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
+      expect.objectContaining({
+        publicID: src,
+      })
+    );
+  });
 
-      expect(wrapper.find(AdvancedImage).prop('cldImg')).toHaveProperty(
-        'transformation'
-      );
+  it('should render video from another domain', async () => {
+    const src = 'https://domain.com/video.webm';
+
+    const wrapper = subject({
+      src,
+      getHashFromIpfsUrl: jest.fn(() => src),
+      getCloudMedia: jest.fn(() =>
+        Promise.resolve(({
+          type: MediaType.Video,
+          media: cloudinaryInstance.video(src),
+        } as unknown) as CloudinaryMedia)
+      ),
     });
 
-    it('should show a spinner', () => {
-      const CLASS_NAME_TEST = 'feed-item__image';
-      const PUBLIC_ID_TEST = 'QmRLG913uKX7QxwSFMk1TMhtjxwy6kVek37HTcR7AtJUVf';
+    await wrapper.instance().componentDidMount();
 
-      const wrapper = subject({
-        className: CLASS_NAME_TEST,
-        src: `https://ipfs.fleek.co/ipfs/${PUBLIC_ID_TEST}`,
-      });
-
-      expect(wrapper.find(AdvancedImage).hasClass('spinner')).toBe(true);
-
-      (wrapper.instance() as CloudImage).onLoad();
-
-      expect(wrapper.find(AdvancedImage).hasClass('spinner')).toBe(false);
-    });
-
-    it('should render image from another domain', () => {
-      const CLASS_NAME_TEST = 'feed-item__image';
-      const src = 'https://domain.com/image.jpg';
-
-      const wrapper = subject({
-        className: CLASS_NAME_TEST,
-        src,
-      });
-
-      expect(wrapper.find(AdvancedImage).prop('cldImg')).toEqual(
-        expect.objectContaining({
-          publicID: src,
-        })
-      );
-    });
+    expect(wrapper.find(AdvancedVideo).prop('cldVid')).toEqual(
+      expect.objectContaining({
+        publicID: src,
+      })
+    );
   });
 });

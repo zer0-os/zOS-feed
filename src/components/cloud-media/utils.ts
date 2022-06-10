@@ -1,12 +1,12 @@
-import { MediaType } from './types';
-import { config } from './../../config';
 import { CloudinaryFile } from '@cloudinary/url-gen';
+import { MediaType, CloudinaryMedia } from './types';
+import { config } from './../../config';
 import cloudinaryInstance from './cloudinary';
 
 export const getCloudMedia = (
   publicId: string,
   prefix = config.CLOUDINARY_PREFIX
-) => { // TODO return type
+): Promise<CloudinaryMedia> => {
   const cloudinaryFile = new CloudinaryFile(`${prefix}${publicId}`, {
     ...cloudinaryInstance.getConfig().cloud,
   });
