@@ -53,10 +53,15 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { route: { znsRoute: route }, provider } = this.props;
+    const { items, route: { znsRoute: route }, provider } = this.props;
 
     if (route && (route !== prevProps.route.znsRoute)) {
-      this.props.load({ route, provider });
+      if (isLeafNode(route, items)) {
+        this.props.setSelectedItemByRoute({ route, provider });
+      }
+      else {
+        this.props.load({ route, provider });
+      }
     }
   }
   
