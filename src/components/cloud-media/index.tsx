@@ -27,7 +27,6 @@ export class Component extends React.Component<ComponentProperties, State> {
   state = { isLoaded: false, cloudinaryMedia: null, isLoading: true };
 
   async componentDidMount() {
-    // console.log('kkkkkk')
     if (this.props.src) {
       await this.fetchMedia();
     }

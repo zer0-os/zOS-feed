@@ -2,7 +2,7 @@ import React from 'react';
 import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { shorty } from './util/feed';
 import { Model } from './feed-model';
-import CloudImage from './components/cloud-image';
+import CloudMedia from './components/cloud-media';
 
 import './styles.css';
 
@@ -14,7 +14,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
 
     return (
       <div className='feed-leaf'>
-        <CloudImage
+        <CloudMedia
           className='feed-leaf__image'
           src={imageUrl}
           alt={title}
