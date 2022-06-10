@@ -18,7 +18,7 @@ export const store = configureStore({
   middleware: (defaults) => defaults({
     thunk: false,
     serializableCheck: {
-      ignoredActions: ['feed/saga/load'],
+      ignoredActions: ['feed/saga/load', 'feed/saga/setItemByRoute'],
     },
   }).concat(sagaMiddleware),
 });

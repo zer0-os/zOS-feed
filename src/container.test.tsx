@@ -35,6 +35,16 @@ describe('FeedContainer', () => {
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
 
+  test('it setSelectedItemByRoute by route for feed leaf on mount', () => {
+    const route = 'this.is.not.a.root.node';
+    const setSelectedItemByRoute = jest.fn();
+    const provider = { what: 'yeah' };
+
+    subject({ items: [], setSelectedItemByRoute, provider, route: { znsRoute: route, app: 'feed' } });
+
+    expect(setSelectedItemByRoute).toHaveBeenCalledWith({ route, provider });
+  });
+
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
@@ -66,8 +76,8 @@ describe('FeedContainer', () => {
   test('it renders feed leaf', () => {
     const wrapper = subject({ items: [], route: { znsRoute: 'this.is.not.a.root' } });
 
-    expect(wrapper.find(FeedLeafContainer).exists()).toBe(true)
-    expect(wrapper.find(Feed).exists()).toBe(false)
+    expect(wrapper.find(FeedLeafContainer).exists()).toBe(true);
+    expect(wrapper.find(Feed).exists()).toBe(false);
   });
 
   test('passes items to child', () => {
