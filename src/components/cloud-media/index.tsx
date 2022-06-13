@@ -20,22 +20,21 @@ export interface ComponentProperties
 interface State {
   isLoaded: boolean;
   cloudinaryMedia: CloudinaryMedia;
-  isLoading: boolean;
 }
 
 export class Component extends React.Component<ComponentProperties, State> {
-  state = { isLoaded: false, cloudinaryMedia: null, isLoading: true };
+  state = { isLoaded: false, cloudinaryMedia: null };
 
   async componentDidMount() {
     if (this.props.src) {
-      await this.fetchMedia();
+      this.fetchMedia();
     }
   }
 
   async componentDidUpdate(prevProps: ComponentProperties) {
     const { src } = this.props;
     if (src !== prevProps.src) {
-      await this.fetchMedia();
+      this.fetchMedia();
     }
   }
 
@@ -52,7 +51,6 @@ export class Component extends React.Component<ComponentProperties, State> {
           ),
           type,
         },
-        isLoading: false,
       });
     } else {
       const { media, type } = await this.props.getCloudMedia(src, '');
@@ -63,7 +61,6 @@ export class Component extends React.Component<ComponentProperties, State> {
           ),
           type,
         },
-        isLoading: false,
       });
     }
   };
@@ -138,7 +135,7 @@ export class Component extends React.Component<ComponentProperties, State> {
           'cloud-media__wrapper--loading': !this.state.isLoaded,
         })}
       >
-        {!this.state.isLoading && this.renderMedia()}
+        {Boolean(this.state.cloudinaryMedia) && this.renderMedia()}
       </div>
     );
   }
