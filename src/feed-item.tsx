@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Model } from './feed-model';
-import CloudImage from './components/cloud-image';
+import CloudMedia from './components/cloud-media';
 
 import './styles.css';
 
@@ -27,7 +27,7 @@ export class FeedItem extends React.Component<Properties> {
             <h3 className='feed-item__title'>{title}</h3>
             <span className='feed-item__description'>{description}</span>
           </div>
-          <CloudImage
+          <CloudMedia
             className='feed-item__image'
             src={imageUrl}
             alt={title}

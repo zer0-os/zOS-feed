@@ -51,6 +51,10 @@
   padding-left: 10px;
 }
 
+.cloud-media__wrapper--loading > * {
+  display: none;
+}
+
 .feed-leaf {
   padding-top: 80px;
   width: 800px;
