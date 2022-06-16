@@ -66,12 +66,12 @@ export class Container extends React.Component<Properties> {
   }
   
   render() {
-    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem } = this.props;
+    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem, provider } = this.props;
     
     return (
       <>
         {isLeafNode(znsRoute, items) &&
-          <FeedLeafContainer item={selectedItem} />
+          <FeedLeafContainer item={selectedItem} provider={provider} />
         }
         {!isLeafNode(znsRoute, items) &&
           <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />

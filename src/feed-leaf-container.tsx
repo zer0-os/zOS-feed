@@ -8,6 +8,7 @@ import { loadSelectedItemMetadata } from './store/feed';
 
 export interface PublicProperties {
   item: Model;
+  provider: any;
 }
 
 export interface Properties extends PublicProperties {
@@ -17,9 +18,9 @@ export interface Properties extends PublicProperties {
 
 export class Container extends React.Component<Properties> {
   static mapState(state: RootState, props: Properties): Partial<Properties> {
-    const { item } = props;
+    const { item, provider } = props;
 
-    return { item };
+    return { item, provider };
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
@@ -40,7 +41,7 @@ export class Container extends React.Component<Properties> {
 
   render() {
     return (
-      <FeedLeaf {...this.props.item} />
+      <FeedLeaf {...this.props.item} provider={this.props.provider} />
     );
   }
 }

@@ -10,4 +10,5 @@ export interface Model {
   attributes?: [any];
   animationUrl?: string;
   ipfsContentId: string;
+  provider?: any;
 }

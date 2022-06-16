@@ -3,14 +3,14 @@ import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { shorty } from './util/feed';
 import { Model } from './feed-model';
 import CloudMedia from './components/cloud-media';
+import EtherScan from './components/ether-scan';
 
 import './styles.css';
 
 export interface Properties extends Model {}
-
 export class FeedLeaf extends React.Component<Properties, {}> {
   render() {
-    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl } = this.props;
+    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, provider } = this.props;
 
     return (
       <div className='feed-leaf'>
@@ -53,10 +53,12 @@ export class FeedLeaf extends React.Component<Properties, {}> {
         }
 
         <div className='feed-leaf__external-resources'>
-          <div className='feed-leaf__external-resource' title={id}>
-            <span>Token Id</span><span>{shorty(id)}</span>
-            <a href='' target='_blank'>View on Etherscan</a>
-          </div>
+          <EtherScan
+            className='feed-leaf__external-resource'
+            domainId={id}
+            chainId={provider?.network?.chainId}
+            znsDomain={provider?.network?.ensAddress}
+          />
           <div className='feed-leaf__external-resource' title={ipfsContentId}>
             <span>IPFS Hash</span><span>{shorty(ipfsContentId)}</span><a href={metadataUrl} target='_blank'>View on IPFS</a>
           </div>
