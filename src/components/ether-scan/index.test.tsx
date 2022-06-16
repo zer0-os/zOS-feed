@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import EtherScan from '../ether-scan';
+import EtherScan from '.';
 
 describe('Etherscan', () => {
   const subject = (props: Properties) => {

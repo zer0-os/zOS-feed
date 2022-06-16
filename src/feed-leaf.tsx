@@ -9,8 +9,8 @@ import './styles.css';
 
 export interface Properties extends Model {}
 export class FeedLeaf extends React.Component<Properties, {}> {
-  render() {
-    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, provider } = this.props;
+  render() {console.log('',this.props)
+    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, provider, contract } = this.props;
 
     return (
       <div className='feed-leaf'>
@@ -57,7 +57,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             className='feed-leaf__external-resource'
             domainId={id}
             chainId={provider?.network?.chainId}
-            znsDomain={provider?.network?.ensAddress}
+            znsDomain={contract}
           />
           <div className='feed-leaf__external-resource' title={ipfsContentId}>
             <span>IPFS Hash</span><span>{shorty(ipfsContentId)}</span><a href={metadataUrl} target='_blank'>View on IPFS</a>
