@@ -10,7 +10,7 @@ export const getCloudMedia = (
   const cloudinaryFile = new CloudinaryFile(`${prefix}${publicId}`, {
     ...cloudinaryInstance.getConfig().cloud,
   });
-  cloudinaryFile.setAssetType('image');
+  cloudinaryFile.setAssetType('video');
 
   return getMediaType(cloudinaryFile.toURL()).then((mediaType) => {
     if (mediaType === MediaType.Image) {
