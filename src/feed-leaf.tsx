@@ -9,8 +9,8 @@ import './styles.css';
 
 export interface Properties extends Model {}
 export class FeedLeaf extends React.Component<Properties, {}> {
-  render() {console.log('',this.props)
-    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, provider, contract } = this.props;
+  render() {
+    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, chainId, contract } = this.props;
 
     return (
       <div className='feed-leaf'>
@@ -56,7 +56,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
           <EtherScan
             className='feed-leaf__external-resource'
             domainId={id}
-            chainId={provider?.network?.chainId}
+            chainId={chainId}
             znsDomain={contract}
           />
           <div className='feed-leaf__external-resource' title={ipfsContentId}>

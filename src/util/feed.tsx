@@ -8,10 +8,6 @@ export const shorty = (address) => {
   return [address.slice(0, 2), '...', address.slice(-4)].join('');
 };
 
-const defaultNetworkId = (): number => {
-  return Number(process.env.REACT_APP_DEFAULT_NETWORK || 1);
-};
-
 enum NETWORK_TYPES {
   MAINNET = 'MAINNET',
   RINKEBY = 'RINKEBY',
@@ -37,9 +33,6 @@ const getEtherscanUri = (networkType: NETWORK_TYPES): string => {
 };
 
 const getNetworkType = (chainId: number | undefined): NETWORK_TYPES => {
-  if (!chainId) {
-    chainId = defaultNetworkId();
-  }
   switch (chainId) {
     case 1:
       return NETWORK_TYPES.MAINNET;

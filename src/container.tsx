@@ -71,7 +71,7 @@ export class Container extends React.Component<Properties> {
     return (
       <>
         {isLeafNode(znsRoute, items) &&
-          <FeedLeafContainer item={selectedItem} provider={provider} />
+          <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
         }
         {!isLeafNode(znsRoute, items) &&
           <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />

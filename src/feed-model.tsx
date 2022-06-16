@@ -11,5 +11,5 @@ export interface Model {
   animationUrl?: string;
   ipfsContentId: string;
   contract: string;
-  provider?: any;
+  chainId?: number;
 }
