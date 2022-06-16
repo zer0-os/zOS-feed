@@ -100,8 +100,12 @@ export class Component extends React.Component<ComponentProperties, State> {
     return (
       <AdvancedVideo
         cldVid={cloudinaryMedia.media as CloudinaryVideo}
-        onLoad={this.onLoad}
+        onLoadedData={this.onLoad}
         onError={this.onError}
+        autoPlay
+        playsInline
+        loop
+        muted
         {...rest}
       />
     );
