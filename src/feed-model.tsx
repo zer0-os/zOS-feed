@@ -10,4 +10,6 @@ export interface Model {
   attributes?: [any];
   animationUrl?: string;
   ipfsContentId: string;
+  contract: string;
+  chainId?: number;
 }
