@@ -4,11 +4,11 @@ import { Container, Properties } from './feed-item-container';
 import { FeedItem } from './feed-item';
 import { RootState } from './store';
 
-describe('FeedContainer', () => {
+describe('FeedItemContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
       id: '',
-      item: null,
+      item: {},
       loadItemMetadata: () => undefined,
       ...props,
     };
@@ -24,32 +24,9 @@ describe('FeedContainer', () => {
     expect(loadItemMetadata).toHaveBeenCalledWith('the-item-id');
   });
 
-  it('propagates setSelectedItem', () => {
-    const item = {
-      id: 'the-item-id',
-      title: 'the title',
-      description: 'the full item description',
-      imageUrl: 'example.com/image.jpg',
-      znsRoute: 'where.are.we',
-    };
-
-    const setSelectedItem = jest.fn();
-
-    const wrapper = subject({ id: 'the-item-id', setSelectedItem });
-
-    (wrapper.find(FeedItem).prop('setSelectedItem') as any)(item);
-
-    expect(setSelectedItem).toHaveBeenCalledWith(item);
-  });
-
-  it('passes app to child', () => {
-    const wrapper = subject({ app: 'feed' });
-
-    expect(wrapper.find(FeedItem).prop('app')).toBe('feed');
-  });
-
   it('passes feed item properties to child', () => {
     const wrapper = subject({
+      id: 'the-item-id',
       item: {
         id: 'the-item-id',
         title: 'the title',
@@ -60,12 +37,11 @@ describe('FeedContainer', () => {
     });
 
     expect(wrapper.find(FeedItem).props()).toMatchObject({
-      item: {
-        title: 'the title',
-        description: 'the full item description',
-        imageUrl: 'example.com/image.jpg',
-        znsRoute: 'where.are.we',
-      }
+      id: 'the-item-id',
+      title: 'the title',
+      description: 'the full item description',
+      imageUrl: 'example.com/image.jpg',
+      znsRoute: 'where.are.we',
     });
   });
 

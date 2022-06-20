@@ -2,16 +2,12 @@ import React from 'react';
 import { FeedItemContainer } from './feed-item-container';
 import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Spinner } from '@zer0-os/zos-component-library';
 import { isEqual } from 'lodash';
 
 import './styles.css';
 
 export interface Properties {
   items: FeedItemModel[];
-  app: string;
-  isLoading: boolean;
-  setSelectedItem: (item: FeedItemModel) => void;
 }
 
 export interface State {
@@ -66,7 +62,6 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app, setSelectedItem } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -77,22 +72,13 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItemContainer key={item.id} id={item.id} app={app} setSelectedItem={setSelectedItem} />
+          <FeedItemContainer key={item.id} id={item.id} />
         ))}
       </InfiniteScroll>
     );
   }
 
   render() {
-    if (this.props.isLoading) {
-      return (
-        <div className='feed-spinner'>
-          <Spinner />
-          <span className='feed-spinner__text'>Loading Feed</span>
-        </div>
-      );
-    }
-
     return (
       <div className="feed">
         <div className="feed__items">{this.renderItems()}</div>

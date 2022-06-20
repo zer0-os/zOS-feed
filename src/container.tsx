@@ -5,18 +5,13 @@ import { Feed } from './feed';
 import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
-import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
-import { client } from '@zer0-os/zos-zns';
+import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
-
-interface Route {
-  znsRoute: string;
-  app: string;
-}
+import {Spinner} from '@zer0-os/zos-component-library';
 
 export interface PublicProperties {
   provider: any;
-  route: Route;
+  route: string;
 }
 
 export interface Properties extends PublicProperties {
@@ -24,8 +19,6 @@ export interface Properties extends PublicProperties {
   selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
-  setSelectedItem: (item: FeedItem) => void;
-  setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
 
 export class Container extends React.Component<Properties> {
@@ -38,46 +31,48 @@ export class Container extends React.Component<Properties> {
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load, setSelectedItem, setSelectedItemByRoute };
+    return { load };
   }
 
   componentDidMount = async () => {
-    const { items, route: { znsRoute: route }, provider } = this.props;
+    const { route, provider } = this.props;
 
-    if (isLeafNode(route, items)) {
-      this.props.setSelectedItemByRoute({ route, provider });
-    }
-    else {
+    // at this point the assumption is that we're never navigating to the
+    // "root", so we only load routes that are a non-empty string.
+    if (route) {
       this.props.load({ route, provider });
     }
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { items, route: { znsRoute: route }, provider } = this.props;
+    const { route, provider } = this.props;
 
-    if (route && (route !== prevProps.route.znsRoute)) {
-      if (isLeafNode(route, items)) {
-        this.props.setSelectedItemByRoute({ route, provider });
-      }
-      else {
-        this.props.load({ route, provider });
-      }
+    if (route && (route !== prevProps.route)) {
+      this.props.load({ route, provider });
     }
+  }
+
+  get isLoading() {
+    return this.props.status === AsyncActionStatus.Loading;
   }
   
   render() {
-    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem, provider } = this.props;
+    const { items, route, selectedItem, provider } = this.props;
     
-    return (
-      <>
-        {isLeafNode(znsRoute, items) &&
-          <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
-        }
-        {!isLeafNode(znsRoute, items) &&
-          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />
-        }
-      </>
-    )
+    if (this.isLoading) {
+      return (
+        <div className='feed-spinner'>
+          <Spinner />
+          <span className='feed-spinner__text'>Loading Feed</span>
+        </div>
+      );
+    }
+
+    if (isLeafNode(route, items)) {
+      return <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />;
+    }
+
+    return <Feed items={items} />;
   }
 }
 

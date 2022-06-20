@@ -2,7 +2,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { FeedItemContainer as FeedItem } from './feed-item-container';
 import { Model as FeedItemModel } from './feed-model';
-import { Spinner } from '@zer0-os/zos-component-library';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Feed, Properties } from './feed';
 
@@ -58,8 +57,6 @@ describe('Feed', () => {
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       items: [],
-      app: '',
-      isLoading: false,
       ...props,
     };
 
@@ -139,17 +136,5 @@ describe('Feed', () => {
 
     expect(wrapper.find(FeedItem).at(0).prop('id')).toBe(newItem.id);
     expect(wrapper.find(FeedItem).at(1).prop('id')).toBe(feedItemsTest[0].id);
-  });
-
-  test('renders spinner when loading', () => {
-    const wrapper = subject({ isLoading: true });
-
-    expect(wrapper.find(Spinner)).toHaveLength(1);
-  });
- 
-  test('should not render spinner', () => {
-    const wrapper = subject({});
-
-    expect(wrapper.find(Spinner)).toHaveLength(0);
   });
 });
