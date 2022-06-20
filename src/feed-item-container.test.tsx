@@ -4,11 +4,11 @@ import { Container, Properties } from './feed-item-container';
 import { FeedItem } from './feed-item';
 import { RootState } from './store';
 
-describe('FeedContainer', () => {
+describe('FeedItemContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
       id: '',
-      item: null,
+      item: {},
       loadItemMetadata: () => undefined,
       ...props,
     };
@@ -26,6 +26,7 @@ describe('FeedContainer', () => {
 
   it('passes feed item properties to child', () => {
     const wrapper = subject({
+      id: 'the-item-id',
       item: {
         id: 'the-item-id',
         title: 'the title',
@@ -36,6 +37,7 @@ describe('FeedContainer', () => {
     });
 
     expect(wrapper.find(FeedItem).props()).toMatchObject({
+      id: 'the-item-id',
       title: 'the title',
       description: 'the full item description',
       imageUrl: 'example.com/image.jpg',

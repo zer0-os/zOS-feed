@@ -10,7 +10,6 @@ import { RootState } from './store';
 
 interface Route {
   znsRoute: string;
-  app: string;
 }
 
 export interface PublicProperties {
@@ -57,7 +56,7 @@ export class Container extends React.Component<Properties> {
   }
   
   render() {
-    const { items, route: { app, znsRoute }, status, selectedItem, provider } = this.props;
+    const { items, route: { znsRoute }, status, selectedItem, provider } = this.props;
     
     return (
       <>
@@ -65,7 +64,7 @@ export class Container extends React.Component<Properties> {
           <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
         }
         {!isLeafNode(znsRoute, items) &&
-          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} />
+          <Feed items={items} isLoading={status === AsyncActionStatus.Loading} />
         }
       </>
     )

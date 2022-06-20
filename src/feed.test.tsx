@@ -58,7 +58,6 @@ describe('Feed', () => {
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       items: [],
-      app: '',
       isLoading: false,
       ...props,
     };

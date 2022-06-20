@@ -10,7 +10,7 @@ import { AsyncActionStatus } from './store/feed';
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
-      route: { znsRoute: '', app: '' },
+      route: { znsRoute: '' },
       items: [],
       status: AsyncActionStatus.Idle,
       load: () => undefined,
@@ -25,7 +25,7 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    subject({ load, provider, route: { znsRoute: 'pickles', app: 'feed' } });
+    subject({ load, provider, route: { znsRoute: 'pickles' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
@@ -33,7 +33,7 @@ describe('FeedContainer', () => {
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
-    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '', app: '' } });
+    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '' } });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -42,9 +42,9 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    const container = subject({ load, provider, route: { znsRoute: '', app: '' } });
+    const container = subject({ load, provider, route: { znsRoute: '' } });
 
-    container.setProps({ route: { znsRoute: 'bob', app: 'feed' } });
+    container.setProps({ route: { znsRoute: 'bob' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
   });

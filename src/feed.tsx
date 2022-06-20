@@ -9,7 +9,6 @@ import './styles.css';
 
 export interface Properties {
   items: FeedItemModel[];
-  app: string;
   isLoading: boolean;
 }
 
@@ -65,7 +64,6 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -76,7 +74,7 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItemContainer key={item.id} id={item.id} app={app} />
+          <FeedItemContainer key={item.id} id={item.id} />
         ))}
       </InfiniteScroll>
     );

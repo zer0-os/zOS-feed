@@ -8,7 +8,6 @@ import { loadItemMetadata } from './store/feed';
 
 export interface PublicProperties {
   id: string;
-  app: string;
 }
 
 export interface Properties extends PublicProperties {
@@ -32,7 +31,8 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
-    const { id, title, description, imageUrl, znsRoute } = this.props.item;
+    const { id, item: { title, description, imageUrl, znsRoute } } = this.props;
+
     return (
       <FeedItem
         id={id}
