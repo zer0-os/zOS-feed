@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Link } from 'react-router-dom';
+import { ZnsLink } from '@zer0-os/zos-component-library';
 
 import { FeedItem, Properties } from './feed-item';
 
@@ -20,8 +20,6 @@ describe('FeedItem', () => {
         imageUrl: '',
         znsRoute: '',
       },
-
-      app: '',
       setSelectedItem,
       ...props,
     };
@@ -68,12 +66,11 @@ describe('FeedItem', () => {
         id: 'the-first-id',
         znsRoute: 'the.route.yo',
       },
-      app: 'app.id',
     });
 
-    const link = wrapper.find('.feed-item__title').closest(Link);
+    const link = wrapper.find('.feed-item__title').closest(ZnsLink);
 
-    expect(link.prop('to')).toStrictEqual('/the.route.yo/app.id');
+    expect(link.prop('route')).toStrictEqual('the.route.yo');
   });
 
   test('item is selected when route is followed', async () => {
@@ -87,7 +84,7 @@ describe('FeedItem', () => {
 
     const wrapper = subject({ item });
 
-    await wrapper.find('Link').simulate('click');
+    await wrapper.find(ZnsLink).simulate('click');
 
     expect(setSelectedItem).toHaveBeenCalledWith(item);
   });
