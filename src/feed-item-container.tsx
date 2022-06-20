@@ -32,10 +32,14 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
+    const { id, title, description, imageUrl, znsRoute } = this.props.item;
     return (
       <FeedItem
-        app={this.props.app}
-        item={this.props.item}
+        id={id}
+        title={title}
+        description={description}
+        imageUrl={imageUrl}
+        znsRoute={znsRoute}
       />
     );
   }

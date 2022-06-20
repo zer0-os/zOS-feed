@@ -1,19 +1,20 @@
 import React from 'react';
 import { ZnsLink } from '@zer0-os/zos-component-library';
-import { Model } from './feed-model';
 import CloudMedia from './components/cloud-media';
 
 import './styles.css';
 
 export interface Properties {
-  app: string;
-  item: Model;
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  znsRoute: string;
 }
 
 export class FeedItem extends React.Component<Properties> {
   render() {
-    const { app, item } = this.props;
-    const { znsRoute, title, description, imageUrl } = item;
+    const { znsRoute, title, description, imageUrl } = this.props;
 
     return (
       <div className='feed-item'>

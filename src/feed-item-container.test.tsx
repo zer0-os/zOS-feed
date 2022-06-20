@@ -24,12 +24,6 @@ describe('FeedContainer', () => {
     expect(loadItemMetadata).toHaveBeenCalledWith('the-item-id');
   });
 
-  it('passes app to child', () => {
-    const wrapper = subject({ app: 'feed' });
-
-    expect(wrapper.find(FeedItem).prop('app')).toBe('feed');
-  });
-
   it('passes feed item properties to child', () => {
     const wrapper = subject({
       item: {
@@ -42,12 +36,10 @@ describe('FeedContainer', () => {
     });
 
     expect(wrapper.find(FeedItem).props()).toMatchObject({
-      item: {
-        title: 'the title',
-        description: 'the full item description',
-        imageUrl: 'example.com/image.jpg',
-        znsRoute: 'where.are.we',
-      }
+      title: 'the title',
+      description: 'the full item description',
+      imageUrl: 'example.com/image.jpg',
+      znsRoute: 'where.are.we',
     });
   });
 
