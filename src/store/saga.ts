@@ -38,26 +38,16 @@ export function* load(action) {
   
     const routeId = yield call([znsClient, znsClient.resolveIdFromName], route);
   
-    const items = yield call([znsClient, znsClient.getFeed], routeId);
+    const item = yield call([znsClient, znsClient.getFeedItem], routeId);
+    yield put(selectItem(item));
 
+    const items = yield call([znsClient, znsClient.getFeed], routeId);
     yield put(receive(items));
 
     yield put(setStatus(AsyncActionStatus.Idle));
   } catch (error) {
     yield put(setStatus(AsyncActionStatus.Failed));
   }
-}
-
-export function* setSelectedItemByRoute(action) {
-  const { route, provider } = action.payload;
-
-  const znsClient = yield call(client.get, provider);
-
-  const routeId = yield call([znsClient, znsClient.resolveIdFromName], route);
-
-  const item = yield call([znsClient, znsClient.getFeedItem], routeId);
-
-  yield put(selectItem(item));
 }
 
 export function* loadSelectedItemMetadata() {
@@ -73,6 +63,5 @@ export function* loadSelectedItemMetadata() {
 export function* saga() {
   yield takeLatest(SagaActionTypes.Load, load);
   yield takeLatest(SagaActionTypes.LoadItemMetadata, loadItemMetadata);
-  yield takeLatest(SagaActionTypes.SetItemByRoute, setSelectedItemByRoute);
   yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata);
 }

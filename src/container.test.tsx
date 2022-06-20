@@ -7,8 +7,6 @@ import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { AsyncActionStatus } from './store/feed';
 
-let setSelectedItemByRoute = jest.fn();
-
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
@@ -16,7 +14,6 @@ describe('FeedContainer', () => {
       items: [],
       status: AsyncActionStatus.Idle,
       load: () => undefined,
-      setSelectedItemByRoute,
       provider: null,
       ...props,
     };
@@ -33,20 +30,10 @@ describe('FeedContainer', () => {
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
 
-  test('it setSelectedItemByRoute by route for feed leaf on mount', () => {
-    const route = 'this.is.not.a.root.node';
-    const setSelectedItemByRoute = jest.fn();
-    const provider = { what: 'yeah' };
-
-    subject({ items: [], setSelectedItemByRoute, provider, route: { znsRoute: route, app: 'feed' } });
-
-    expect(setSelectedItemByRoute).toHaveBeenCalledWith({ route, provider });
-  });
-
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
-    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: 'not.a.root.domain', app: '' } });
+    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '', app: '' } });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -60,15 +47,6 @@ describe('FeedContainer', () => {
     container.setProps({ route: { znsRoute: 'bob', app: 'feed' } });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
-  });
-
-  test('it sets selected item when route updates and is leaf node', () => {
-    const route = 'this.is.not.a.root.node';
-    const provider = { what: 'yeah' };
-
-    subject({ setSelectedItemByRoute, provider, route: { znsRoute: route, app: 'feed' } });
-
-    expect(setSelectedItemByRoute).toHaveBeenCalledWith({ route, provider });
   });
 
   test('it renders feed leaf', () => {

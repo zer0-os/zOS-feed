@@ -5,7 +5,7 @@ import { Feed } from './feed';
 import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
-import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItemByRoute } from './store/feed';
+import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
 interface Route {
@@ -23,7 +23,6 @@ export interface Properties extends PublicProperties {
   selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
-  setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
 
 export class Container extends React.Component<Properties> {
@@ -36,30 +35,24 @@ export class Container extends React.Component<Properties> {
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load, setSelectedItemByRoute };
+    return { load };
   }
 
   componentDidMount = async () => {
-    const { items, route: { znsRoute: route }, provider } = this.props;
+    const { route: { znsRoute: route }, provider } = this.props;
 
-    if (isLeafNode(route, items)) {
-      this.props.setSelectedItemByRoute({ route, provider });
-    }
-    else {
+    // at this point the assumption is that we're never navigating to the
+    // "root", so we only load routes that are a non-empty string.
+    if (route) {
       this.props.load({ route, provider });
     }
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { items, route: { znsRoute: route }, provider } = this.props;
+    const { route: { znsRoute: route }, provider } = this.props;
 
     if (route && (route !== prevProps.route.znsRoute)) {
-      if (isLeafNode(route, items)) {
-        this.props.setSelectedItemByRoute({ route, provider });
-      }
-      else {
-        this.props.load({ route, provider });
-      }
+      this.props.load({ route, provider });
     }
   }
   
