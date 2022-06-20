@@ -5,8 +5,7 @@ import { Feed } from './feed';
 import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
-import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItem, setSelectedItemByRoute } from './store/feed';
-import { client } from '@zer0-os/zos-zns';
+import { AsyncActionStatus, load, ZnsRouteRequest, setSelectedItemByRoute } from './store/feed';
 import { RootState } from './store';
 
 interface Route {
@@ -24,7 +23,6 @@ export interface Properties extends PublicProperties {
   selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
-  setSelectedItem: (item: FeedItem) => void;
   setSelectedItemByRoute: (request: ZnsRouteRequest) => void;
 }
 
@@ -38,7 +36,7 @@ export class Container extends React.Component<Properties> {
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { load, setSelectedItem, setSelectedItemByRoute };
+    return { load, setSelectedItemByRoute };
   }
 
   componentDidMount = async () => {
@@ -66,7 +64,7 @@ export class Container extends React.Component<Properties> {
   }
   
   render() {
-    const { items, route: { app, znsRoute }, status, setSelectedItem, selectedItem, provider } = this.props;
+    const { items, route: { app, znsRoute }, status, selectedItem, provider } = this.props;
     
     return (
       <>
@@ -74,7 +72,7 @@ export class Container extends React.Component<Properties> {
           <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
         }
         {!isLeafNode(znsRoute, items) &&
-          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} setSelectedItem={setSelectedItem} />
+          <Feed items={items} app={app} isLoading={status === AsyncActionStatus.Loading} />
         }
       </>
     )

@@ -4,13 +4,7 @@ import { ZnsLink } from '@zer0-os/zos-component-library';
 
 import { FeedItem, Properties } from './feed-item';
 
-let setSelectedItem;
-
 describe('FeedItem', () => {
-  beforeEach(() => {
-    setSelectedItem = jest.fn();
-  });
-
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       item: {
@@ -20,7 +14,6 @@ describe('FeedItem', () => {
         imageUrl: '',
         znsRoute: '',
       },
-      setSelectedItem,
       ...props,
     };
 
@@ -71,21 +64,5 @@ describe('FeedItem', () => {
     const link = wrapper.find('.feed-item__title').closest(ZnsLink);
 
     expect(link.prop('route')).toStrictEqual('the.route.yo');
-  });
-
-  test('item is selected when route is followed', async () => {
-    const item = {
-      id: 'the-item-id',
-      title: 'the title',
-      description: 'the full item description',
-      imageUrl: 'example.com/image.jpg',
-      znsRoute: 'where.are.we',
-    };
-
-    const wrapper = subject({ item });
-
-    await wrapper.find(ZnsLink).simulate('click');
-
-    expect(setSelectedItem).toHaveBeenCalledWith(item);
   });
 });

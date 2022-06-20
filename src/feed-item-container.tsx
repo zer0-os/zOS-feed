@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { connectContainer } from './util/redux-container';
-import { Model as FeedItemModel, Model } from './feed-model';
+import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { FeedItem } from './feed-item';
 import { loadItemMetadata } from './store/feed';
@@ -9,7 +9,6 @@ import { loadItemMetadata } from './store/feed';
 export interface PublicProperties {
   id: string;
   app: string;
-  setSelectedItem: (item: Model) => void;
 }
 
 export interface Properties extends PublicProperties {
@@ -36,7 +35,6 @@ export class Container extends React.Component<Properties> {
     return (
       <FeedItem
         app={this.props.app}
-        setSelectedItem={this.props.setSelectedItem}
         item={this.props.item}
       />
     );

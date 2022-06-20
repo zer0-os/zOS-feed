@@ -24,24 +24,6 @@ describe('FeedContainer', () => {
     expect(loadItemMetadata).toHaveBeenCalledWith('the-item-id');
   });
 
-  it('propagates setSelectedItem', () => {
-    const item = {
-      id: 'the-item-id',
-      title: 'the title',
-      description: 'the full item description',
-      imageUrl: 'example.com/image.jpg',
-      znsRoute: 'where.are.we',
-    };
-
-    const setSelectedItem = jest.fn();
-
-    const wrapper = subject({ id: 'the-item-id', setSelectedItem });
-
-    (wrapper.find(FeedItem).prop('setSelectedItem') as any)(item);
-
-    expect(setSelectedItem).toHaveBeenCalledWith(item);
-  });
-
   it('passes app to child', () => {
     const wrapper = subject({ app: 'feed' });
 

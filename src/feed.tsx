@@ -11,7 +11,6 @@ export interface Properties {
   items: FeedItemModel[];
   app: string;
   isLoading: boolean;
-  setSelectedItem: (item: FeedItemModel) => void;
 }
 
 export interface State {
@@ -66,7 +65,7 @@ export class Feed extends React.Component<Properties, State> {
   };
 
   renderItems() {
-    const { app, setSelectedItem } = this.props;
+    const { app } = this.props;
     return (
       <InfiniteScroll
         dataLength={this.state.feed.length}
@@ -77,7 +76,7 @@ export class Feed extends React.Component<Properties, State> {
         loader={<></>}
       >
         {this.state.feed.map((item) => (
-          <FeedItemContainer key={item.id} id={item.id} app={app} setSelectedItem={setSelectedItem} />
+          <FeedItemContainer key={item.id} id={item.id} app={app} />
         ))}
       </InfiniteScroll>
     );

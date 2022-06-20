@@ -7,7 +7,6 @@ import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { AsyncActionStatus } from './store/feed';
 
-let setSelectedItem = jest.fn();
 let setSelectedItemByRoute = jest.fn();
 
 describe('FeedContainer', () => {
@@ -17,7 +16,6 @@ describe('FeedContainer', () => {
       items: [],
       status: AsyncActionStatus.Idle,
       load: () => undefined,
-      setSelectedItem,
       setSelectedItemByRoute,
       provider: null,
       ...props,

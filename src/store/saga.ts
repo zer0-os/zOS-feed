@@ -60,12 +60,6 @@ export function* setSelectedItemByRoute(action) {
   yield put(selectItem(item));
 }
 
-export function* setSelectedItem(action) {
-  const item = action.payload;
-
-  yield put(selectItem(item));
-}
-
 export function* loadSelectedItemMetadata() {
   const item = yield select((state) => state.feed.selectedItem);
 
@@ -79,7 +73,6 @@ export function* loadSelectedItemMetadata() {
 export function* saga() {
   yield takeLatest(SagaActionTypes.Load, load);
   yield takeLatest(SagaActionTypes.LoadItemMetadata, loadItemMetadata);
-  yield takeLatest(SagaActionTypes.SetItem, setSelectedItem);
   yield takeLatest(SagaActionTypes.SetItemByRoute, setSelectedItemByRoute);
   yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata);
 }

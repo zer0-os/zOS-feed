@@ -4,7 +4,7 @@ import { throwError } from 'redux-saga-test-plan/providers';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
 
-import { load, loadItemMetadata, loadSelectedItemMetadata, setSelectedItem, setSelectedItemByRoute } from './saga';
+import { load, loadItemMetadata, loadSelectedItemMetadata, setSelectedItemByRoute } from './saga';
 import { AsyncActionStatus, reducer } from './feed';
 import { rootReducer } from '.';
 
@@ -231,44 +231,4 @@ describe('feed saga', () => {
       ...overrides,
     };
   };
-
-  it('should set feed item in store from zns client when setSelectedItem', async () => {
-    const item = {
-      id: 'the-first-id',
-      title: 'The First ZNS Feed Item',
-      description: 'This is the description of the first item.',
-    };
-
-    const znsClient = getZnsClient({
-      getFeedItem: async () => item,
-    });
-
-    await expectSaga(setSelectedItem, { payload: item })
-      .withReducer(reducer)
-      .provide([
-        [matchers.call.fn(client.get), znsClient],
-      ])
-      .hasFinalState({ value: [], status: AsyncActionStatus.Idle, selectedItem: item, })
-      .run();
-  });
-
-  it('should set feed item in store from zns client when setSelectedItem', async () => {
-    const item = {
-      id: 'the-first-id',
-      title: 'The First ZNS Feed Item',
-      description: 'This is the description of the first item.',
-    };
-
-    const znsClient = getZnsClient({
-      getFeedItem: async () => item,
-    });
-
-    await expectSaga(setSelectedItem, { payload: item })
-      .withReducer(reducer)
-      .provide([
-        [matchers.call.fn(client.get), znsClient],
-      ])
-      .hasFinalState({ value: [], status: AsyncActionStatus.Idle, selectedItem: item, })
-      .run();
-  });
 });
