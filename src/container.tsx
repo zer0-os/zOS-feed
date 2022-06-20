@@ -8,13 +8,9 @@ import { isLeafNode } from './util/feed';
 import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
 
-interface Route {
-  znsRoute: string;
-}
-
 export interface PublicProperties {
   provider: any;
-  route: Route;
+  route: string;
 }
 
 export interface Properties extends PublicProperties {
@@ -38,7 +34,7 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidMount = async () => {
-    const { route: { znsRoute: route }, provider } = this.props;
+    const { route, provider } = this.props;
 
     // at this point the assumption is that we're never navigating to the
     // "root", so we only load routes that are a non-empty string.
@@ -48,22 +44,22 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { route: { znsRoute: route }, provider } = this.props;
+    const { route, provider } = this.props;
 
-    if (route && (route !== prevProps.route.znsRoute)) {
+    if (route && (route !== prevProps.route)) {
       this.props.load({ route, provider });
     }
   }
   
   render() {
-    const { items, route: { znsRoute }, status, selectedItem, provider } = this.props;
+    const { items, route, status, selectedItem, provider } = this.props;
     
     return (
       <>
-        {isLeafNode(znsRoute, items) &&
+        {isLeafNode(route, items) &&
           <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
         }
-        {!isLeafNode(znsRoute, items) &&
+        {!isLeafNode(route, items) &&
           <Feed items={items} isLoading={status === AsyncActionStatus.Loading} />
         }
       </>

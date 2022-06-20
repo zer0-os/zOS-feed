@@ -10,7 +10,7 @@ import { AsyncActionStatus } from './store/feed';
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
-      route: { znsRoute: '' },
+      route: '',
       items: [],
       status: AsyncActionStatus.Idle,
       load: () => undefined,
@@ -25,7 +25,7 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    subject({ load, provider, route: { znsRoute: 'pickles' } });
+    subject({ load, provider, route: 'pickles' });
 
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
@@ -33,7 +33,7 @@ describe('FeedContainer', () => {
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
 
-    subject({ load, provider: { what: 'yeah' }, route: { znsRoute: '' } });
+    subject({ load, provider: { what: 'yeah' }, route: '' });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -42,15 +42,15 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
 
-    const container = subject({ load, provider, route: { znsRoute: '' } });
+    const container = subject({ load, provider, route: '' });
 
-    container.setProps({ route: { znsRoute: 'bob' } });
+    container.setProps({ route: 'bob' });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
   });
 
   test('it renders feed leaf', () => {
-    const wrapper = subject({ items: [], route: { znsRoute: 'this.is.not.a.root' } });
+    const wrapper = subject({ items: [], route: 'this.is.not.a.root' });
 
     expect(wrapper.find(FeedLeafContainer).exists()).toBe(true);
     expect(wrapper.find(Feed).exists()).toBe(false);
