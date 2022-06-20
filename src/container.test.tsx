@@ -6,6 +6,7 @@ import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { AsyncActionStatus } from './store/feed';
+import { Spinner } from '@zer0-os/zos-component-library';
 
 describe('FeedContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
@@ -72,10 +73,16 @@ describe('FeedContainer', () => {
     expect(wrapper.find(Feed).prop('items')).toEqual(items);
   });
 
-  test('passes loading to feed', () => {
+  it('renders spinner when loading', () => {
     const wrapper = subject({ status: AsyncActionStatus.Loading });
 
-    expect(wrapper.find(Feed).prop('isLoading')).toEqual(true);
+    expect(wrapper.find(Spinner).exists()).toBe(true);
+  });
+
+  it('does not render spinner when idle', () => {
+    const wrapper = subject({ status: AsyncActionStatus.Idle });
+
+    expect(wrapper.find(Spinner).exists()).toBe(false);
   });
 
   describe('mapState', () => {

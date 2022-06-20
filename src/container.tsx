@@ -7,6 +7,7 @@ import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
 import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
 import { RootState } from './store';
+import {Spinner} from '@zer0-os/zos-component-library';
 
 export interface PublicProperties {
   provider: any;
@@ -50,20 +51,28 @@ export class Container extends React.Component<Properties> {
       this.props.load({ route, provider });
     }
   }
+
+  get isLoading() {
+    return this.props.status === AsyncActionStatus.Loading;
+  }
   
   render() {
-    const { items, route, status, selectedItem, provider } = this.props;
+    const { items, route, selectedItem, provider } = this.props;
     
-    return (
-      <>
-        {isLeafNode(route, items) &&
-          <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />
-        }
-        {!isLeafNode(route, items) &&
-          <Feed items={items} isLoading={status === AsyncActionStatus.Loading} />
-        }
-      </>
-    )
+    if (this.isLoading) {
+      return (
+        <div className='feed-spinner'>
+          <Spinner />
+          <span className='feed-spinner__text'>Loading Feed</span>
+        </div>
+      );
+    }
+
+    if (isLeafNode(route, items)) {
+      return <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />;
+    }
+
+    return <Feed items={items} />;
   }
 }
 
