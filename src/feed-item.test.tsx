@@ -11,6 +11,7 @@ describe('FeedItem', () => {
       title: '',
       description: '',
       imageUrl: '',
+      animationUrl: '',
       znsRoute: '',
       ...props,
     };
@@ -22,6 +23,21 @@ describe('FeedItem', () => {
     const wrapper = subject({ imageUrl: 'http://example.com/theimage.jpg' });
 
     expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
+    
+    wrapper.setProps({ animationUrl: '' });
+    
+    expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
+  });
+
+  test('renders image of animationUrl', () => {
+    const wrapper = subject({ animationUrl: 'http://example.com/theimage_animation-url.jpg' });
+
+    expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage_animation-url.jpg');
+    
+    wrapper.setProps({ imageUrl: 'http://example.com/theimage.jpg' });
+
+    expect(wrapper.find('.feed-item__image').prop('src')).toStrictEqual('http://example.com/theimage_animation-url.jpg');
+
   });
 
   it('adds title as alt text to image', () => {
