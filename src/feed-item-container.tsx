@@ -31,7 +31,7 @@ export class Container extends React.Component<Properties> {
   }
 
   render() {
-    const { id, item: { title, description, imageUrl, znsRoute } } = this.props;
+    const { id, item: { title, description, imageUrl, animationUrl, znsRoute } } = this.props;
 
     return (
       <FeedItem
@@ -39,6 +39,7 @@ export class Container extends React.Component<Properties> {
         title={title}
         description={description}
         imageUrl={imageUrl}
+        animationUrl={animationUrl}
         znsRoute={znsRoute}
       />
     );

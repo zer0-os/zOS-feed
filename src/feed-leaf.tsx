@@ -10,13 +10,13 @@ import './styles.css';
 export interface Properties extends Model {}
 export class FeedLeaf extends React.Component<Properties, {}> {
   render() {
-    const { title, description, imageUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, chainId, contract } = this.props;
+    const { title, description, imageUrl, animationUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, chainId, contract } = this.props;
 
     return (
       <div className='feed-leaf'>
         <CloudMedia
           className='feed-leaf__image'
-          src={imageUrl}
+          src={animationUrl || imageUrl}
           alt={title}
           width={800}
           height={800}

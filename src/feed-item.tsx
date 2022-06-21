@@ -9,12 +9,13 @@ export interface Properties {
   title: string;
   description: string;
   imageUrl?: string;
+  animationUrl?: string;
   znsRoute: string;
 }
 
 export class FeedItem extends React.Component<Properties> {
   render() {
-    const { znsRoute, title, description, imageUrl } = this.props;
+    const { znsRoute, title, description, imageUrl, animationUrl } = this.props;
 
     return (
       <div className='feed-item'>
@@ -25,7 +26,7 @@ export class FeedItem extends React.Component<Properties> {
           </div>
           <CloudMedia
             className='feed-item__image'
-            src={imageUrl}
+            src={animationUrl || imageUrl}
             alt={title}
             width={424}
             height={424}
