@@ -66,7 +66,7 @@ describe('FeedLeaf', () => {
     expect(wrapper.find('[className$="__description"]').text().trim()).toStrictEqual(description);
   });
 
-  it.only('renders minter and owner', () => {
+  it('renders minter and owner', () => {
     const minter = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const owner = '0x0000000000000000000000000000000000000000000000000000000000000001';
 
