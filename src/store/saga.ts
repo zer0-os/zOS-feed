@@ -1,4 +1,4 @@
-import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { takeEvery, takeLatest, put, call, select, all } from 'redux-saga/effects';
 import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus, receiveItem } from './feed';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
@@ -44,7 +44,9 @@ export function* loadSelectedItemMetadata() {
 }
 
 export function* saga() {
-  yield takeLatest(SagaActionTypes.Load, load);
-  yield takeLatest(SagaActionTypes.LoadItemMetadata, loadItemMetadata);
-  yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata);
+  yield all([
+    yield takeLatest(SagaActionTypes.Load, load),
+    yield takeEvery(SagaActionTypes.LoadItemMetadata, loadItemMetadata),
+    yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata),
+  ]);
 }

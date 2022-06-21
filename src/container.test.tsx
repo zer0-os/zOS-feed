@@ -87,23 +87,47 @@ describe('FeedContainer', () => {
 
   describe('mapState', () => {
     const subject = (state: RootState) => Container.mapState({
-      feed: { value: [], ...(state.feed || {}) },
+      feed: {
+        value: {
+          ids: [],
+          entities: {},
+          ...(state.feed.value || {}),
+        },
+        ...(state.feed || {}) },
     } as RootState);
 
     test('items', () => {
-      const items = [{
-        id: 'the-first-id',
-        title: 'The First Item',
-        description: 'This is the description of the first item.',
-      }, {
-        id: 'the-second-id',
-        title: 'The Second Item',
-        description: 'This is the description of the Second item.',
-      }];
+      const state = subject({
+        feed: {
+          value: {
+            ids: ['the-first-id', 'the-second-id'],
+            entities: {
+              'the-first-id': {
+                id: 'the-first-id',
+                title: 'The First Item',
+                description: 'This is the description of the first item.',
+              },
+              'the-second-id': {
+                id: 'the-second-id',
+                title: 'The Second Item',
+                description: 'This is the description of the Second item.',
+              },
+            },
+          },
+        },
+      } as any);
 
-      const state = subject({ feed: { value: items } } as RootState);
-
-      expect(state).toMatchObject({ items });
+      expect(state).toMatchObject({
+        items: [{
+          id: 'the-first-id',
+          title: 'The First Item',
+          description: 'This is the description of the first item.',
+        }, {
+          id: 'the-second-id',
+          title: 'The Second Item',
+          description: 'This is the description of the Second item.',
+        }],
+      });
     });
 
     test('selected item for leaf node', () => {
@@ -113,7 +137,7 @@ describe('FeedContainer', () => {
         description: 'This is the description of the first item.',
       };
 
-      const state = subject({ feed: { value: [], selectedItem } } as RootState);
+      const state = subject({ feed: { selectedItem } } as RootState);
 
       expect(state).toMatchObject({ selectedItem });
     });

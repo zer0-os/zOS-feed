@@ -4,6 +4,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Model as FeedItem } from '../feed-model';
+import getDeepProperty from 'lodash.get';
 
 export enum SagaActionTypes {
   Load = 'feed/saga/load',
@@ -86,6 +87,16 @@ const normalize = (state, items) => {
   });
 
   return { ids, entities };
+};
+
+const denormalizeSingle = (state, id) => getDeepProperty(state, `feed.value.entities[${id}]`, null);
+
+export const denormalize = (state, ids) => {
+  if (!Array.isArray(ids)) {
+    return denormalizeSingle(state, ids);
+  }
+
+  return ids.map(id => denormalizeSingle(state, id));
 };
 
 export const { receive, receiveItem, select, setStatus } = slice.actions;
