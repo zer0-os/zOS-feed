@@ -11,6 +11,7 @@ describe('FeedLeaf', () => {
       title: '',
       description: '',
       imageUrl: '',
+      animationUrl: '',
       znsRoute: '',
 
       ...props,
@@ -23,6 +24,21 @@ describe('FeedLeaf', () => {
     const wrapper = subject({ imageUrl: 'http://example.com/theimage.jpg' });
 
     expect(wrapper.find('.feed-leaf__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
+    
+    wrapper.setProps({ animationUrl: '' });
+    
+    expect(wrapper.find('.feed-leaf__image').prop('src')).toStrictEqual('http://example.com/theimage.jpg');
+  });
+
+  it('renders image of animationUrl', () => {
+    const wrapper = subject({ animationUrl: 'http://example.com/theimage_animation-url.jpg' });
+
+    expect(wrapper.find('.feed-leaf__image').prop('src')).toStrictEqual('http://example.com/theimage_animation-url.jpg');
+    
+    wrapper.setProps({ imageUrl: 'http://example.com/theimage.jpg' });
+
+    expect(wrapper.find('.feed-leaf__image').prop('src')).toStrictEqual('http://example.com/theimage_animation-url.jpg');
+
   });
 
   it('adds title as alt text to image', () => {
