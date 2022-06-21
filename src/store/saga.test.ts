@@ -14,7 +14,7 @@ describe('feed saga', () => {
       const metadataUrl = 'the-metadata-url';
 
       const initialState = {
-        feed: { value: { itemsById: { 'the-item-id': { id: 'the-item-id', metadataUrl } } } },
+        feed: { value: { entities: { 'the-item-id': { id: 'the-item-id', metadataUrl } } } },
       };
 
       await expectSaga(loadItemMetadata, { payload: 'the-item-id' })
@@ -39,7 +39,7 @@ describe('feed saga', () => {
         feed: {
           value: {
             ids: ['the-first-item-id', 'the-second-item-id'],
-            itemsById: {
+            entities: {
               'the-first-item-id': { id: 'the-first-item-id', metadataUrl: 'first-metadata-url', name: 'cats', description: 'what' },
               'the-second-item-id': { id: 'the-second-item-id', metadataUrl, name: 'dogs', description: 'heyo' },
             },
@@ -47,7 +47,7 @@ describe('feed saga', () => {
         },
       } as any;
 
-      const { storeState: { feed: { value: { itemsById } } } } = await expectSaga(loadItemMetadata, { payload: 'the-second-item-id' })
+      const { storeState: { feed: { value: { entities } } } } = await expectSaga(loadItemMetadata, { payload: 'the-second-item-id' })
         .withReducer(rootReducer, initialState)
         .provide([
           [matchers.call(metadataService.load, metadataUrl), metadata],
@@ -55,7 +55,7 @@ describe('feed saga', () => {
         .call(metadataService.load, metadataUrl)
         .run();
 
-      expect(itemsById['the-second-item-id']).toMatchObject({
+      expect(entities['the-second-item-id']).toMatchObject({
         id: 'the-second-item-id',
         metadataUrl,
         name: 'name from metadata',
@@ -170,7 +170,7 @@ describe('feed saga', () => {
 
       const expectedValue = {
         ids: ['the-first-id', 'the-second-id', 'the-third-id', 'the-fourth-id', ],
-        itemsById: {
+        entities: {
           'the-first-id': {
             id: 'the-first-id',
             title: 'The First ZNS Feed Item',
@@ -228,7 +228,7 @@ describe('feed saga', () => {
           [matchers.call.fn(client.get), znsClient],
         ])
         .hasFinalState({
-          value: { ids: [], itemsById: {} },
+          value: { ids: [], entities: {} },
           status: AsyncActionStatus.Idle,
           selectedItem: item,
         })

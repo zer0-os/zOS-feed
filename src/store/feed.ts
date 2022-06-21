@@ -30,14 +30,14 @@ export enum AsyncActionStatus {
 export interface FeedState {
   value: {
     ids: string[];
-    itemsById: { [id: string]: FeedItem };
+    entities: { [id: string]: FeedItem };
   },
   selectedItem: FeedItem;
   status: AsyncActionStatus;
 }
 
 const initialState: FeedState = {
-  value: { ids: [], itemsById: {} },
+  value: { ids: [], entities: {} },
   selectedItem: null,
   status: AsyncActionStatus.Idle,
 };
@@ -51,9 +51,9 @@ const slice = createSlice({
     },
     receiveItem: (state, action: PayloadAction<FeedItem>) => {
       const { id } = action.payload;
-      const existingItems = state.value.itemsById;
+      const existingItems = state.value.entities;
 
-      state.value.itemsById = {
+      state.value.entities = {
         ...existingItems,
         [id]: {
           ...(existingItems[id] || {}),
@@ -72,20 +72,20 @@ const slice = createSlice({
 
 const normalize = (state, items) => {
   const ids = [];
-  const itemsById: any = {};
-  const existingItems = state.itemsById;
+  const entities: any = {};
+  const existingItems = state.entities;
 
   items.forEach((item) => {
     const { id } = item;
 
     ids.push(id);
-    itemsById[id] = {
+    entities[id] = {
       ...(existingItems[id] || {}),
       ...item,
     };
   });
 
-  return { ids, itemsById };
+  return { ids, entities };
 };
 
 export const { receive, receiveItem, select, setStatus } = slice.actions;

@@ -4,7 +4,7 @@ import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionS
 import { client, metadataService } from '@zer0-os/zos-zns';
 
 export function* loadItemMetadata(action) {
-  const item = yield select((state) => state.feed.value.itemsById[action.payload]);
+  const item = yield select((state) => state.feed.value.entities[action.payload]);
 
   const metadata = yield call(metadataService.load, item.metadataUrl);
 

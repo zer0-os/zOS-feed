@@ -12,7 +12,7 @@ describe('feed reducer', () => {
   const initialExistingState: FeedState = {
     value: {
       ids: ['what'],
-      itemsById: {
+      entities: {
         'what': { id: 'what', title: 'the existing item' } as FeedModel,
       },
     },
@@ -21,14 +21,14 @@ describe('feed reducer', () => {
   };
 
   const initialEmptyState: FeedState = {
-    value: { ids: [], itemsById: {} },
+    value: { ids: [], entities: {} },
     selectedItem: null,
     status: AsyncActionStatus.Idle,
   };
 
   it('should handle initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual({
-      value: { ids: [], itemsById: {} },
+      value: { ids: [], entities: {} },
       selectedItem: null,
       status: AsyncActionStatus.Idle,
     });
@@ -45,7 +45,7 @@ describe('feed reducer', () => {
 
     expect(actual.value).toMatchObject({
       ids: ['first-id'],
-      itemsById: {
+      entities: {
         'first-id': {
           id: 'first-id',
           title: 'the item',
@@ -81,7 +81,7 @@ describe('feed reducer', () => {
 
     expect(actual.value).toMatchObject({
       ids: ['first-id', 'what'],
-      itemsById: {
+      entities: {
         'first-id': {
           id: 'first-id',
           title: 'the item',
@@ -106,7 +106,7 @@ describe('feed reducer', () => {
 
     expect(actual.value).toMatchObject({
       ids: ['what'],
-      itemsById: {
+      entities: {
         'what': {
           id: 'what',
           title: 'the existing item',
@@ -127,7 +127,7 @@ describe('feed reducer', () => {
 
     expect(actual.value).toMatchObject({
       ids: ['what'],
-      itemsById: {
+      entities: {
         'first-id': {
           id: 'first-id',
           title: 'the item',
