@@ -28,14 +28,17 @@ export enum AsyncActionStatus {
 
 // change this to root asyncData<T> state or something.
 export interface FeedState {
-  value: FeedItem[];
+  value: {
+    ids: string[];
+    itemsById: { [id: string]: FeedItem };
+  },
   selectedItem: FeedItem;
   status: AsyncActionStatus;
 }
 
 const initialState: FeedState = {
-  value: [],
-  selectedItem: undefined,
+  value: { ids: [], itemsById: {} },
+  selectedItem: null,
   status: AsyncActionStatus.Idle,
 };
 
@@ -44,7 +47,19 @@ const slice = createSlice({
   initialState,
   reducers: {
     receive: (state, action: PayloadAction<FeedItem[]>) => {
-      state.value = action.payload;
+      state.value = normalize(state.value, action.payload);
+    },
+    receiveItem: (state, action: PayloadAction<FeedItem>) => {
+      const { id } = action.payload;
+      const existingItems = state.value.itemsById;
+
+      state.value.itemsById = {
+        ...existingItems,
+        [id]: {
+          ...(existingItems[id] || {}),
+          ...action.payload,
+        },
+      };
     },
     select: (state, action: PayloadAction<FeedItem>) => {
       state.selectedItem = action.payload;
@@ -55,7 +70,25 @@ const slice = createSlice({
   },
 });
 
-export const { receive, select, setStatus } = slice.actions;
+const normalize = (state, items) => {
+  const ids = [];
+  const itemsById: any = {};
+  const existingItems = state.itemsById;
+
+  items.forEach((item) => {
+    const { id } = item;
+
+    ids.push(id);
+    itemsById[id] = {
+      ...(existingItems[id] || {}),
+      ...item,
+    };
+  });
+
+  return { ids, itemsById };
+};
+
+export const { receive, receiveItem, select, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
 export { load, loadItemMetadata, loadSelectedItemMetadata };

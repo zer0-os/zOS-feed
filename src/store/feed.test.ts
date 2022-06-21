@@ -1,6 +1,7 @@
 import {
   reducer,
   receive,
+  receiveItem,
   FeedState,
   AsyncActionStatus,
   setStatus,
@@ -9,18 +10,26 @@ import { Model as FeedModel } from '../feed-model';
 
 describe('feed reducer', () => {
   const initialExistingState: FeedState = {
-    value: [{ id: 'what', title: 'the existing item' }] as FeedModel[],
+    value: {
+      ids: ['what'],
+      itemsById: {
+        'what': { id: 'what', title: 'the existing item' } as FeedModel,
+      },
+    },
+    selectedItem: null,
     status: AsyncActionStatus.Idle
   };
 
   const initialEmptyState: FeedState = {
-    value: null,
+    value: { ids: [], itemsById: {} },
+    selectedItem: null,
     status: AsyncActionStatus.Idle,
   };
 
   it('should handle initial state', () => {
     expect(reducer(undefined, { type: 'unknown' })).toEqual({
-      value: [],
+      value: { ids: [], itemsById: {} },
+      selectedItem: null,
       status: AsyncActionStatus.Idle,
     });
   });
@@ -29,24 +38,107 @@ describe('feed reducer', () => {
     const feedItems = [{
       id: 'first-id',
       title: 'the item',
-      description: 'the desription',
+      description: 'the description',
     }] as FeedModel[];
 
     const actual = reducer(initialEmptyState, receive(feedItems));
 
-    expect(actual.value).toEqual(feedItems);
+    expect(actual.value).toMatchObject({
+      ids: ['first-id'],
+      itemsById: {
+        'first-id': {
+          id: 'first-id',
+          title: 'the item',
+          description: 'the description',
+        },
+      },
+    });
   });
 
-  it('should replace existing state', () => {
+  it('should replace existing ids in state', () => {
     const feedItems = [{
       id: 'first-id',
       title: 'the item',
-      description: 'the desription',
+      description: 'the description',
     }] as FeedModel[];
 
     const actual = reducer(initialExistingState, receive(feedItems));
 
-    expect(actual.value).toEqual(feedItems);
+    expect(actual.value.ids).toStrictEqual(['first-id']);
+  });
+
+  it('should merge items in state', () => {
+    const feedItems = [{
+      id: 'first-id',
+      title: 'the item',
+      description: 'the description',
+    }, {
+      id: 'what',
+      description: 'the new description',
+    }] as FeedModel[];
+
+    const actual = reducer(initialExistingState, receive(feedItems));
+
+    expect(actual.value).toMatchObject({
+      ids: ['first-id', 'what'],
+      itemsById: {
+        'first-id': {
+          id: 'first-id',
+          title: 'the item',
+          description: 'the description',
+        },
+        'what': {
+          id: 'what',
+          title: 'the existing item',
+          description: 'the new description',
+        },
+      },
+    });
+  });
+
+  it('should merge item in state for receiveItem', () => {
+    const feedItem = {
+      id: 'what',
+      description: 'the new description',
+    } as FeedModel;
+
+    const actual = reducer(initialExistingState, receiveItem(feedItem));
+
+    expect(actual.value).toMatchObject({
+      ids: ['what'],
+      itemsById: {
+        'what': {
+          id: 'what',
+          title: 'the existing item',
+          description: 'the new description',
+        },
+      },
+    });
+  });
+
+  it('should add item to state for receiveItem', () => {
+    const feedItem = {
+      id: 'first-id',
+      title: 'the item',
+      description: 'the description',
+    } as FeedModel;
+
+    const actual = reducer(initialExistingState, receiveItem(feedItem));
+
+    expect(actual.value).toMatchObject({
+      ids: ['what'],
+      itemsById: {
+        'first-id': {
+          id: 'first-id',
+          title: 'the item',
+          description: 'the description',
+        },
+        'what': {
+          id: 'what',
+          title: 'the existing item',
+        },
+      },
+    });
   });
 
   it('should replace status', () => {
