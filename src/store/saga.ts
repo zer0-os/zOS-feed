@@ -1,29 +1,14 @@
-import { spawn, takeLatest, put, call, select } from 'redux-saga/effects';
-import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus } from './feed';
+import { takeLatest, put, call, select } from 'redux-saga/effects';
+import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus, receiveItem } from './feed';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
 
 export function* loadItemMetadata(action) {
-  const items = yield select((state) => state.feed.value);
+  const item = yield select((state) => state.feed.value.itemsById[action.payload]);
 
-  const itemIndex = items.findIndex(item => item.id === action.payload);
-  const item = items[itemIndex];
-
-  yield spawn(fetchResource, item)
-}
-
-function* fetchResource(item) {
   const metadata = yield call(metadataService.load, item.metadataUrl);
 
-  const items = yield select((state) => state.feed.value);
-
-  yield put(receive(items.map(i => {
-    if (i.id === item.id) {
-      return { ...item, ...metadata };
-    }
-
-    return i;
-  })));
+  yield put(receiveItem({ id: item.id, ...metadata }));
 }
 
 export function* load(action) {
