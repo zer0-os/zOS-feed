@@ -2,7 +2,7 @@ import React from 'react';
 import { FeedItemContainer } from './feed-item-container';
 import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { isEqual } from 'lodash';
+import isEqualWith from 'lodash.isequalwith';
 
 import './styles.css';
 
@@ -21,30 +21,41 @@ export class Feed extends React.Component<Properties, State> {
 
   constructor(props) {
     super(props);
-    this.state = {
-      feed: this.props.items.slice(0, Feed.pageSize) || [],
-      hasMore: false,
+
+    this.state = this.getDefaultState(props);
+  }
+
+  getDefaultState(props = this.props) {
+    const feed = (props.items || []).slice(0, Feed.pageSize);
+
+    return {
+      feed,
+      hasMore: props.items.length > feed.length,
       pageNumber: 1,
     };
   }
 
-  componentDidUpdate(prevProps: Properties) {
+  componentDidUpdate(prevProps) {
     const { items } = this.props;
-    if (
-      items.length != prevProps.items.length ||
-      (items.length == prevProps.items.length &&
-        !isEqual(items, prevProps.items))
-    ) {
-      this.setState({
-        feed: items.slice(0, Feed.pageSize),
-        hasMore: true,
-        pageNumber: 1,
-      });
+    const { items: prevItems } = prevProps;
+
+    // this is overly simplified. if we need it to be more complex,
+    // we should pull the paging out into global state so that we
+    // can be more explicit with when and how to update.
+    if (this.haveItemsUpdated(items, prevItems)) {
+      this.setState(this.getDefaultState());
     }
+  }
+
+  haveItemsUpdated(items, prevItems) {
+    if (items.length != prevItems.length) return true;
+
+    return (!isEqualWith(items, prevItems, (first, second) => first.id === second.id));
   }
 
   fetchMoreData = () => {
     const { pageNumber, feed } = this.state;
+
     if (feed.length >= this.props.items.length) {
       this.setState({ hasMore: false });
       return;
