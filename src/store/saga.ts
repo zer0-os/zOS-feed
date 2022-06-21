@@ -13,15 +13,13 @@ export function* loadItemMetadata(action) {
 }
 
 function* fetchResource(item) {
-  if (item?.status?.metadata) return null;
-
   const metadata = yield call(metadataService.load, item.metadataUrl);
 
   const items = yield select((state) => state.feed.value);
 
   yield put(receive(items.map(i => {
     if (i.id === item.id) {
-      return { ...item, ...metadata, ...{ status: { metadata: 'loaded' } } };
+      return { ...item, ...metadata };
     }
 
     return i;

@@ -5,53 +5,19 @@ import { Model as FeedItemModel } from './feed-model';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Feed, Properties } from './feed';
 
-const feedItemsTest = [
-  {
-    id: 'the-first-id',
-    title: 'The First Item',
-    description: 'This is the description of the first item.',
-  },
-  {
-    id: 'the-second-id',
-    title: 'The Second Item',
-    description: 'This is the description of the Second item.',
-  },
-  {
-    id: 'the-third-id',
-    title: 'The 3 Item',
-    description: 'This is the description of the 3 item.',
-  },
-  {
-    id: '4',
-    title: 'The 4 Item',
-    description: 'This is the description of the 4 item.',
-  },
-  {
-    id: '5',
-    title: 'The 5 Item',
-    description: 'This is the description of the 5 item.',
-  },
-  {
-    id: '676',
-    title: 'The 6 Item',
-    description: 'This is the description of the 6 item.',
-  },
-  {
-    id: '7-id',
-    title: 'The 7 Item',
-    description: 'This is the description of the 7 item.',
-  },
-  {
-    id: '8',
-    title: 'The 8 Item',
-    description: 'This is the description of the 8 item.',
-  },
-  {
-    id: '9',
-    title: 'The 9 Item',
-    description: 'This is the description of the 9 item.',
-  },
-] as FeedItemModel[];
+const getItems = (numItems: number = 10) => {
+  const items: any = [];
+
+  for(let i = 1; i <= numItems; i++) {
+    items.push({
+      id: `item-id-${i}`,
+      title: `Item Title #${i}`,
+      description: `This is the description of item #${i}.`,
+    });
+  }
+
+  return items as FeedItemModel[];
+};
 
 describe('Feed', () => {
   const subject = (props: Partial<Properties>) => {
@@ -63,47 +29,48 @@ describe('Feed', () => {
     return shallow(<Feed {...allProps} />);
   };
 
-  test('renders a feed item for item', () => {
-    const wrapper = subject({ items: feedItemsTest.slice(0, 2) });
-
-    expect(wrapper.find(FeedItem)).toHaveLength(2);
-  });
-
   test('passes id to FeedItem', () => {
-    const wrapper = subject({ items: feedItemsTest.slice(0, 2) });
+    const items = getItems();
 
-    expect(wrapper.find(FeedItem).at(1).prop('id')).toEqual('the-second-id');
+    const wrapper = subject({ items });
+
+    expect(wrapper.find(FeedItem).at(1).prop('id')).toEqual(items[1].id);
   });
 
-  test('render the correct items initially', () => {
-    const wrapper = subject({ items: feedItemsTest });
+  it('should render full page if more items than page size', () => {
+    const wrapper = subject({ items: getItems(10) });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
   });
 
-  test('rendered items, if items are added to the end of the array', () => {
-    const wrapper = subject({ items: feedItemsTest.slice(0, 7) });
+  it('should render partial page if less items than page size', () => {
+    const wrapper = subject({ items: getItems(3) });
 
-    expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
-
-    wrapper.setProps({ items: feedItemsTest.slice(0, 9) });
-
-    expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
+    expect(wrapper.find(FeedItem)).toHaveLength(3);
   });
 
-  test('render the correct items on fetch', () => {
-    const wrapper = subject({ items: feedItemsTest });
+  it('should set hasMore to true if more items than page size', () => {
+    const wrapper = subject({ items: getItems(10) });
+
+    expect(wrapper.find(InfiniteScroll).prop('hasMore')).toBe(true);
+  });
+
+  it('should render second page of items after next()', () => {
+    const wrapper = subject({ items: getItems(10) });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
 
     // triggering the scroll
     wrapper.find(InfiniteScroll).props().next();
 
-    expect(wrapper.find(FeedItem)).toHaveLength(9);
+    expect(wrapper.find(FeedItem)).toHaveLength(10);
   });
 
-  test('that we reset the scroll position, and rendered items, if the items change sufficiently to warrant that', () => {
-    const wrapper = subject({ items: feedItemsTest.slice(0, 7) });
+  it('should reset scroll if items update', () => {
+    const firstSet = getItems(7);
+    const secondSet = getItems(15).slice(7);
+
+    const wrapper = subject({ items: firstSet });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
 
@@ -112,29 +79,44 @@ describe('Feed', () => {
 
     expect(wrapper.find(FeedItem)).toHaveLength(7);
 
-    wrapper.setProps({ items: feedItemsTest.slice(0, 9) });
+    wrapper.setProps({ items: secondSet });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
   });
 
-  test('that we maintain the correct scroll position, and rendered items, if items are added to the start of the array.', () => {
-    const wrapper = subject({ items: feedItemsTest });
+  it('should set hasMore to true if items update and there are more items than page size', () => {
+    const firstSet = getItems(7);
+    const secondSet = getItems(15).slice(7);
+
+    const wrapper = subject({ items: firstSet });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
 
-    expect(wrapper.find(FeedItem).at(0).prop('id')).toBe(feedItemsTest[0].id);
+    // triggering the scroll
+    wrapper.find(InfiniteScroll).props().next();
 
-    const newItem = {
-      id: 'this the new id',
-      title: 'new title',
-      description: 'this is the description',
-    };
+    expect(wrapper.find(FeedItem)).toHaveLength(7);
 
-    wrapper.setProps({ items: [newItem, ...feedItemsTest] });
+    wrapper.setProps({ items: secondSet });
+
+    expect(wrapper.find(InfiniteScroll).prop('hasMore')).toBe(true);
+  });
+
+  it('should set hasMore to false if items update and there are less items than page size', () => {
+    const firstSet = getItems(7);
+    const secondSet = getItems(9).slice(7);
+
+    const wrapper = subject({ items: firstSet });
 
     expect(wrapper.find(FeedItem)).toHaveLength(Feed.pageSize);
 
-    expect(wrapper.find(FeedItem).at(0).prop('id')).toBe(newItem.id);
-    expect(wrapper.find(FeedItem).at(1).prop('id')).toBe(feedItemsTest[0].id);
+    // triggering the scroll
+    wrapper.find(InfiniteScroll).props().next();
+
+    expect(wrapper.find(FeedItem)).toHaveLength(7);
+
+    wrapper.setProps({ items: secondSet });
+
+    expect(wrapper.find(InfiniteScroll).prop('hasMore')).toBe(false);
   });
 });
