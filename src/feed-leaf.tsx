@@ -1,16 +1,41 @@
 import React from 'react';
-import { ZnsMetadataService } from '@zer0-os/zos-zns';
 import { shorty } from './util/feed';
-import { Model } from './feed-model';
 import CloudMedia from './components/cloud-media';
 import EtherScan from './components/ether-scan';
 
 import './styles.css';
 
-export interface Properties extends Model {}
+export interface Properties {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  animationUrl?: string;
+  minter?: string;
+  owner?: string;
+  attributes?: { trait_type: string, value: string }[];
+  ipfsContentId: string;
+  metadataUrl: string;
+  chainId: number;
+  contract: string;
+}
+
 export class FeedLeaf extends React.Component<Properties, {}> {
   render() {
-    const { title, description, imageUrl, animationUrl, minter, owner, attributes, ipfsContentId, id, metadataUrl, chainId, contract } = this.props;
+    const {
+      title,
+      description,
+      imageUrl,
+      animationUrl,
+      minter,
+      owner,
+      attributes,
+      ipfsContentId,
+      id,
+      metadataUrl,
+      chainId,
+      contract,
+    } = this.props;
 
     return (
       <div className='feed-leaf'>

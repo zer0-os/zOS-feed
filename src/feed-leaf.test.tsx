@@ -4,7 +4,7 @@ import { shorty } from './util/feed';
 
 import { FeedLeaf, Properties } from './feed-leaf';
 
-describe.skip('FeedLeaf', () => {
+describe('FeedLeaf', () => {
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       id: '',
@@ -12,7 +12,13 @@ describe.skip('FeedLeaf', () => {
       description: '',
       imageUrl: '',
       animationUrl: '',
-      znsRoute: '',
+      minter: '',
+      owner: '',
+      attributes: [],
+      ipfsContentId: '',
+      metadataUrl: '',
+      chainId: null,
+      contract: '',
 
       ...props,
     };
@@ -94,10 +100,7 @@ describe.skip('FeedLeaf', () => {
     const wrapper = subject({ ipfsContentId });
 
     const resources = wrapper.find('[className$="__external-resource"]').map(item => item.text()).join();
-    console.log('resources: ', resources);
 
-    [ipfsContentId].forEach(resource => {
-      expect(resources.includes(resource)).toBe(true);
-    })
+    expect(resources.includes('su...link')).toBe(true);
   });
 });
