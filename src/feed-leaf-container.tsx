@@ -4,38 +4,43 @@ import { connectContainer } from './util/redux-container';
 import { Model } from './feed-model';
 import { RootState } from './store';
 import { FeedLeaf } from './feed-leaf';
-import { loadSelectedItemMetadata } from './store/feed';
+import { denormalize, loadItemMetadata } from './store/feed';
 
 export interface PublicProperties {
-  item: Model;
   chainId: number;
 }
 
 export interface Properties extends PublicProperties {
   item: Model;
-  loadSelectedItemMetadata: () => void;
+  loadMetadata: (id: string) => void;
 }
 
 export class Container extends React.Component<Properties> {
-  static mapState(state: RootState, props: Properties): Partial<Properties> {
-    const { item, chainId } = props;
+  static mapState(state: RootState): Partial<Properties> {
+    const item = denormalize(state, state.feed.selectedItem);
 
-    return { item, chainId };
+    return { item };
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
-    return { loadSelectedItemMetadata };
+    return {
+      loadMetadata: loadItemMetadata,
+    };
   }
 
   componentDidMount() {
-    this.props.loadSelectedItemMetadata();
+    const { item } = this.props;
+
+    if (item && item.id) {
+      this.props.loadMetadata(item.id);
+    }
   }
 
   componentDidUpdate = async (prevProps: Properties) => {
     const { item } = this.props;
 
     if (item && (item.id !== prevProps.item?.id)) {
-      this.props.loadSelectedItemMetadata();
+      this.props.loadMetadata(item.id);
     }
   }
 

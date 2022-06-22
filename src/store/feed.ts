@@ -9,12 +9,10 @@ import getDeepProperty from 'lodash.get';
 export enum SagaActionTypes {
   Load = 'feed/saga/load',
   LoadItemMetadata = 'feed/saga/loadItemMetadata',
-  LoadSelectedItemMetadata = 'feed/saga/loadSelectedItemMetadata',
 }
 
 const load = createAction<ZnsRouteRequest>(SagaActionTypes.Load);
 const loadItemMetadata = createAction<string>(SagaActionTypes.LoadItemMetadata);
-const loadSelectedItemMetadata = createAction<FeedItem>(SagaActionTypes.LoadSelectedItemMetadata);
 
 export interface ZnsRouteRequest {
   route: string;
@@ -109,4 +107,4 @@ export const denormalize = (state, ids) => {
 export const { receive, receiveItem, receiveSelectedItem, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
-export { load, loadItemMetadata, loadSelectedItemMetadata };
+export { load, loadItemMetadata };

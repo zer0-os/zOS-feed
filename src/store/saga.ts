@@ -33,20 +33,9 @@ export function* load(action) {
   }
 }
 
-export function* loadSelectedItemMetadata() {
-  const item = yield select((state) => state.feed.selectedItem);
-
-  if (!item?.metadataUrl) return null;
-
-  const metadata = yield call(metadataService.load, item.metadataUrl);
-
-  yield put(receiveSelectedItem({ ...item, ...metadata }));
-}
-
 export function* saga() {
   yield all([
     yield takeLatest(SagaActionTypes.Load, load),
     yield takeEvery(SagaActionTypes.LoadItemMetadata, loadItemMetadata),
-    yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata),
   ]);
 }

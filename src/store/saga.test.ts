@@ -4,9 +4,9 @@ import { throwError } from 'redux-saga-test-plan/providers';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
 
-import { load, loadItemMetadata, loadSelectedItemMetadata } from './saga';
+import { load, loadItemMetadata } from './saga';
 import { AsyncActionStatus, reducer } from './feed';
-import { rootReducer, RootState } from '.';
+import { rootReducer } from '.';
 
 describe('feed saga', () => {
   describe('loadItemMetadata', () => {
@@ -57,58 +57,6 @@ describe('feed saga', () => {
 
       expect(entities['the-second-item-id']).toMatchObject({
         id: 'the-second-item-id',
-        metadataUrl,
-        name: 'name from metadata',
-        description: 'description from metadata',
-        attributes: [
-          { trait_type: 'color', value: 'red' },
-        ],
-      });
-    });
-  });
-
-  describe('loadSelectedItemMetadata', () => {
-    it('should load metadata for item', async () => {
-      const metadataUrl = 'the-metadata-url';
-
-      const initialState = {
-        feed: { selectedItem: { id: 'the-item-id', metadataUrl } },
-      };
-
-      await expectSaga(loadSelectedItemMetadata)
-        .withState(initialState)
-        .provide([[matchers.call.fn(metadataService.load), {}]])
-        .call(metadataService.load, metadataUrl)
-        .run();
-    });
-
-    it('should update item in state with metadata', async () => {
-      const metadataUrl = 'the-second-metadata-url';
-
-      const metadata = {
-        name: 'name from metadata',
-        description: 'description from metadata',
-        attributes: [
-          { trait_type: 'color', value: 'red' },
-        ],
-      };
-
-      const initialState = {
-        feed: {
-          selectedItem: { id: 'the-first-item-id', metadataUrl, name: 'cats', description: 'what' },
-        },
-      };
-
-      const { storeState: { feed: { selectedItem: finalItem } } } = await expectSaga(loadSelectedItemMetadata)
-        .withReducer(rootReducer, initialState)
-        .provide([
-          [matchers.call(metadataService.load, metadataUrl), metadata],
-        ])
-        .call(metadataService.load, metadataUrl)
-        .run();
-
-      expect(finalItem).toMatchObject({
-        id: 'the-first-item-id',
         metadataUrl,
         name: 'name from metadata',
         description: 'description from metadata',

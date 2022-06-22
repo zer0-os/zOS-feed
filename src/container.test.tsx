@@ -129,17 +129,5 @@ describe('FeedContainer', () => {
         }],
       });
     });
-
-    test('selected item for leaf node', () => {
-      const selectedItem = {
-        id: 'the-first-id',
-        title: 'The First Item',
-        description: 'This is the description of the first item.',
-      };
-
-      const state = subject({ feed: { selectedItem } } as RootState);
-
-      expect(state).toMatchObject({ selectedItem });
-    });
   });
 });

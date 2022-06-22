@@ -16,7 +16,6 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   items: FeedItem[];
-  selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
 }
@@ -26,7 +25,6 @@ export class Container extends React.Component<Properties> {
     return {
       items: denormalize(state, state.feed.value.ids),
       status: state.feed.status,
-      selectedItem: state.feed.selectedItem,
     };
   }
 
@@ -57,7 +55,7 @@ export class Container extends React.Component<Properties> {
   }
   
   render() {
-    const { items, route, selectedItem, provider } = this.props;
+    const { items, route, provider } = this.props;
     
     if (this.isLoading) {
       return (
@@ -69,7 +67,7 @@ export class Container extends React.Component<Properties> {
     }
 
     if (isLeafNode(route, items)) {
-      return <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />;
+      return <FeedLeafContainer chainId={provider?.network?.chainId} />;
     }
 
     return <Feed items={items} />;
