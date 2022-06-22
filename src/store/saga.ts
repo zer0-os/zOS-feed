@@ -1,5 +1,5 @@
 import { takeEvery, takeLatest, put, call, select, all } from 'redux-saga/effects';
-import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus, receiveItem } from './feed';
+import { SagaActionTypes, receive, receiveSelectedItem, setStatus, AsyncActionStatus, receiveItem } from './feed';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
 
@@ -22,7 +22,7 @@ export function* load(action) {
     const routeId = yield call([znsClient, znsClient.resolveIdFromName], route);
   
     const item = yield call([znsClient, znsClient.getFeedItem], routeId);
-    yield put(selectItem(item));
+    yield put(receiveSelectedItem(item));
 
     const items = yield call([znsClient, znsClient.getFeed], routeId);
     yield put(receive(items));
@@ -40,7 +40,7 @@ export function* loadSelectedItemMetadata() {
 
   const metadata = yield call(metadataService.load, item.metadataUrl);
 
-  yield put(selectItem({ ...item, ...metadata }));
+  yield put(receiveSelectedItem({ ...item, ...metadata }));
 }
 
 export function* saga() {

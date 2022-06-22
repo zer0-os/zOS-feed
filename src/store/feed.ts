@@ -33,7 +33,7 @@ export interface FeedState {
     ids: string[];
     entities: { [id: string]: FeedItem };
   },
-  selectedItem: FeedItem;
+  selectedItem: string;
   status: AsyncActionStatus;
 }
 
@@ -51,19 +51,15 @@ const slice = createSlice({
       state.value = normalize(state.value, action.payload);
     },
     receiveItem: (state, action: PayloadAction<FeedItem>) => {
-      const { id } = action.payload;
-      const existingItems = state.value.entities;
+      const { entities } = normalize(state.value, action.payload);
 
-      state.value.entities = {
-        ...existingItems,
-        [id]: {
-          ...(existingItems[id] || {}),
-          ...action.payload,
-        },
-      };
+      state.value.entities = entities;
     },
-    select: (state, action: PayloadAction<FeedItem>) => {
-      state.selectedItem = action.payload;
+    receiveSelectedItem: (state, action: PayloadAction<FeedItem>) => {
+      const { entities } = normalize(state.value, action.payload);
+
+      state.selectedItem = action.payload.id;
+      state.value.entities = entities;
     },
     setStatus: (state, action: PayloadAction<AsyncActionStatus>) => {
       state.status = action.payload;
@@ -71,17 +67,28 @@ const slice = createSlice({
   },
 });
 
+// note that this currently returns a full set
+// of entities merged with the new ones.
+// if we want to use this externally, we'll
+// want to separate that, so that this only
+// returns the entitites that we are currently
+// processing.
 const normalize = (state, items) => {
+  if (!Array.isArray(items)) {
+    items = [items];
+  }
+
   const ids = [];
-  const entities: any = {};
-  const existingItems = state.entities;
+  const entities: any = {
+    ...state.entities,
+  };
 
   items.forEach((item) => {
     const { id } = item;
 
     ids.push(id);
     entities[id] = {
-      ...(existingItems[id] || {}),
+      ...(entities[id] || {}),
       ...item,
     };
   });
@@ -99,7 +106,7 @@ export const denormalize = (state, ids) => {
   return ids.map(id => denormalizeSingle(state, id));
 };
 
-export const { receive, receiveItem, select, setStatus } = slice.actions;
+export const { receive, receiveItem, receiveSelectedItem, setStatus } = slice.actions;
 export const { reducer } =  slice;
 
 export { load, loadItemMetadata, loadSelectedItemMetadata };

@@ -4,7 +4,7 @@ import { shorty } from './util/feed';
 
 import { FeedLeaf, Properties } from './feed-leaf';
 
-describe('FeedLeaf', () => {
+describe.skip('FeedLeaf', () => {
   const subject = (props: Partial<Properties>) => {
     const allProps: Properties = {
       id: '',
@@ -94,6 +94,7 @@ describe('FeedLeaf', () => {
     const wrapper = subject({ ipfsContentId });
 
     const resources = wrapper.find('[className$="__external-resource"]').map(item => item.text()).join();
+    console.log('resources: ', resources);
 
     [ipfsContentId].forEach(resource => {
       expect(resources.includes(resource)).toBe(true);

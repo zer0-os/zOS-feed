@@ -191,11 +191,15 @@ describe('feed saga', () => {
             title: 'The Fourth ZNS Feed Item',
             description: 'This is the description of the Fourth item.',
           },
+          'the-current-item-id': {
+            id: 'the-current-item-id',
+          },
         },
       };
 
       const znsClient = getZnsClient({
         getFeed: async () => items,
+        getFeedItem: async () => ({ id: 'the-current-item-id' }),
       });
 
       await expectSaga(load, { payload: { route: '', provider: {} } })
@@ -206,7 +210,7 @@ describe('feed saga', () => {
         .hasFinalState({
           value: expectedValue,
           status: AsyncActionStatus.Idle,
-          selectedItem: {},
+          selectedItem: 'the-current-item-id',
         })
         .run();
     });
@@ -228,9 +232,18 @@ describe('feed saga', () => {
           [matchers.call.fn(client.get), znsClient],
         ])
         .hasFinalState({
-          value: { ids: [], entities: {} },
+          value: {
+            ids: [],
+            entities: {
+              'the-id': {
+                id: 'the-id',
+                title: 'The ZNS Feed Item',
+                description: 'This is the description of the item.',
+              },
+            },
+          },
           status: AsyncActionStatus.Idle,
-          selectedItem: item,
+          selectedItem: 'the-id',
         })
         .run();
     });

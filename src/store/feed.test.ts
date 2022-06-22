@@ -5,6 +5,7 @@ import {
   FeedState,
   AsyncActionStatus,
   setStatus,
+  receiveSelectedItem,
 } from './feed';
 import { Model as FeedModel } from '../feed-model';
 
@@ -14,9 +15,10 @@ describe('feed reducer', () => {
       ids: ['what'],
       entities: {
         'what': { id: 'what', title: 'the existing item' } as FeedModel,
+        'thing': { id: 'thing', title: 'the other existing item' } as FeedModel,
       },
     },
-    selectedItem: null,
+    selectedItem: 'thing',
     status: AsyncActionStatus.Idle
   };
 
@@ -55,6 +57,30 @@ describe('feed reducer', () => {
     });
   });
 
+  it('should handle receiveSelectedItem with initial state', () => {
+    const feedItem = {
+      id: 'first-id',
+      title: 'the item',
+      description: 'the description',
+    } as FeedModel;
+
+    const actual = reducer(initialEmptyState, receiveSelectedItem(feedItem));
+
+    expect(actual).toMatchObject({
+      selectedItem: 'first-id',
+      value: {
+        ids: [],
+        entities: {
+          'first-id': {
+            id: 'first-id',
+            title: 'the item',
+            description: 'the description',
+          },
+        },
+      },
+    });
+  });
+
   it('should replace existing ids in state', () => {
     const feedItems = [{
       id: 'first-id',
@@ -87,10 +113,41 @@ describe('feed reducer', () => {
           title: 'the item',
           description: 'the description',
         },
+        'thing': {
+          id: 'thing',
+          title: 'the other existing item',
+        } as FeedModel,
         'what': {
           id: 'what',
           title: 'the existing item',
           description: 'the new description',
+        },
+      },
+    });
+  });
+
+  it('should merge item in state for receiveSelectedItem', () => {
+    const feedItem = {
+      id: 'thing',
+      description: 'the new description',
+    } as FeedModel;
+
+    const actual = reducer(initialExistingState, receiveSelectedItem(feedItem));
+
+    expect(actual).toMatchObject({
+      selectedItem: 'thing',
+      value: {
+        ids: ['what'],
+        entities: {
+          'what': {
+            id: 'what',
+            title: 'the existing item',
+          },
+          'thing': {
+            id: 'thing',
+            title: 'the other existing item',
+            description: 'the new description',
+          },
         },
       },
     });
@@ -132,6 +189,10 @@ describe('feed reducer', () => {
           id: 'first-id',
           title: 'the item',
           description: 'the description',
+        },
+        'thing': {
+          id: 'thing',
+          title: 'the other existing item',
         },
         'what': {
           id: 'what',
