@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import { ZnsLink } from '@zer0-os/zos-component-library';
 
 import { FeedItem, Properties } from './feed-item';
+import CloudMedia from './components/cloud-media';
 
 describe('FeedItem', () => {
   const subject = (props: Partial<Properties>) => {
@@ -74,5 +75,17 @@ describe('FeedItem', () => {
     const link = wrapper.find('.feed-item__title').closest(ZnsLink);
 
     expect(link.prop('route')).toStrictEqual('the.route.yo');
+  });
+
+  it('should pass width and height to cloudMedia', () => {
+    const wrapper = subject({
+      id: 'the-first-id',
+      znsRoute: 'the.route.yo',
+    });
+
+    const cloudMedia = wrapper.find(CloudMedia);
+
+    expect(cloudMedia.prop('width')).toEqual(440);
+    expect(cloudMedia.prop('height')).toEqual(440);
   });
 });
