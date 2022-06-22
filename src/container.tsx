@@ -5,7 +5,7 @@ import { Feed } from './feed';
 import { FeedLeafContainer } from './feed-leaf-container';
 import { Model as FeedItem } from './feed-model';
 import { isLeafNode } from './util/feed';
-import { AsyncActionStatus, load, ZnsRouteRequest } from './store/feed';
+import { AsyncActionStatus, load, ZnsRouteRequest, denormalize } from './store/feed';
 import { RootState } from './store';
 import {Spinner} from '@zer0-os/zos-component-library';
 
@@ -16,7 +16,6 @@ export interface PublicProperties {
 
 export interface Properties extends PublicProperties {
   items: FeedItem[];
-  selectedItem: FeedItem;
   status: AsyncActionStatus;
   load: (request: ZnsRouteRequest) => void;
 }
@@ -24,9 +23,8 @@ export interface Properties extends PublicProperties {
 export class Container extends React.Component<Properties> {
   static mapState(state: RootState): Partial<Properties> {
     return {
-      items: state.feed.value,
+      items: denormalize(state, state.feed.value.ids),
       status: state.feed.status,
-      selectedItem: state.feed.selectedItem,
     };
   }
 
@@ -57,7 +55,7 @@ export class Container extends React.Component<Properties> {
   }
   
   render() {
-    const { items, route, selectedItem, provider } = this.props;
+    const { items, route, provider } = this.props;
     
     if (this.isLoading) {
       return (
@@ -69,7 +67,7 @@ export class Container extends React.Component<Properties> {
     }
 
     if (isLeafNode(route, items)) {
-      return <FeedLeafContainer item={selectedItem} chainId={provider?.network?.chainId} />;
+      return <FeedLeafContainer chainId={provider?.network?.chainId} />;
     }
 
     return <Feed items={items} />;

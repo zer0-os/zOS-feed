@@ -47,23 +47,39 @@ describe('FeedItemContainer', () => {
 
   describe('mapState', () => {
     const subject = (state: RootState, props: Partial<Properties> = {}) => Container.mapState({
-      feed: { value: [], ...(state.feed || {}) },
+      feed: {
+        value: {
+          ids: [],
+          entities: {},
+          ...(state.feed.value || {}),
+        },
+        ...(state.feed || {}) },
     } as RootState, props as Properties);
 
     test('item', () => {
-      const items = [{
-        id: 'the-first-id',
-        title: 'The First Item',
-        description: 'This is the description of the first item.',
-      }, {
+      const value = {
+        ids: ['the-first-id', 'the-second-id'],
+        entities: {
+          'the-first-id': {
+            id: 'the-first-id',
+            title: 'The First Item',
+            description: 'This is the description of the first item.',
+          },
+          'the-second-id': {
+            id: 'the-second-id',
+            title: 'The Second Item',
+            description: 'This is the description of the Second item.',
+          },
+        },
+      };
+
+      const { item } = subject({ feed: { value } } as any, { id: 'the-second-id' });
+
+      expect(item).toMatchObject({
         id: 'the-second-id',
         title: 'The Second Item',
         description: 'This is the description of the Second item.',
-      }];
-
-      const { item } = subject({ feed: { value: items } } as RootState, { id: 'the-second-id' });
-
-      expect(item).toMatchObject(items[1]);
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@zer0-os/zos-feed",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "feed app for zos",
   "main": "dist/index.js",
   "scripts": {
@@ -51,6 +51,7 @@
     "@zer0-os/zos-component-library": "0.7.0",
     "@zer0-os/zos-zns": "2.0.1",
     "classnames": "^2.3.1",
+    "lodash.get": "^4.4.2",
     "lodash.isequalwith": "^4.4.0",
     "react-infinite-scroll-component": "^6.1.0"
   }

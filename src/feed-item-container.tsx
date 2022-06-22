@@ -4,7 +4,7 @@ import { connectContainer } from './util/redux-container';
 import { Model as FeedItemModel } from './feed-model';
 import { RootState } from './store';
 import { FeedItem } from './feed-item';
-import { loadItemMetadata } from './store/feed';
+import { denormalize, loadItemMetadata } from './store/feed';
 
 export interface PublicProperties {
   id: string;
@@ -17,9 +17,7 @@ export interface Properties extends PublicProperties {
 
 export class Container extends React.Component<Properties> {
   static mapState(state: RootState, props: Properties): Partial<Properties> {
-    const item = state.feed.value.find((item) => item.id === props.id);
-
-    return { item };
+    return { item: (denormalize(state, props.id) || {}) };
   }
 
   static mapActions(_props: Properties): Partial<Properties> {
