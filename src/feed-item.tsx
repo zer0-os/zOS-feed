@@ -28,8 +28,8 @@ export class FeedItem extends React.Component<Properties> {
             className='feed-item__image'
             src={animationUrl || imageUrl}
             alt={title}
-            width={424}
-            height={424}
+            width={440}
+            height={440}
           />
         </ZnsLink>
       </div>
