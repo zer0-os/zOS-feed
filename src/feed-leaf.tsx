@@ -44,7 +44,6 @@ export class FeedLeaf extends React.Component<Properties, {}> {
           src={animationUrl || imageUrl}
           alt={title}
           width={800}
-          height={800}
         />
         <div className='feed-leaf__text-content'>
           <h1 className='feed-leaf__title'>{title}</h1>
