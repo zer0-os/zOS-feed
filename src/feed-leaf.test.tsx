@@ -12,7 +12,13 @@ describe('FeedLeaf', () => {
       description: '',
       imageUrl: '',
       animationUrl: '',
-      znsRoute: '',
+      minter: '',
+      owner: '',
+      attributes: [],
+      ipfsContentId: '',
+      metadataUrl: '',
+      chainId: null,
+      contract: '',
 
       ...props,
     };
@@ -66,7 +72,7 @@ describe('FeedLeaf', () => {
     expect(wrapper.find('[className$="__description"]').text().trim()).toStrictEqual(description);
   });
 
-  it.only('renders minter and owner', () => {
+  it('renders minter and owner', () => {
     const minter = '0x0000000000000000000000000000000000000000000000000000000000000000';
     const owner = '0x0000000000000000000000000000000000000000000000000000000000000001';
 
@@ -95,8 +101,6 @@ describe('FeedLeaf', () => {
 
     const resources = wrapper.find('[className$="__external-resource"]').map(item => item.text()).join();
 
-    [ipfsContentId].forEach(resource => {
-      expect(resources.includes(resource)).toBe(true);
-    })
+    expect(resources.includes('su...link')).toBe(true);
   });
 });

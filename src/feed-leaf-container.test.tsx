@@ -7,9 +7,8 @@ import { RootState } from './store';
 describe('FeedLeafContainer', () => {
   const subject = (props: Partial<Properties> = {}) => {
     const allProps: Properties = {
-      id: '',
       item: null,
-      loadSelectedItemMetadata: () => undefined,
+      loadMetadata: () => undefined,
       ...props,
     };
 
@@ -17,20 +16,29 @@ describe('FeedLeafContainer', () => {
   };
 
   it('loads metadata on mount', () => {
-    const loadSelectedItemMetadata = jest.fn();
+    const loadMetadata = jest.fn();
 
-    subject({ loadSelectedItemMetadata });
+    subject({ item: { id: 'the-id' } as any, loadMetadata });
 
-    expect(loadSelectedItemMetadata).toHaveBeenCalled();
+    expect(loadMetadata).toHaveBeenCalledWith('the-id');
+  });
+
+  it('does not load metadata on mount if item not present', () => {
+    const loadMetadata = jest.fn();
+
+    subject({ item: null, loadMetadata });
+
+    expect(loadMetadata).toHaveBeenCalledTimes(0);
   });
 
   it('loads metadata on update', () => {
-    const loadSelectedItemMetadata = jest.fn();
+    const loadMetadata = jest.fn();
 
-    const wrapper = subject({ loadSelectedItemMetadata });
+    const wrapper = subject({ loadMetadata });
+
     wrapper.setProps({ item: { id: 'something-new' }});
 
-    expect(loadSelectedItemMetadata).toHaveBeenCalledTimes(2);
+    expect(loadMetadata).toHaveBeenCalledWith('something-new');
   });
 
   it('passes feed item properties to child', () => {
@@ -53,9 +61,15 @@ describe('FeedLeafContainer', () => {
   });
 
   describe('mapState', () => {
-    const subject = (state: RootState, props: Partial<Properties> = {}) => Container.mapState({
-      feed: { value: [], ...(state.feed || {}) },
-    } as RootState, props as Properties);
+    const subject = (state: RootState) => Container.mapState({
+      feed: {
+        selectedItem: '',
+        ...state.feed,
+        value: {
+          ...(state.feed.value || {}),
+        },
+      },
+    } as RootState);
 
     test('item', () => {
       const selectedItem = {
@@ -64,7 +78,16 @@ describe('FeedLeafContainer', () => {
         description: 'This is the description of the first item.',
       };
 
-      const { item } = subject({ feed: { selectedItem } } as RootState, { item: selectedItem });
+      const { item } = subject({
+        feed: {
+          selectedItem: 'the-first-id',
+          value: {
+            entities: {
+              'the-first-id': selectedItem,
+            },
+          },
+        },
+      } as any);
 
       expect(item).toMatchObject(selectedItem);
     });

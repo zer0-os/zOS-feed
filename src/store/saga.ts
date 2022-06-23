@@ -1,29 +1,14 @@
-import { spawn, takeLatest, put, call, select } from 'redux-saga/effects';
-import { SagaActionTypes, receive, select as selectItem, setStatus, AsyncActionStatus } from './feed';
+import { takeEvery, takeLatest, put, call, select, all } from 'redux-saga/effects';
+import { SagaActionTypes, receive, receiveSelectedItem, setStatus, AsyncActionStatus, receiveItem } from './feed';
 
 import { client, metadataService } from '@zer0-os/zos-zns';
 
 export function* loadItemMetadata(action) {
-  const items = yield select((state) => state.feed.value);
+  const item = yield select((state) => state.feed.value.entities[action.payload]);
 
-  const itemIndex = items.findIndex(item => item.id === action.payload);
-  const item = items[itemIndex];
-
-  yield spawn(fetchResource, item)
-}
-
-function* fetchResource(item) {
   const metadata = yield call(metadataService.load, item.metadataUrl);
 
-  const items = yield select((state) => state.feed.value);
-
-  yield put(receive(items.map(i => {
-    if (i.id === item.id) {
-      return { ...item, ...metadata };
-    }
-
-    return i;
-  })));
+  yield put(receiveItem({ id: item.id, ...metadata }));
 }
 
 export function* load(action) {
@@ -37,7 +22,7 @@ export function* load(action) {
     const routeId = yield call([znsClient, znsClient.resolveIdFromName], route);
   
     const item = yield call([znsClient, znsClient.getFeedItem], routeId);
-    yield put(selectItem(item));
+    yield put(receiveSelectedItem(item));
 
     const items = yield call([znsClient, znsClient.getFeed], routeId);
     yield put(receive(items));
@@ -48,18 +33,9 @@ export function* load(action) {
   }
 }
 
-export function* loadSelectedItemMetadata() {
-  const item = yield select((state) => state.feed.selectedItem);
-
-  if (!item?.metadataUrl) return null;
-
-  const metadata = yield call(metadataService.load, item.metadataUrl);
-
-  yield put(selectItem({ ...item, ...metadata }));
-}
-
 export function* saga() {
-  yield takeLatest(SagaActionTypes.Load, load);
-  yield takeLatest(SagaActionTypes.LoadItemMetadata, loadItemMetadata);
-  yield takeLatest(SagaActionTypes.LoadSelectedItemMetadata, loadSelectedItemMetadata);
+  yield all([
+    yield takeLatest(SagaActionTypes.Load, load),
+    yield takeEvery(SagaActionTypes.LoadItemMetadata, loadItemMetadata),
+  ]);
 }
