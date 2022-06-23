@@ -39,16 +39,14 @@ export class Component extends React.Component<ComponentProperties, State> {
   }
 
   fetchMedia = async (): Promise<void> => {
-    const { src, width, height } = this.props;
+    const { src, width } = this.props;
     const publicId = this.props.getHashFromIpfsUrl(src) || src;
 
     if (publicId) {
       const { media, type } = await this.props.getCloudMedia(publicId);
       this.setState({
         cloudinaryMedia: {
-          media: media?.resize(
-            pad().width(width).height(height).background(auto())
-          ),
+          media: media?.resize(pad().width(width).background(auto())),
           type,
         },
       });
@@ -56,9 +54,7 @@ export class Component extends React.Component<ComponentProperties, State> {
       const { media, type } = await this.props.getCloudMedia(src, '');
       this.setState({
         cloudinaryMedia: {
-          media: media?.resize(
-            pad().width(width).height(height).background(auto())
-          ),
+          media: media?.resize(pad().width(width).background(auto())),
           type,
         },
       });
