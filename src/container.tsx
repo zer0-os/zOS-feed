@@ -12,6 +12,7 @@ import {Spinner} from '@zer0-os/zos-component-library';
 export interface PublicProperties {
   provider: any;
   route: string;
+  web3: any;
 }
 
 export interface Properties extends PublicProperties {
@@ -43,9 +44,9 @@ export class Container extends React.Component<Properties> {
   }
 
   componentDidUpdate(prevProps: Properties) {
-    const { route, provider } = this.props;
+    const { route, provider, web3: { chainId } } = this.props;
 
-    if (route && (route !== prevProps.route) || (provider !== prevProps.provider)) {
+    if (route && (route !== prevProps.route) || (chainId !== prevProps.web3.chainId)) {
       this.props.load({ route, provider });
     }
   }
