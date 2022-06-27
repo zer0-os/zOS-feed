@@ -45,7 +45,7 @@ export class Container extends React.Component<Properties> {
   componentDidUpdate(prevProps: Properties) {
     const { route, provider } = this.props;
 
-    if (route && (route !== prevProps.route)) {
+    if (route && (route !== prevProps.route) || (provider !== prevProps.provider)) {
       this.props.load({ route, provider });
     }
   }
