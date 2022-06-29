@@ -16,6 +16,7 @@ describe('FeedContainer', () => {
       status: AsyncActionStatus.Idle,
       load: () => undefined,
       provider: null,
+      web3: null,
       ...props,
     };
 
@@ -25,16 +26,18 @@ describe('FeedContainer', () => {
   test('it loads feed for route on mount', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
+    const web3 = { chainId: 4 };
 
-    subject({ load, provider, route: 'pickles' });
+    subject({ load, provider, route: 'pickles', web3 });
 
     expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
   });
 
   test('it does not load empty feed on mount', () => {
     const load = jest.fn();
+    const web3 = { chainId: 4 };
 
-    subject({ load, provider: { what: 'yeah' }, route: '' });
+    subject({ load, provider: { what: 'yeah' }, web3, route: '' });
 
     expect(load).toHaveBeenCalledTimes(0);
   });
@@ -42,12 +45,25 @@ describe('FeedContainer', () => {
   test('it loads feed when route updates', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
+    const web3 = { chainId: 4 };
 
-    const container = subject({ load, provider, route: '' });
+    const container = subject({ load, provider, web3, route: '' });
 
     container.setProps({ route: 'bob' });
 
     expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
+  });
+
+  test('it loads feed when chainId updates', () => {
+    const load = jest.fn();
+    const provider = { what: 'yeah' };
+    const web3 = { chainId: 4 };
+
+    const container = subject({ load, provider, web3, route: 'bob' });
+
+    container.setProps({ web3: { chainId: 1 } });
+
+    expect(load).toHaveBeenCalledWith({ route: 'bob',  provider });
   });
 
   test('it renders feed leaf', () => {
