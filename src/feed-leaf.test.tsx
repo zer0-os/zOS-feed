@@ -103,4 +103,18 @@ describe('FeedLeaf', () => {
 
     expect(resources.includes('su...link')).toBe(true);
   });
+
+  it('copy domain id', () => {
+    const ipfsContentId = 'super-slow-ipfs-link';
+    const wrapper = subject({
+      ipfsContentId
+    });
+    const onCopySpy = jest.fn();
+    (wrapper.instance() as FeedLeaf).onCopy = onCopySpy;
+
+    const copyButton = wrapper.find('.feed-leaf__copy');
+    copyButton.simulate('click');
+
+    expect(onCopySpy).toHaveBeenCalledWith(ipfsContentId);
+  });
 });

@@ -21,6 +21,10 @@ export interface Properties {
 }
 
 export class FeedLeaf extends React.Component<Properties, {}> {
+  onCopy = (text: string): void => {
+    navigator.clipboard.writeText(text);
+  }
+
   render() {
     const {
       title,
@@ -84,7 +88,17 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             znsDomain={contract}
           />
           <div className='feed-leaf__external-resource' title={ipfsContentId}>
-            <span>IPFS Hash</span><span>{shorty(ipfsContentId)}</span><a href={metadataUrl} target='_blank'>View on IPFS</a>
+            <div className="details">
+              <span>IPFS Hash</span>
+              <span>{shorty(ipfsContentId)}</span>
+              <a href={metadataUrl} target='_blank'>View on IPFS</a>
+            </div>
+            <button
+              className="feed-leaf__copy"
+              onClick={() => this.onCopy(ipfsContentId)}
+            >
+              &nbsp;
+            </button>
           </div>
         </div>
       </div>

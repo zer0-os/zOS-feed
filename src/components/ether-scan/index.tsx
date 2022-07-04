@@ -9,6 +9,9 @@ export interface Properties {
 }
 
 export default class EtherScan extends React.Component<Properties> {
+  onCopy = (text: string): void => {
+    navigator.clipboard.writeText(text);
+  }
 
   getEtherscanLink(): string {
     const { domainId, chainId, znsDomain } = this.props;
@@ -20,11 +23,19 @@ export default class EtherScan extends React.Component<Properties> {
 
     return (
       <div className={className} title={domainId}>
-        <span>Token Id</span>
-        <span>{shorty(domainId)}</span>
-        <a href={this.getEtherscanLink()} target='_blank'>
-          View on Etherscan
-        </a>
+        <div className="details">
+          <span>Token Id</span>
+          <span>{shorty(domainId)}</span>
+          <a href={this.getEtherscanLink()} target='_blank'>
+            View on Etherscan
+          </a>
+        </div>
+        <button
+          className='feed-leaf__copy'
+          onClick={() => this.onCopy(domainId)}
+        >
+          &nbsp;
+        </button>
       </div>
     );
   }

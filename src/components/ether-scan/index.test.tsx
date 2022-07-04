@@ -38,6 +38,22 @@ describe('Etherscan', () => {
       chainId: '',
     });
 
-    expect(wrapper.find('.feed-leaf__external-resource').children('a').first().prop('href')).toStrictEqual('');
+    expect(wrapper.find('.feed-leaf__external-resource a').first().prop('href')).toStrictEqual('');
+  });
+
+
+  it('copy domain id', () => {
+    const DOMAIN_ID_TEST = '0x81a20587';
+    const wrapper = subject({
+      className: 'feed-leaf__external-resource',
+      domainId: DOMAIN_ID_TEST,
+    });
+    const onCopySpy = jest.fn();
+    (wrapper.instance() as EtherScan).onCopy = onCopySpy;
+
+    const copyButton = wrapper.find('.feed-leaf__copy');
+    copyButton.simulate('click');
+
+    expect(onCopySpy).toHaveBeenCalledWith(DOMAIN_ID_TEST);
   });
 });
