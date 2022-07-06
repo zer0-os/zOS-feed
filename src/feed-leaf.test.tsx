@@ -3,6 +3,7 @@ import { shallow } from 'enzyme';
 import { shorty } from './util/feed';
 
 import { FeedLeaf, Properties } from './feed-leaf';
+import { IconButton, Icons } from '@zer0-os/zos-component-library';
 
 describe('FeedLeaf', () => {
   const subject = (props: Partial<Properties>) => {
@@ -19,6 +20,7 @@ describe('FeedLeaf', () => {
       metadataUrl: '',
       chainId: null,
       contract: '',
+      znsRoute: '',
 
       ...props,
     };
@@ -78,11 +80,29 @@ describe('FeedLeaf', () => {
 
     const wrapper = subject({ minter, owner });
 
-    const roles = wrapper.find('[className$="__role"]').map(item => item.text()).join();
+    const roles = wrapper.find('[className$="__member"]').map(item => item.text()).join();
 
     [owner, minter].forEach(role => {
       expect(roles.includes(shorty(role))).toBe(true);
     })
+  });
+  
+  it('renders share button', () => {
+    const znsRoute = 'wilder.WoW.poster.001';
+    const wrapper = subject({ znsRoute });
+
+    const shareButton = wrapper.find(IconButton);
+
+    expect(shareButton.prop('icon')).toBe(Icons.Share);    
+  });
+
+  it.only('fires shareNFT when share button is clicked', () => {
+    const znsRoute = 'wilder.WoW.poster.001';
+    const wrapper = subject({ znsRoute });
+
+    wrapper.find('.feed-leaf__share').first().simulate('click');
+
+    expect(window.open).toHaveBeenCalledOnce();
   });
 
   it('renders attributes', () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { shorty } from './util/feed';
 import CloudMedia from './components/cloud-media';
 import EtherScan from './components/ether-scan';
+import { IconButton, Icons } from '@zer0-os/zos-component-library';
 
 import './styles.css';
 
@@ -13,17 +14,27 @@ export interface Properties {
   animationUrl?: string;
   minter?: string;
   owner?: string;
-  attributes?: { trait_type: string, value: string }[];
+  attributes?: { trait_type: string; value: string }[];
   ipfsContentId: string;
   metadataUrl: string;
   chainId: number;
   contract: string;
+  znsRoute?: string;
 }
 
 export class FeedLeaf extends React.Component<Properties, {}> {
   onCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
   }
+  shareNFT = (): void => {
+    const { znsRoute } = this.props;
+
+    window.open(
+      'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/'+znsRoute?.split('wilder.')[1],
+      '_blank',
+      'noopener,noreferrer'
+    );
+  };
 
   render() {
     const {
@@ -39,6 +50,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
       metadataUrl,
       chainId,
       contract,
+      znsRoute,
     } = this.props;
 
     return (
@@ -52,33 +64,53 @@ export class FeedLeaf extends React.Component<Properties, {}> {
         <div className='feed-leaf__text-content'>
           <h1 className='feed-leaf__title'>{title}</h1>
 
-          {minter && owner &&
-            <div className='feed-leaf__roles'>
-              <div className='feed-leaf__role' title={minter}><span>Creator</span><span>{shorty(minter)}</span></div>
-              <div className='feed-leaf__role' title={owner}><span>Owner</span><span>{shorty(owner)}</span></div>
-            </div>
-          }
+          <div className='feed-leaf__roles'>
+            {minter && owner && (
+              <div className='feed-leaf__members'>
+                <div className='feed-leaf__member' title={minter}>
+                  <span>Creator</span>
+                  <span>{shorty(minter)}</span>
+                </div>
+                <div className='feed-leaf__member' title={owner}>
+                  <span>Owner</span>
+                  <span>{shorty(owner)}</span>
+                </div>
+              </div>
+            )}
+            {znsRoute && (
+              <div className='feed-leaf__shares'>
+                <IconButton
+                  icon={Icons.Share}
+                  className='feed-leaf__share'
+                  onClick={this.shareNFT}
+                />
+              </div>
+            )}
+          </div>
+          
 
           <div className='feed-leaf__description'>{description}</div>
         </div>
 
-        {attributes &&
+        {attributes && (
           <>
             <h4 className='feed-leaf__attributes-title'>Attributes</h4>
             <div className='feed-leaf__attributes'>
-              {
-                attributes.map((attribute, index) => {
-                  return (
-                    <div className='feed-leaf__attribute' key={index}>
-                      <span className='feed-leaf__attribute-name'>{attribute.trait_type}</span>
-                      <span className='feed-leaf__attribute-value'>{attribute.value}</span>
-                    </div>
-                  );
-                })
-              }
+              {attributes.map((attribute, index) => {
+                return (
+                  <div className='feed-leaf__attribute' key={index}>
+                    <span className='feed-leaf__attribute-name'>
+                      {attribute.trait_type}
+                    </span>
+                    <span className='feed-leaf__attribute-value'>
+                      {attribute.value}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </>
-        }
+        )}
 
         <div className='feed-leaf__external-resources'>
           <EtherScan
