@@ -56,7 +56,7 @@
 
 .feed-leaf {
   padding-top: 80px;
-  width: 800px;
+  width: auto;
 }
 
 .feed-leaf__title {
@@ -65,7 +65,7 @@
 }
 
 .feed-leaf__image {
-  width: 800px;
+  width: auto;
   border-radius: 8px;
 }
 
