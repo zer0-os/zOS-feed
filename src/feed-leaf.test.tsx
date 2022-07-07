@@ -96,13 +96,16 @@ describe('FeedLeaf', () => {
     expect(shareButton.prop('icon')).toBe(Icons.Share);    
   });
 
-  it.only('fires shareNFT when share button is clicked', () => {
+  it('fires shareNFT when share button is clicked', () => {
     const znsRoute = 'wilder.WoW.poster.001';
     const wrapper = subject({ znsRoute });
+    const shareNFTSpy = jest.fn();
 
-    wrapper.find('.feed-leaf__share').first().simulate('click');
+    (wrapper.instance() as FeedLeaf).shareNFT = shareNFTSpy;
+    wrapper.instance().forceUpdate();
+    wrapper.find('.feed-leaf__share').simulate('click');
 
-    expect(window.open).toHaveBeenCalledOnce();
+    expect(shareNFTSpy).toBeCalled();
   });
 
   it('renders attributes', () => {
