@@ -14,27 +14,19 @@ export interface Properties {
   animationUrl?: string;
   minter?: string;
   owner?: string;
-  attributes?: { trait_type: string; value: string }[];
+  attributes?: { trait_type: string, value: string }[];
   ipfsContentId: string;
   metadataUrl: string;
   chainId: number;
   contract: string;
-  znsRoute?: string;
+  znsRoute: string;
+  shareNFT: () => void;
 }
 
 export class FeedLeaf extends React.Component<Properties, {}> {
   onCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
   }
-  shareNFT = (): void => {
-    const { znsRoute } = this.props;
-
-    window.open(
-      'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/'+znsRoute?.split('wilder.')[1],
-      '_blank',
-      'noopener,noreferrer'
-    );
-  };
 
   render() {
     const {
@@ -82,7 +74,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
                 <IconButton
                   icon={Icons.Share}
                   className='feed-leaf__share'
-                  onClick={this.shareNFT}
+                  onClick={this.props.shareNFT}
                 />
               </div>
             )}

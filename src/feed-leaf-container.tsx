@@ -28,6 +28,17 @@ export class Container extends React.Component<Properties> {
     };
   }
 
+  shareNFT = (): void => {console.log('clickeeeeeed ----')
+    const { znsRoute } = this.props.item;
+
+    window.open(
+      'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
+        znsRoute?.split('wilder.')[1],
+      '_blank',
+      'noopener,noreferrer'
+    );
+  };
+
   componentDidMount() {
     const { item } = this.props;
 
@@ -39,14 +50,18 @@ export class Container extends React.Component<Properties> {
   componentDidUpdate = async (prevProps: Properties) => {
     const { item } = this.props;
 
-    if (item && (item.id !== prevProps.item?.id)) {
+    if (item && item.id !== prevProps.item?.id) {
       this.props.loadMetadata(item.id);
     }
-  }
+  };
 
   render() {
     return (
-      <FeedLeaf {...this.props.item} chainId={this.props.chainId} />
+      <FeedLeaf
+        {...this.props.item}
+        chainId={this.props.chainId}
+        shareNFT={this.shareNFT}
+      />
     );
   }
 }
