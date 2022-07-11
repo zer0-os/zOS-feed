@@ -3,7 +3,6 @@ import { shallow } from 'enzyme';
 import { shorty } from './util/feed';
 
 import { FeedLeaf, Properties } from './feed-leaf';
-import { IconButton, Icons } from '@zer0-os/zos-component-library';
 
 describe('FeedLeaf', () => {
   const subject = (props: Partial<Properties>) => {
@@ -88,22 +87,23 @@ describe('FeedLeaf', () => {
   });
   
   it('renders share button', () => {
+    const getTwitterLink = jest.fn();
     const znsRoute = 'wilder.WoW.poster.001';
-    const wrapper = subject({ znsRoute });
+    const wrapper = subject({ znsRoute, getTwitterLink });
 
-    const shareButton = wrapper.find(IconButton);
+    wrapper.find('.feed-leaf__share').simulate('click');
 
-    expect(shareButton.prop('icon')).toBe(Icons.Share);    
+    expect(wrapper.find('.feed-leaf__share').exists()).toBe(true);    
   });
 
-  it('fires shareNFT when share button is clicked', () => {
-    const shareNFT = jest.fn();
+  it('fires getTwitterLink when share button is clicked', () => {
+    const getTwitterLink = jest.fn();
     const znsRoute = 'wilder.WoW.poster.001';
-    const wrapper = subject({ znsRoute, shareNFT });
+    const wrapper = subject({ znsRoute, getTwitterLink });
 
-    wrapper.find(IconButton).simulate('click');
+    wrapper.find('.feed-leaf__share').simulate('click');
     
-    expect(shareNFT).toHaveBeenCalledWith();
+    expect(getTwitterLink).toHaveBeenCalled();
   });
 
   it('renders attributes', () => {

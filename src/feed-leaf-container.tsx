@@ -5,7 +5,6 @@ import { Model } from './feed-model';
 import { RootState } from './store';
 import { FeedLeaf } from './feed-leaf';
 import { denormalize, loadItemMetadata } from './store/feed';
-
 export interface PublicProperties {
   chainId: number;
 }
@@ -28,16 +27,15 @@ export class Container extends React.Component<Properties> {
     };
   }
 
-  shareNFT = (): void => {console.log('clickeeeeeed ----')
+  getTwitterLink = (): string => {
     const { znsRoute } = this.props.item;
-
-    window.open(
-      'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
-        znsRoute?.split('wilder.')[1],
-      '_blank',
-      'noopener,noreferrer'
-    );
-  };
+    if (znsRoute && !znsRoute.startsWith('wilder.')){
+      return '/';
+    }
+    
+    return 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
+        znsRoute?.split('wilder.')[1];
+  }
 
   componentDidMount() {
     const { item } = this.props;
@@ -60,10 +58,9 @@ export class Container extends React.Component<Properties> {
       <FeedLeaf
         {...this.props.item}
         chainId={this.props.chainId}
-        shareNFT={this.shareNFT}
+        getTwitterLink={this.getTwitterLink}
       />
     );
   }
 }
-
 export const FeedLeafContainer = connectContainer<PublicProperties>(Container);

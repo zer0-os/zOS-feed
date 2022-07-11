@@ -100,14 +100,13 @@
   border-radius: 8px;
 }
 
-.feed-leaf__shares button{
-  cursor: pointer;
+.feed-leaf__shares .feed-leaf__share{
+  background: url(./share.svg) no-repeat center;
+  border: none;
   padding: 0;
-}
-
-.feed-leaf__shares .icon-button__icon{
   width: 56px;
   height: 37px;
+  cursor: pointer;
 }
 
 .feed-leaf__description {

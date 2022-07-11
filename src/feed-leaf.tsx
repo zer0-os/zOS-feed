@@ -2,10 +2,8 @@ import React from 'react';
 import { shorty } from './util/feed';
 import CloudMedia from './components/cloud-media';
 import EtherScan from './components/ether-scan';
-import { IconButton, Icons } from '@zer0-os/zos-component-library';
 
 import './styles.css';
-
 export interface Properties {
   id: string;
   title: string;
@@ -20,7 +18,7 @@ export interface Properties {
   chainId: number;
   contract: string;
   znsRoute: string;
-  shareNFT: () => void;
+  getTwitterLink: () => string;
 }
 
 export class FeedLeaf extends React.Component<Properties, {}> {
@@ -71,15 +69,10 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             )}
             {znsRoute && (
               <div className='feed-leaf__shares'>
-                <IconButton
-                  icon={Icons.Share}
-                  className='feed-leaf__share'
-                  onClick={this.props.shareNFT}
-                />
+                <a href={this.props.getTwitterLink()} className="feed-leaf__share" target='_blank' rel='noopener,noreferrer'></a>
               </div>
             )}
           </div>
-          
 
           <div className='feed-leaf__description'>{description}</div>
         </div>
