@@ -18,12 +18,21 @@ export interface Properties {
   chainId: number;
   contract: string;
   znsRoute: string;
-  getTwitterLink: () => string;
 }
 
 export class FeedLeaf extends React.Component<Properties, {}> {
   onCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
+  }
+
+  getTwitterLink = (): string => {
+    const { znsRoute } = this.props;
+    if (znsRoute && !znsRoute.startsWith('wilder.')){
+      return '/';
+    }
+    
+    return 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
+        znsRoute?.split('wilder.')[1];
   }
 
   render() {
@@ -69,7 +78,7 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             )}
             {znsRoute && (
               <div className='feed-leaf__shares'>
-                <a href={this.props.getTwitterLink()} className="feed-leaf__share" target='_blank' rel='noopener,noreferrer'></a>
+                <a href={this.getTwitterLink()} className="feed-leaf__share" target='_blank' rel='noopener,noreferrer'></a>
               </div>
             )}
           </div>

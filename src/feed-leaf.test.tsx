@@ -87,23 +87,24 @@ describe('FeedLeaf', () => {
   });
   
   it('renders share button', () => {
-    const getTwitterLink = jest.fn();
     const znsRoute = 'wilder.WoW.poster.001';
-    const wrapper = subject({ znsRoute, getTwitterLink });
-
-    wrapper.find('.feed-leaf__share').simulate('click');
+    const wrapper = subject({ znsRoute });
 
     expect(wrapper.find('.feed-leaf__share').exists()).toBe(true);    
   });
 
-  it('fires getTwitterLink when share button is clicked', () => {
-    const getTwitterLink = jest.fn();
-    const znsRoute = 'wilder.WoW.poster.001';
-    const wrapper = subject({ znsRoute, getTwitterLink });
+  it('renders link to twitter', () => {
+    const wrapper = subject({ znsRoute: 'wilder.WoW.poster.001' });
 
-    wrapper.find('.feed-leaf__share').simulate('click');
-    
-    expect(getTwitterLink).toHaveBeenCalled();
+    const expectedLink = 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/WoW.poster.001';
+
+    expect(wrapper.find('.feed-leaf__share').prop('href')).toStrictEqual(expectedLink);
+  });
+
+  it('renders empty link if znsRoute does not start with wilder', () => {
+    const wrapper = subject({ znsRoute: 'WoW.poster.001' });
+
+    expect(wrapper.find('.feed-leaf__share').prop('href')).toStrictEqual('/');
   });
 
   it('renders attributes', () => {

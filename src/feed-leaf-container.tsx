@@ -27,16 +27,6 @@ export class Container extends React.Component<Properties> {
     };
   }
 
-  getTwitterLink = (): string => {
-    const { znsRoute } = this.props.item;
-    if (znsRoute && !znsRoute.startsWith('wilder.')){
-      return '/';
-    }
-    
-    return 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
-        znsRoute?.split('wilder.')[1];
-  }
-
   componentDidMount() {
     const { item } = this.props;
 
@@ -58,7 +48,6 @@ export class Container extends React.Component<Properties> {
       <FeedLeaf
         {...this.props.item}
         chainId={this.props.chainId}
-        getTwitterLink={this.getTwitterLink}
       />
     );
   }

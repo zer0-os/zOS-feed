@@ -60,37 +60,6 @@ describe('FeedLeafContainer', () => {
     });
   });
 
-  it('passes getTwitterLink fn to child', () => {
-    const getTwitterLink = jest.fn();
-    const wrapper = subject({ 
-      item: {
-        id: 'the-item-id',
-        title: 'the title',
-        description: 'the full item description',
-        imageUrl: 'example.com/image.jpg',
-        znsRoute: 'wilder.are.we',
-      },
-     });
-
-     const znsRouteTwitter = 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/are.we';
-         
-    expect(wrapper.find(FeedLeaf).props().getTwitterLink()).toBe(znsRouteTwitter);
-  });
-
-  it('should renders a blank link if znsRoute does not start with wilder', () => {
-    const wrapper = subject({ 
-      item: {
-        id: 'the-item-id',
-        title: 'the title',
-        description: 'the full item description',
-        imageUrl: 'example.com/image.jpg',
-        znsRoute: 'where.are.we',
-      },
-     });
-
-     expect(wrapper.find(FeedLeaf).props().getTwitterLink()).toBe('/');
-  });
-
   describe('mapState', () => {
     const subject = (state: RootState) => Container.mapState({
       feed: {
