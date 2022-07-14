@@ -19,6 +19,7 @@ describe('FeedLeaf', () => {
       metadataUrl: '',
       chainId: null,
       contract: '',
+      znsRoute: '',
 
       ...props,
     };
@@ -78,11 +79,32 @@ describe('FeedLeaf', () => {
 
     const wrapper = subject({ minter, owner });
 
-    const roles = wrapper.find('[className$="__role"]').map(item => item.text()).join();
+    const roles = wrapper.find('[className$="__member"]').map(item => item.text()).join();
 
     [owner, minter].forEach(role => {
       expect(roles.includes(shorty(role))).toBe(true);
     })
+  });
+  
+  it('renders share button', () => {
+    const znsRoute = 'wilder.WoW.poster.001';
+    const wrapper = subject({ znsRoute });
+
+    expect(wrapper.find('.feed-leaf__share').exists()).toBe(true);    
+  });
+
+  it('renders link to twitter', () => {
+    const wrapper = subject({ znsRoute: 'wilder.WoW.poster.001' });
+
+    const expectedLink = 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/WoW.poster.001';
+
+    expect(wrapper.find('.feed-leaf__share').prop('href')).toStrictEqual(expectedLink);
+  });
+
+  it('renders empty link if znsRoute does not start with wilder', () => {
+    const wrapper = subject({ znsRoute: 'WoW.poster.001' });
+
+    expect(wrapper.find('.feed-leaf__share').prop('href')).toStrictEqual('/');
   });
 
   it('renders attributes', () => {

@@ -5,7 +5,6 @@ import { Model } from './feed-model';
 import { RootState } from './store';
 import { FeedLeaf } from './feed-leaf';
 import { denormalize, loadItemMetadata } from './store/feed';
-
 export interface PublicProperties {
   chainId: number;
 }
@@ -39,16 +38,18 @@ export class Container extends React.Component<Properties> {
   componentDidUpdate = async (prevProps: Properties) => {
     const { item } = this.props;
 
-    if (item && (item.id !== prevProps.item?.id)) {
+    if (item && item.id !== prevProps.item?.id) {
       this.props.loadMetadata(item.id);
     }
-  }
+  };
 
   render() {
     return (
-      <FeedLeaf {...this.props.item} chainId={this.props.chainId} />
+      <FeedLeaf
+        {...this.props.item}
+        chainId={this.props.chainId}
+      />
     );
   }
 }
-
 export const FeedLeafContainer = connectContainer<PublicProperties>(Container);
