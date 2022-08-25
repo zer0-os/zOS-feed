@@ -8,6 +8,18 @@
   overflow: auto;
 }
 
+.feed-filters {
+  padding-left: 16px;
+}
+
+.feed-filters__section-header {
+  text-transform: uppercase;
+}
+
+.feed-filters__filter {
+  padding: 10px 0 0 24px;
+}
+
 .feed__items {
   position: relative;
   padding: 100px 20px 0;
