@@ -6,7 +6,7 @@ import { store } from './store';
 
 export const App: React.FunctionComponent<PublicProperties> = (props: PublicProperties) => (
   <Provider store={store}>
-    <AppLayout>
+    <AppLayout className='feed-app'>
       <AppContextPanel>
         <FeedFilters />
       </AppContextPanel>
