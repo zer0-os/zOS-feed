@@ -1,6 +1,5 @@
 .feed {
   position: relative;
-  max-width: 480px;
   width: 100%;
   margin: 0 auto;
   display: flex;
@@ -8,22 +7,19 @@
   overflow: auto;
 }
 
-.feed-filters {
-  padding-left: 16px;
-}
-
 .feed-filters__section-header {
   text-transform: uppercase;
 }
 
 .feed-filters__filter {
-  padding: 10px 0 0 24px;
+  padding: 10px 0 0 20px;
 }
 
 .feed__items {
   position: relative;
   padding: 100px 20px 0;
   width: 100%;
+  max-width: 480px;
 }
 
 .feed-item {
