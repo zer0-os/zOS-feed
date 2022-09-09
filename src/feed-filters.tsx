@@ -5,9 +5,8 @@ export class FeedFilters extends React.Component {
     return (
       <div className='feed-filters'>
         <section className='feed-filters__filters'>
-          <div className='feed-filters__section-header'>Filters</div>
-          <div className='feed-filters__filter'>
-            <div className='feed-filters__filter-name'>Everything</div>
+          <div className='feed-filters__filter active'>
+            <div className='feed-filters__filter-name'># Everything</div>
           </div>
         </section>
       </div>

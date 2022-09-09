@@ -13,7 +13,7 @@ describe('FeedFilters', () => {
 
     const filterName = wrapper.find('.feed-filters__filter-name').at(0).text().trim();
 
-    expect(filterName).toBe('Everything');
+    expect(filterName).toBe('# Everything');
   });
 
   it('renders filter in filters section', () => {
@@ -22,13 +22,5 @@ describe('FeedFilters', () => {
     const section = wrapper.find('section.feed-filters__filters');
 
     expect(section.find('.feed-filters__filter').exists()).toBe(true);
-  });
-
-  it('renders section header', () => {
-    const wrapper = subject();
-
-    const headerText = wrapper.find('.feed-filters__filters .feed-filters__section-header').text().trim();
-
-    expect(headerText).toBe('Filters');
   });
 });
