@@ -85,7 +85,7 @@ describe('FeedItem', () => {
 
     const cloudMedia = wrapper.find(CloudMedia);
 
-    expect(cloudMedia.prop('width')).toEqual(440);
+    expect(cloudMedia.prop('width')).toEqual(480);
     expect(cloudMedia.prop('height')).toBeFalsy();
   });
 });
