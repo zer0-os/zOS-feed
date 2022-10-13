@@ -1,6 +1,6 @@
 {
   "name": "@zer0-os/zos-feed",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "description": "feed app for zos",
   "main": "dist/index.js",
   "scripts": {
