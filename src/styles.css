@@ -135,7 +135,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1a1022;
+  background: var(--background-color-primary);
   border-radius: 8px;
 }
 
@@ -174,12 +174,13 @@
   flex-direction: column;
   padding: 8px 16px 8px 20px;
   border-radius: 8px;
-  background: var(--background-color-sidekick);
+  background: var(--background-color-primary);
   margin: 4px 0;
 }
 
 .feed-leaf__attribute-name {
-  color: #bcbcbc;
+  color: var(--font-color-heading);
+  filter: brightness(0.85);
 }
 
 .feed-leaf__attribute-value {
@@ -201,7 +202,7 @@
 .feed-leaf__external-resource {
   flex: 1;
   padding: 20px;
-  background: var(--background-color-sidekick);
+  background: var(--background-color-primary);
   border-radius: 16px;
   display: flex;
 }
@@ -227,6 +228,7 @@
 
 .feed-leaf__copy {
   background: url(./copy.svg) no-repeat center;
+  filter: var(--icon-color-filter);
   border: none;
   width: 26px;
   height: 27px;
