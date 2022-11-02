@@ -8,7 +8,7 @@ import { Feed, Properties } from './feed';
 const getItems = (numItems: number = 10) => {
   const items: any = [];
 
-  for(let i = 1; i <= numItems; i++) {
+  for (let i = 1; i <= numItems; i++) {
     items.push({
       id: `item-id-${i}`,
       title: `Item Title #${i}`,
@@ -64,6 +64,16 @@ describe('Feed', () => {
     wrapper.find(InfiniteScroll).props().next();
 
     expect(wrapper.find(FeedItem)).toHaveLength(10);
+  });
+
+  it('should passes scrollableTarget to InfiniteScroll', () => {
+    const wrapper = subject({ items: getItems(10) });
+
+    expect(wrapper.find('#feed').exists()).toBe(true);
+
+    expect(wrapper.find(InfiniteScroll).props().scrollableTarget).toEqual(
+      'feed'
+    );
   });
 
   it('should reset scroll if items update', () => {

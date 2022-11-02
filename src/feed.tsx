@@ -50,7 +50,11 @@ export class Feed extends React.Component<Properties, State> {
   haveItemsUpdated(items, prevItems) {
     if (items.length != prevItems.length) return true;
 
-    return (!isEqualWith(items, prevItems, (first, second) => first.id === second.id));
+    return !isEqualWith(
+      items,
+      prevItems,
+      (first, second) => first.id === second.id
+    );
   }
 
   fetchMoreData = () => {
@@ -81,6 +85,7 @@ export class Feed extends React.Component<Properties, State> {
         initialScrollY={0}
         scrollThreshold='0px'
         loader={<></>}
+        scrollableTarget="feed"
       >
         {this.state.feed.map((item) => (
           <FeedItemContainer key={item.id} id={item.id} />
@@ -91,8 +96,8 @@ export class Feed extends React.Component<Properties, State> {
 
   render() {
     return (
-      <div className="feed">
-        <div className="feed__items">{this.renderItems()}</div>
+      <div className='feed' id='feed'>
+        <div className='feed__items'>{this.renderItems()}</div>
       </div>
     );
   }
