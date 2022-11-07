@@ -1,7 +1,7 @@
 import React from 'react';
 import { shorty } from './util/feed';
-import CloudMedia from './components/cloud-media';
 import EtherScan from './components/ether-scan';
+import { IpfsMedia } from '@zero-tech/zapp-utils/components';
 
 import './styles.css';
 export interface Properties {
@@ -23,17 +23,19 @@ export interface Properties {
 export class FeedLeaf extends React.Component<Properties, {}> {
   onCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
-  }
+  };
 
   getTwitterLink = (): string => {
     const { znsRoute } = this.props;
-    if (znsRoute && !znsRoute.startsWith('wilder.')){
+    if (znsRoute && !znsRoute.startsWith('wilder.')) {
       return '/';
     }
-    
-    return 'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
-        znsRoute?.split('wilder.')[1];
-  }
+
+    return (
+      'https://twitter.com/intent/tweet?url=https://share.market.wilderworld.com/' +
+      znsRoute?.split('wilder.')[1]
+    );
+  };
 
   render() {
     const {
@@ -54,11 +56,10 @@ export class FeedLeaf extends React.Component<Properties, {}> {
 
     return (
       <div className='feed-leaf'>
-        <CloudMedia
+        <IpfsMedia
+          alt={title}
           className='feed-leaf__image'
           src={animationUrl || imageUrl}
-          alt={title}
-          width='100%'
         />
         <div className='feed-leaf__text-content'>
           <h1 className='feed-leaf__title'>{title}</h1>
@@ -78,7 +79,12 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             )}
             {znsRoute && (
               <div className='feed-leaf__shares'>
-                <a href={this.getTwitterLink()} className="feed-leaf__share" target='_blank' rel='noopener,noreferrer'></a>
+                <a
+                  href={this.getTwitterLink()}
+                  className='feed-leaf__share'
+                  target='_blank'
+                  rel='noopener,noreferrer'
+                ></a>
               </div>
             )}
           </div>
@@ -114,13 +120,15 @@ export class FeedLeaf extends React.Component<Properties, {}> {
             znsDomain={contract}
           />
           <div className='feed-leaf__external-resource' title={ipfsContentId}>
-            <div className="details">
+            <div className='details'>
               <span>IPFS Hash</span>
               <span>{shorty(ipfsContentId)}</span>
-              <a href={metadataUrl} target='_blank'>View on IPFS</a>
+              <a href={metadataUrl} target='_blank'>
+                View on IPFS
+              </a>
             </div>
             <button
-              className="feed-leaf__copy"
+              className='feed-leaf__copy'
               onClick={() => this.onCopy(ipfsContentId)}
             >
               &nbsp;
