@@ -51,7 +51,7 @@
     "@cloudinary/url-gen": "^1.7.0",
     "@zero-tech/zapp-utils": "^0.5.1",
     "@zer0-os/zos-component-library": "0.15.0",
-    "@zer0-os/zos-zns": "2.3.0",
+    "@zer0-os/zos-zns": "2.3.1",
     "classnames": "^2.3.1",
     "lodash.get": "^4.4.2",
     "lodash.isequalwith": "^4.4.0",
