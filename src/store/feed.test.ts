@@ -6,6 +6,7 @@ import {
   AsyncActionStatus,
   setStatus,
   receiveSelectedItem,
+  setFeeds,
 } from './feed';
 import { Model as FeedModel } from '../feed-model';
 
@@ -33,6 +34,7 @@ describe('feed reducer', () => {
       value: { ids: [], entities: {} },
       selectedItem: null,
       status: AsyncActionStatus.Idle,
+      hasMore: true,
     });
   });
 
@@ -44,6 +46,27 @@ describe('feed reducer', () => {
     }] as FeedModel[];
 
     const actual = reducer(initialEmptyState, receive(feedItems));
+
+    expect(actual.value).toMatchObject({
+      ids: ['first-id'],
+      entities: {
+        'first-id': {
+          id: 'first-id',
+          title: 'the item',
+          description: 'the description',
+        },
+      },
+    });
+  });
+
+  it('should handle setFeeds with initial state', () => {
+    const feedItems = [{
+      id: 'first-id',
+      title: 'the item',
+      description: 'the description',
+    }] as FeedModel[];
+
+    const actual = reducer(initialEmptyState, setFeeds(feedItems));
 
     expect(actual.value).toMatchObject({
       ids: ['first-id'],
