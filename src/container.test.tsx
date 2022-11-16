@@ -15,6 +15,7 @@ describe('FeedContainer', () => {
       items: [],
       status: AsyncActionStatus.Idle,
       load: () => undefined,
+      fetchMore: () => undefined,
       provider: null,
       web3: null,
       ...props,
@@ -27,10 +28,11 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
     const web3 = { chainId: 4 };
+    const offset = 0;
 
     subject({ load, provider, route: 'pickles', web3 });
 
-    expect(load).toHaveBeenCalledWith({ route: 'pickles', provider });
+    expect(load).toHaveBeenCalledWith({ route: 'pickles', provider, offset });
   });
 
   test('it does not load empty feed on mount', () => {
@@ -46,24 +48,26 @@ describe('FeedContainer', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
     const web3 = { chainId: 4 };
+    const offset = 0;
 
     const container = subject({ load, provider, web3, route: '' });
 
     container.setProps({ route: 'bob' });
 
-    expect(load).toHaveBeenCalledWith({ route: 'bob', provider });
+    expect(load).toHaveBeenCalledWith({ route: 'bob', provider, offset });
   });
 
   test('it loads feed when chainId updates', () => {
     const load = jest.fn();
     const provider = { what: 'yeah' };
     const web3 = { chainId: 4 };
+    const offset = 0;
 
     const container = subject({ load, provider, web3, route: 'bob' });
 
     container.setProps({ web3: { chainId: 1 } });
 
-    expect(load).toHaveBeenCalledWith({ route: 'bob',  provider });
+    expect(load).toHaveBeenCalledWith({ route: 'bob', provider, offset });
   });
 
   test('it renders feed leaf', () => {
@@ -74,19 +78,30 @@ describe('FeedContainer', () => {
   });
 
   test('passes items to child', () => {
-    const items = [{
-      id: 'the-first-id',
-      title: 'The First Item',
-      description: 'This is the description of the first item.',
-    }, {
-      id: 'the-second-id',
-      title: 'The Second Item',
-      description: 'This is the description of the Second item.',
-    }] as FeedItemModel[];
+    const items = [
+      {
+        id: 'the-first-id',
+        title: 'The First Item',
+        description: 'This is the description of the first item.',
+      },
+      {
+        id: 'the-second-id',
+        title: 'The Second Item',
+        description: 'This is the description of the Second item.',
+      },
+    ] as FeedItemModel[];
 
     const wrapper = subject({ items });
 
     expect(wrapper.find(Feed).prop('items')).toEqual(items);
+  });
+
+  test('passes hasMore to child', () => {
+    const hasMore = true;
+
+    const wrapper = subject({ hasMore });
+
+    expect(wrapper.find(Feed).prop('hasMore')).toEqual(hasMore);
   });
 
   it('renders spinner when loading', () => {
@@ -102,15 +117,18 @@ describe('FeedContainer', () => {
   });
 
   describe('mapState', () => {
-    const subject = (state: RootState) => Container.mapState({
-      feed: {
-        value: {
-          ids: [],
-          entities: {},
-          ...(state.feed.value || {}),
+    const subject = (state: RootState) =>
+      Container.mapState({
+        feed: {
+          value: {
+            ids: [],
+            entities: {},
+            ...(state.feed.value || {}),
+          },
+          hasMore: true,
+          ...(state.feed || {}),
         },
-        ...(state.feed || {}) },
-    } as RootState);
+      } as RootState);
 
     test('items', () => {
       const state = subject({
@@ -134,15 +152,33 @@ describe('FeedContainer', () => {
       } as any);
 
       expect(state).toMatchObject({
-        items: [{
-          id: 'the-first-id',
-          title: 'The First Item',
-          description: 'This is the description of the first item.',
-        }, {
-          id: 'the-second-id',
-          title: 'The Second Item',
-          description: 'This is the description of the Second item.',
-        }],
+        items: [
+          {
+            id: 'the-first-id',
+            title: 'The First Item',
+            description: 'This is the description of the first item.',
+          },
+          {
+            id: 'the-second-id',
+            title: 'The Second Item',
+            description: 'This is the description of the Second item.',
+          },
+        ],
+      });
+    });
+    test('hasMore', () => {
+      const state = subject({
+        feed: {
+          value: {
+            ids: [],
+            entities: {},
+          },
+          hasMore:false,
+        },
+      } as any);
+      expect(state).toMatchObject({
+        items: [],
+        hasMore: false,
       });
     });
   });
