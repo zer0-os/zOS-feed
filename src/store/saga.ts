@@ -49,6 +49,7 @@ export function* load(action) {
 
     yield put(setStatus(AsyncActionStatus.Idle));
   } catch (error) {
+    console.error('load error', error);
     yield put(setStatus(AsyncActionStatus.Failed));
   }
 }
