@@ -5,6 +5,8 @@
   display: flex;
   justify-content: center;
   overflow: auto;
+  /* zOS app content convention */
+  padding-right: var(--layout-app-content-right-padding);
 }
 
 .feed-filters__section-header {
