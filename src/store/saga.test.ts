@@ -212,6 +212,8 @@ describe('feed saga', () => {
     });
 
     it('should set status to failed on case of an error', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => { });
+
       const error = new Error('error');
 
       await expectSaga(load, { payload: { route: '', provider: {} } })
@@ -225,6 +227,8 @@ describe('feed saga', () => {
           payload: AsyncActionStatus.Failed,
         })
         .run();
+
+      jest.restoreAllMocks();
     });
   });
 
