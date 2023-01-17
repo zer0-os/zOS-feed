@@ -36,7 +36,7 @@ export class Feed extends React.Component<Properties, State> {
         next={this.fetchMoreData}
         hasMore={this.props.hasMore}
         initialScrollY={0}
-        scrollThreshold='0px'
+        scrollThreshold='70px'
         loader={<div className='feed-item__spinner'><Spinner /></div>}
         scrollableTarget="feed"
       >
